@@ -1,8 +1,8 @@
 import streamlit as st
 import requests
 
-def get_pharmacies(city):
-    url = f"https://api.nobetcieczaneler.com/{city}"
+def get_pharmacies(city, district):
+    url = f"https://api.nobetcieczaneler.com/{city}/{district}"
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
@@ -12,10 +12,11 @@ def get_pharmacies(city):
 st.title("Nöbetçi Eczane Bulucu")
 
 city = st.text_input("Şehir giriniz:")
+district = st.text_input("İlçe giriniz:")
 
 if st.button("Eczaneleri Listele"):
-    if city:
-        pharmacies = get_pharmacies(city)
+    if city and district:
+        pharmacies = get_pharmacies(city, district)
         if pharmacies:
             for pharmacy in pharmacies:
                 st.subheader(pharmacy['name'])
@@ -25,4 +26,4 @@ if st.button("Eczaneleri Listele"):
         else:
             st.error("Eczane bilgileri alınamadı, lütfen tekrar deneyin.")
     else:
-        st.warning("Lütfen bir şehir adı giriniz.")
+        st.warning("Lütfen bir şehir ve ilçe adı giriniz.")
