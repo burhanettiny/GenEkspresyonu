@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "code",
-   "execution_count": None,
+   "execution_count": Null,
    "id": "ead98c08-8530-46f4-aa93-de8005cdd778",
    "metadata": {},
    "outputs": [],
@@ -12,7 +12,7 @@
     "\n",
     "# API'den nöbetçi eczaneleri almak için fonksiyon\n",
     "def get_nobetci_eczane(sehir, ilce):\n",
-    "    # Gerçek API URL'sini buraya yerleştirin\n",
+    "    # Gerçek API URL'https://www.eczaneler.gen.tr\n",
     "    api_url = f\"https://example.com/nobetci-eczane?sehir={sehir}&ilce={ilce}\"\n",
     "    \n",
     "    try:\n",
