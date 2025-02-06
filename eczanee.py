@@ -11,8 +11,18 @@ def get_pharmacies(city, district):
 
 st.title("Nöbetçi Eczane Bulucu")
 
-city = st.text_input("Şehir giriniz:")
-district = st.text_input("İlçe giriniz:")
+cities = ["İstanbul", "Ankara", "İzmir", "Bursa", "Antalya"]  # Örnek şehir listesi
+city = st.selectbox("Şehir seçiniz:", cities)
+
+districts = {  # Örnek ilçe listesi
+    "İstanbul": ["Kadıköy", "Beşiktaş", "Şişli"],
+    "Ankara": ["Çankaya", "Keçiören", "Mamak"],
+    "İzmir": ["Konak", "Bornova", "Karşıyaka"],
+    "Bursa": ["Osmangazi", "Nilüfer", "Yıldırım"],
+    "Antalya": ["Muratpaşa", "Kepez", "Konyaaltı"]
+}
+
+district = st.selectbox("İlçe seçiniz:", districts.get(city, []))
 
 if st.button("Eczaneleri Listele"):
     if city and district:
@@ -26,4 +36,4 @@ if st.button("Eczaneleri Listele"):
         else:
             st.error("Eczane bilgileri alınamadı, lütfen tekrar deneyin.")
     else:
-        st.warning("Lütfen bir şehir ve ilçe adı giriniz.")
+        st.warning("Lütfen bir şehir ve ilçe seçiniz.")
