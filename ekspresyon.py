@@ -20,7 +20,6 @@ input_values_table = []
 
 # Verileri işleyen fonksiyon
 def parse_input_data(input_data):
-    # Giriş verilerini düzgün şekilde işleyip listeye çevirir
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
 
@@ -38,25 +37,21 @@ for i in range(num_target_genes):
     sample_target_ct_values = parse_input_data(sample_target_ct) if sample_target_ct else np.array([np.nan])
     sample_reference_ct_values = parse_input_data(sample_reference_ct) if sample_reference_ct else np.array([np.nan])
     
-    # Şu an boş olan verilerde nan kullanıyoruz ve boyutlarını kontrol ediyoruz
-    control_len = len(control_target_ct_values)
-    sample_len = len(sample_target_ct_values)
-
-    # Eğer veriler boşsa hata mesajı veriyoruz
-    if control_len == 0 or sample_len == 0:
-        st.error("Hata: Tüm gruplar için en az bir veri girilmelidir!")
-        continue
-
-    # ΔCt hesaplaması, ve NaN'leri atıyoruz
-    control_delta_ct = control_target_ct_values - control_reference_ct_values
-    sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
-
-    # Verilerde NaN yoksa devam et
-    if np.any(np.isnan(control_delta_ct)) or np.any(np.isnan(sample_delta_ct)):
+    # Verileri kontrol et ve eksik veri varsa hata mesajı göster
+    if np.any(np.isnan(control_target_ct_values)) or np.any(np.isnan(control_reference_ct_values)) or np.any(np.isnan(sample_target_ct_values)) or np.any(np.isnan(sample_reference_ct_values)):
         st.error("Hata: Verilerde eksik veya geçersiz girişler var. Lütfen doğru veriler girin.")
         continue
 
-    # NaN'leri atarak ortalama hesaplama
+    # ΔCt hesaplaması, NaN'leri atıyoruz
+    control_delta_ct = control_target_ct_values - control_reference_ct_values
+    sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
+
+    # Boyutları kontrol et
+    if control_delta_ct.shape != sample_delta_ct.shape:
+        st.error("Hata: Verilerin boyutları eşleşmiyor!")
+        continue
+
+    # Ortalamaları hesapla
     average_control_delta_ct = np.nanmean(control_delta_ct)
     average_sample_delta_ct = np.nanmean(sample_delta_ct)
     
@@ -111,17 +106,17 @@ for i in range(num_target_genes):
         "ΔΔCt": delta_delta_ct,
         "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
         "Regülasyon Durumu": regulation_status,
-        "Kontrol Grubu Örnek Sayısı": control_len,
-        "Hasta Grubu Örnek Sayısı": sample_len
+        "Kontrol Grubu Örnek Sayısı": len(control_target_ct_values),
+        "Hasta Grubu Örnek Sayısı": len(sample_target_ct_values)
     })
     
     # Her örnek için sıra numarası ver
-    for j in range(max(control_len, sample_len)):
+    for j in range(max(len(control_target_ct_values), len(sample_target_ct_values))):
         row = {"Hedef Gen": f"Hedef Gen {i+1}", "Örnek No": j+1}
-        row["Kontrol Hedef Ct"] = control_target_ct_values[j] if j < control_len else np.nan
-        row["Kontrol Referans Ct"] = control_reference_ct_values[j] if j < control_len else np.nan
-        row["Hasta Hedef Ct"] = sample_target_ct_values[j] if j < sample_len else np.nan
-        row["Hasta Referans Ct"] = sample_reference_ct_values[j] if j < sample_len else np.nan
+        row["Kontrol Hedef Ct"] = control_target_ct_values[j] if j < len(control_target_ct_values) else np.nan
+        row["Kontrol Referans Ct"] = control_reference_ct_values[j] if j < len(control_reference_ct_values) else np.nan
+        row["Hasta Hedef Ct"] = sample_target_ct_values[j] if j < len(sample_target_ct_values) else np.nan
+        row["Hasta Referans Ct"] = sample_reference_ct_values[j] if j < len(sample_reference_ct_values) else np.nan
         input_values_table.append(row)
 
 # Giriş verileri tablosunu göster
