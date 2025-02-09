@@ -34,6 +34,14 @@ for i in range(num_target_genes):
         control_reference_ct_values = parse_input_data(control_reference_ct)
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
+        
+        # Uzunluk kontrolü
+        if len(control_target_ct_values) != len(control_reference_ct_values):
+            st.error("Hata: Kontrol grubu hedef ve referans Ct değerleri aynı uzunlukta olmalıdır!")
+            continue
+        if len(sample_target_ct_values) != len(sample_reference_ct_values):
+            st.error("Hata: Hasta grubu hedef ve referans Ct değerleri aynı uzunlukta olmalıdır!")
+            continue
 
         control_delta_ct = control_target_ct_values - control_reference_ct_values
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
