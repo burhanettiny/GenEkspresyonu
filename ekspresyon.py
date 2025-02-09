@@ -32,17 +32,28 @@ for i in range(num_target_genes):
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
 
+        # Çalışmayan örnekleri filtrele
+        valid_control_mask = ~np.isnan(control_target_ct_values) & ~np.isnan(control_reference_ct_values)
+        valid_sample_mask = ~np.isnan(sample_target_ct_values) & ~np.isnan(sample_reference_ct_values)
+
+        control_target_ct_values = control_target_ct_values[valid_control_mask]
+        control_reference_ct_values = control_reference_ct_values[valid_control_mask]
+        sample_target_ct_values = sample_target_ct_values[valid_sample_mask]
+        sample_reference_ct_values = sample_reference_ct_values[valid_sample_mask]
+
         control_delta_ct = control_target_ct_values - control_reference_ct_values
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
         
-        average_control_delta_ct = np.mean(control_delta_ct)
-        average_sample_delta_ct = np.mean(sample_delta_ct)
+        average_control_delta_ct = np.mean(control_delta_ct) if len(control_delta_ct) > 0 else np.nan
+        average_sample_delta_ct = np.mean(sample_delta_ct) if len(sample_delta_ct) > 0 else np.nan
         
-        delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
+        delta_delta_ct = average_sample_delta_ct - average_control_delta_ct if not np.isnan(average_control_delta_ct) and not np.isnan(average_sample_delta_ct) else np.nan
         
-        expression_change = 2 ** (-delta_delta_ct)
+        expression_change = 2 ** (-delta_delta_ct) if not np.isnan(delta_delta_ct) else np.nan
         
-        if expression_change == 1:
+        if np.isnan(expression_change):
+            regulation_status = "Hesaplanamadı"
+        elif expression_change == 1:
             regulation_status = "Değişim Yok"
         elif expression_change > 1:
             regulation_status = "Upregulated"
@@ -55,7 +66,9 @@ for i in range(num_target_genes):
             "Hasta ΔCt (Ortalama)": average_sample_delta_ct,
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
-            "Regülasyon Durumu": regulation_status
+            "Regülasyon Durumu": regulation_status,
+            "Analiz Edilen Kontrol Örnek Sayısı": len(control_delta_ct),
+            "Analiz Edilen Hasta Örnek Sayısı": len(sample_delta_ct)
         })
 
 df = pd.DataFrame(data)
@@ -72,8 +85,10 @@ for i, row in df.iterrows():
     ax.scatter(x_positions_control, control_delta_ct, color='blue', alpha=0.6, label='Kontrol Bireyleri')
     ax.scatter(x_positions_sample, sample_delta_ct, color='red', alpha=0.6, label='Hasta Bireyleri')
     
-    ax.plot([0.9, 1.1], [row["Kontrol ΔCt (Ortalama)"], row["Kontrol ΔCt (Ortalama)"]], color='blue', linewidth=2)
-    ax.plot([1.9, 2.1], [row["Hasta ΔCt (Ortalama)"], row["Hasta ΔCt (Ortalama)"]], color='red', linewidth=2)
+    if not np.isnan(row["Kontrol ΔCt (Ortalama)"]):
+        ax.plot([0.9, 1.1], [row["Kontrol ΔCt (Ortalama)"], row["Kontrol ΔCt (Ortalama)"]], color='blue', linewidth=2)
+    if not np.isnan(row["Hasta ΔCt (Ortalama)"]):
+        ax.plot([1.9, 2.1], [row["Hasta ΔCt (Ortalama)"], row["Hasta ΔCt (Ortalama)"]], color='red', linewidth=2)
     
     ax.set_xticks([1, 2])
     ax.set_xticklabels(["Kontrol Grubu", "Hasta Grubu"])
