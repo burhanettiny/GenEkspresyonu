@@ -20,7 +20,7 @@ input_values_table = []
 
 # Verileri işleyen fonksiyon
 def parse_input_data(input_data):
-    # Boş veri satırlarını kontrol et ve veriyi sayısal hale getir
+    # Boşlukları kontrol et ve veriyi sayısal hale getir
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     # NaN kontrolü ekleyerek sayısal dönüşüm sağla
     return np.array([float(x) if x else np.nan for x in values])
@@ -33,7 +33,7 @@ for i in range(num_target_genes):
     sample_target_ct = st.text_area(f"Hasta Grubu Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}")
     sample_reference_ct = st.text_area(f"Hasta Grubu Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}")
     
-    # Verileri sayısal hale getirme
+    # Boş veri kontrolü ekleyerek sayısal hale getir
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     sample_target_ct_values = parse_input_data(sample_target_ct)
