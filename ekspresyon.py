@@ -78,6 +78,8 @@ for i in range(num_target_genes):
             test_name = "Mann-Whitney U"
             test_stat, test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct)
         
+        significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
+        
         data.append({
             "Hedef Gen": f"Hedef Gen {i+1}",
             "Kontrol ΔCt (Ortalama)": average_control_delta_ct,
@@ -94,7 +96,8 @@ for i in range(num_target_genes):
             "Varyans Eşitliği (Levene, p-değeri)": levene_test.pvalue,
             "Kullanılan Test": test_name,
             "İstatistiksel Test Sonucu": test_stat,
-            "İstatistiksel Test p-değeri": test_pvalue
+            "İstatistiksel Test p-değeri": test_pvalue,
+            "Sonuç": significance
         })
 
 df = pd.DataFrame(data)
