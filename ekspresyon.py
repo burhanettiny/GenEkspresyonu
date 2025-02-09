@@ -31,12 +31,6 @@ for i in range(num_target_genes):
             sample_target_ct_values = parse_input_data(sample_target_ct)
             sample_reference_ct_values = parse_input_data(sample_reference_ct)
 
-            st.write(f"**Hedef Gen {i+1} İçin Girilen Veriler:**")
-            st.write(f"Kontrol Hedef Ct: {control_target_ct_values}")
-            st.write(f"Kontrol Referans Ct: {control_reference_ct_values}")
-            st.write(f"Hasta Hedef Ct: {sample_target_ct_values}")
-            st.write(f"Hasta Referans Ct: {sample_reference_ct_values}")
-
             control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
             sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
 
@@ -53,13 +47,6 @@ for i in range(num_target_genes):
             delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
             expression_change = 2 ** (-delta_delta_ct)
             regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
-
-            st.write(f"**Hedef Gen {i+1} İçin Hesaplanan Değerler:**")
-            st.write(f"Ortalama Kontrol ΔCt: {average_control_delta_ct}")
-            st.write(f"Ortalama Hasta ΔCt: {average_sample_delta_ct}")
-            st.write(f"ΔΔCt: {delta_delta_ct}")
-            st.write(f"Gen Ekspresyon Değişimi: {expression_change}")
-            st.write(f"Regülasyon Durumu: {regulation_status}")
 
             shapiro_control = stats.shapiro(control_delta_ct[~np.isnan(control_delta_ct)])
             shapiro_sample = stats.shapiro(sample_delta_ct[~np.isnan(sample_delta_ct)])
@@ -81,11 +68,6 @@ for i in range(num_target_genes):
 
             significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
 
-            st.write(f"**İstatistik Sonuçları:**")
-            st.write(f"Test Türü: {test_name}")
-            st.write(f"p-Değeri: {test_pvalue}")
-            st.write(f"Sonuç: {significance}")
-
             data.append({
                 "Hedef Gen": f"Hedef Gen {i+1}",
                 "Kontrol ΔCt (Ortalama)": average_control_delta_ct,
@@ -98,9 +80,32 @@ for i in range(num_target_genes):
                 "Sonuç": significance
             })
 
+            for j in range(max(control_len, sample_len)):
+                row = {"Hedef Gen": f"Hedef Gen {i+1}", "Örnek No": j+1}
+                row["Kontrol Hedef Ct"] = control_target_ct_values[j] if j < control_len else None
+                row["Kontrol Referans Ct"] = control_reference_ct_values[j] if j < control_len else None
+                row["Hasta Hedef Ct"] = sample_target_ct_values[j] if j < sample_len else None
+                row["Hasta Referans Ct"] = sample_reference_ct_values[j] if j < sample_len else None
+                input_values_table.append(row)
+
         except Exception as e:
             st.error(f"Hata oluştu: {e}")
 
+# **Debug Çıktıları:**
+st.subheader("Debug Çıktıları")
+st.write("Veri Listesi:", data)
+st.write("Giriş Tablosu Verileri:", input_values_table)
+
+# **Giriş verileri tablosunu göster**
+st.subheader("Giriş Verileri Tablosu")
+input_df = pd.DataFrame(input_values_table)
+st.write("Giriş Verileri DataFrame:", input_df.head())  # İlk satırları göster
+st.write("Giriş Verileri DataFrame Türleri:", input_df.dtypes)
+st.write(input_df)
+
+# **Sonuçları göster**
 st.subheader("Sonuçlar")
 df = pd.DataFrame(data)
+st.write("Sonuçlar DataFrame:", df.head())  # İlk satırları göster
+st.write("Sonuçlar DataFrame Türleri:", df.dtypes)
 st.write(df)
