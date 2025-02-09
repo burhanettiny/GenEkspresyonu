@@ -1,6 +1,7 @@
-import streamlit as st 
+import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 import scipy.stats as stats
 
 # Başlık
@@ -36,4 +37,52 @@ for i in range(num_target_genes):
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
-   
+        # Eksik veri kontrolü
+        control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
+        sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
+        
+        if control_len == 0 or sample_len == 0:
+            st.error("Hata: Tüm gruplar için en az bir veri girilmelidir!")
+            continue
+        
+        control_target_ct_values = control_target_ct_values[:control_len]
+        control_reference_ct_values = control_reference_ct_values[:control_len]
+        sample_target_ct_values = sample_target_ct_values[:sample_len]
+        sample_reference_ct_values = sample_reference_ct_values[:sample_len]
+
+        control_delta_ct = control_target_ct_values - control_reference_ct_values
+        sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
+        
+        average_control_delta_ct = np.mean(control_delta_ct)
+        average_sample_delta_ct = np.mean(sample_delta_ct)
+        
+        delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
+        expression_change = 2 ** (-delta_delta_ct)
+        
+        if expression_change == 1:
+            regulation_status = "Değişim Yok"
+        elif expression_change > 1:
+            regulation_status = "Upregulated"
+        else:
+            regulation_status = "Downregulated"
+        
+        # Normallik testleri
+        shapiro_control = stats.shapiro(control_delta_ct)
+        shapiro_sample = stats.shapiro(sample_delta_ct)
+        
+        control_normal = shapiro_control.pvalue > 0.05
+        sample_normal = shapiro_sample.pvalue > 0.05
+        
+        # Varyans testi
+        levene_test = stats.levene(control_delta_ct, sample_delta_ct)
+        equal_variance = levene_test.pvalue > 0.05
+        
+        # İstatistiksel test seçimi
+        if control_normal and sample_normal and equal_variance:
+            test_name = "T-Test"
+            test_stat, test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct)
+        else:
+            test_name = "Mann-Whitney U"
+            test_stat, test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct)
+        
+        significance = "Anlamlı" if test_pval
