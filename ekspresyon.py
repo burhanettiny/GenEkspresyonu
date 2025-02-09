@@ -21,8 +21,7 @@ input_values_table = []
 # Verileri işleyen fonksiyon
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
-    # Eğer veri varsa sayıya çevir, yoksa NaN ata
-    return np.array([float(x) if x else np.nan for x in values])
+    return np.array([float(x) for x in values if x])
 
 for i in range(num_target_genes):
     st.subheader(f"Hedef Gen {i+1}")
@@ -32,24 +31,28 @@ for i in range(num_target_genes):
     sample_target_ct = st.text_area(f"Hasta Grubu Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}")
     sample_reference_ct = st.text_area(f"Hasta Grubu Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}")
     
-    # Verileri işleyip sayısal hale getir
-    control_target_ct_values = parse_input_data(control_target_ct)
-    control_reference_ct_values = parse_input_data(control_reference_ct)
-    sample_target_ct_values = parse_input_data(sample_target_ct)
-    sample_reference_ct_values = parse_input_data(sample_reference_ct)
-    
-    # ΔCt hesaplaması
-    if len(control_target_ct_values) > 0 and len(control_reference_ct_values) > 0:
+    if control_target_ct and control_reference_ct and sample_target_ct and sample_reference_ct:
+        control_target_ct_values = parse_input_data(control_target_ct)
+        control_reference_ct_values = parse_input_data(control_reference_ct)
+        sample_target_ct_values = parse_input_data(sample_target_ct)
+        sample_reference_ct_values = parse_input_data(sample_reference_ct)
+        
+        # Eksik veri kontrolü
+        control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
+        sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
+        
+        if control_len == 0 or sample_len == 0:
+            st.error("Hata: Tüm gruplar için en az bir veri girilmelidir!")
+            continue
+        
+        control_target_ct_values = control_target_ct_values[:control_len]
+        control_reference_ct_values = control_reference_ct_values[:control_len]
+        sample_target_ct_values = sample_target_ct_values[:sample_len]
+        sample_reference_ct_values = sample_reference_ct_values[:sample_len]
+
         control_delta_ct = control_target_ct_values - control_reference_ct_values
-    else:
-        control_delta_ct = np.array([])  # Boş diziyi yönetmek için
-    if len(sample_target_ct_values) > 0 and len(sample_reference_ct_values) > 0:
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
-    else:
-        sample_delta_ct = np.array([])  # Boş diziyi yönetmek için
-    
-    if len(control_delta_ct) > 0 and len(sample_delta_ct) > 0:
-        # Ortalama ΔCt hesaplamaları
+        
         average_control_delta_ct = np.mean(control_delta_ct)
         average_sample_delta_ct = np.mean(sample_delta_ct)
         
@@ -104,24 +107,25 @@ for i in range(num_target_genes):
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
             "Regülasyon Durumu": regulation_status,
-            "Kontrol Grubu Örnek Sayısı": len(control_target_ct_values),
-            "Hasta Grubu Örnek Sayısı": len(sample_target_ct_values)
+            "Kontrol Grubu Örnek Sayısı": control_len,
+            "Hasta Grubu Örnek Sayısı": sample_len
         })
         
-        # Her örnek için sıra numarası ver ve boş veri varsa None ata
-        max_len = max(len(control_target_ct_values), len(sample_target_ct_values))
-        for j in range(max_len):
+        for j in range(max(control_len, sample_len)):
             row = {"Hedef Gen": f"Hedef Gen {i+1}", "Örnek No": j+1}
-            
-            # Eğer veri mevcutsa göster, yoksa None ata
-            row["Kontrol Hedef Ct"] = control_target_ct_values[j] if j < len(control_target_ct_values) else None
-            row["Kontrol Referans Ct"] = control_reference_ct_values[j] if j < len(control_reference_ct_values) else None
-            row["Hasta Hedef Ct"] = sample_target_ct_values[j] if j < len(sample_target_ct_values) else None
-            row["Hasta Referans Ct"] = sample_reference_ct_values[j] if j < len(sample_reference_ct_values) else None
-            
-            # Boş veri olmayan satırları ekle
-            if any(value is not None for value in row.values()):
-                input_values_table.append(row)
+            if j < control_len:
+                row["Kontrol Hedef Ct"] = control_target_ct_values[j]
+                row["Kontrol Referans Ct"] = control_reference_ct_values[j]
+            else:
+                row["Kontrol Hedef Ct"] = None
+                row["Kontrol Referans Ct"] = None
+            if j < sample_len:
+                row["Hasta Hedef Ct"] = sample_target_ct_values[j]
+                row["Hasta Referans Ct"] = sample_reference_ct_values[j]
+            else:
+                row["Hasta Hedef Ct"] = None
+                row["Hasta Referans Ct"] = None
+            input_values_table.append(row)
 
 # Giriş verileri tablosunu göster
 st.subheader("Giriş Verileri Tablosu")
