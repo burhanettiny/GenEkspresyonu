@@ -121,16 +121,16 @@ for i in range(num_target_genes):
         "Hasta Grubu Örnek Sayısı": len(sample_target_ct_values)
     })
     
-    # Her örnek için sıra numarası ver
+    # Her örnek için sıra numarası ver ve boş veri varsa None ata
     max_len = max(len(control_target_ct_values), len(sample_target_ct_values))
     for j in range(max_len):
         row = {"Hedef Gen": f"Hedef Gen {i+1}", "Örnek No": j+1}
         
-        # Eğer veri mevcutsa göster, yoksa NaN ata
-        row["Kontrol Hedef Ct"] = control_target_ct_values[j] if j < len(control_target_ct_values) else np.nan
-        row["Kontrol Referans Ct"] = control_reference_ct_values[j] if j < len(control_reference_ct_values) else np.nan
-        row["Hasta Hedef Ct"] = sample_target_ct_values[j] if j < len(sample_target_ct_values) else np.nan
-        row["Hasta Referans Ct"] = sample_reference_ct_values[j] if j < len(sample_reference_ct_values) else np.nan
+        # Eğer veri mevcutsa göster, yoksa None ata
+        row["Kontrol Hedef Ct"] = control_target_ct_values[j] if j < len(control_target_ct_values) else None
+        row["Kontrol Referans Ct"] = control_reference_ct_values[j] if j < len(control_reference_ct_values) else None
+        row["Hasta Hedef Ct"] = sample_target_ct_values[j] if j < len(sample_target_ct_values) else None
+        row["Hasta Referans Ct"] = sample_reference_ct_values[j] if j < len(sample_reference_ct_values) else None
         input_values_table.append(row)
 
 # Giriş verileri tablosunu göster
