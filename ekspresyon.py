@@ -6,43 +6,48 @@ import numpy as np
 st.title("Delta-Delta Ct Hesaplama Uygulaması")
 
 # Kullanıcıdan giriş al
-st.header("PCR Verilerini Girin")
+st.header("Birden Fazla Hasta ve Kontrol Grubu Verisi Girin")
 
-# Kontrol ve örnek grubu için Ct değerlerini girme
-control_target_ct = st.number_input("Kontrol Grubu Hedef Gen Ct Değeri", min_value=0.0, step=0.1)
-control_reference_ct = st.number_input("Kontrol Grubu Referans Gen Ct Değeri", min_value=0.0, step=0.1)
-sample_target_ct = st.number_input("Örnek Grubu Hedef Gen Ct Değeri", min_value=0.0, step=0.1)
-sample_reference_ct = st.number_input("Örnek Grubu Referans Gen Ct Değeri", min_value=0.0, step=0.1)
+# Kullanıcıdan birden fazla grup eklemesi yapabilmesi için bir form oluşturuyoruz
+num_samples = st.number_input("Kaç Hasta/Kontrol Grubu Gireceksiniz?", min_value=1, step=1)
 
-# Delta Ct Hesaplama
-st.subheader("ΔCt Hesaplama")
-control_delta_ct = control_target_ct - control_reference_ct
-sample_delta_ct = sample_target_ct - sample_reference_ct
+# DataFrame için boş liste
+data = []
 
-st.write(f"Kontrol Grubu ΔCt: {control_delta_ct}")
-st.write(f"Örnek Grubu ΔCt: {sample_delta_ct}")
+# Formu oluştur ve kullanıcıdan her grup için Ct değerlerini al
+for i in range(num_samples):
+    st.subheader(f"Grup {i+1}")
+    control_target_ct = st.number_input(f"Kontrol Grubu Hedef Gen Ct Değeri {i+1}", min_value=0.0, step=0.1, key=f"control_target_ct_{i}")
+    control_reference_ct = st.number_input(f"Kontrol Grubu Referans Gen Ct Değeri {i+1}", min_value=0.0, step=0.1, key=f"control_reference_ct_{i}")
+    sample_target_ct = st.number_input(f"Örnek Grubu Hedef Gen Ct Değeri {i+1}", min_value=0.0, step=0.1, key=f"sample_target_ct_{i}")
+    sample_reference_ct = st.number_input(f"Örnek Grubu Referans Gen Ct Değeri {i+1}", min_value=0.0, step=0.1, key=f"sample_reference_ct_{i}")
+    
+    # ΔCt hesaplama
+    control_delta_ct = control_target_ct - control_reference_ct
+    sample_delta_ct = sample_target_ct - sample_reference_ct
+    
+    # ΔΔCt hesaplama
+    delta_delta_ct = sample_delta_ct - control_delta_ct
+    
+    # 2^(-ΔΔCt) hesaplama (Gen Ekspresyonu)
+    expression_change = 2 ** (-delta_delta_ct)
+    
+    # Upregulate veya Downregulate kararını verme
+    regulation_status = "Upregulated" if expression_change > 1 else "Downregulated"
+    
+    # Data'ya ekleme
+    data.append({
+        "Grup": f"Grup {i+1}",
+        "Kontrol ΔCt": control_delta_ct,
+        "Örnek ΔCt": sample_delta_ct,
+        "ΔΔCt": delta_delta_ct,
+        "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
+        "Regülasyon Durumu": regulation_status
+    })
 
-# Delta-Delta Ct Hesaplama
-st.subheader("ΔΔCt Hesaplama")
-delta_delta_ct = sample_delta_ct - control_delta_ct
+# Sonuçları bir DataFrame olarak göster
+df = pd.DataFrame(data)
 
-# 2^(-ΔΔCt) Hesaplama
-expression_change = 2 ** (-delta_delta_ct)
-
-st.write(f"ΔΔCt: {delta_delta_ct}")
-st.write(f"Gen Ekspresyon Değişimi (2^(-ΔΔCt)): {expression_change}")
-
-# Sonuçları görselleştirme
-st.subheader("Sonuçlar")
-result_df = pd.DataFrame({
-    "Kontrol Grubu Hedef Gen Ct": [control_target_ct],
-    "Kontrol Grubu Referans Gen Ct": [control_reference_ct],
-    "Örnek Grubu Hedef Gen Ct": [sample_target_ct],
-    "Örnek Grubu Referans Gen Ct": [sample_reference_ct],
-    "Kontrol ΔCt": [control_delta_ct],
-    "Örnek ΔCt": [sample_delta_ct],
-    "ΔΔCt": [delta_delta_ct],
-    "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": [expression_change]
-})
-
-st.write(result_df)
+# Sonuç tablosunu göster
+st.subheader("Sonuçlar Tablosu")
+st.write(df)
