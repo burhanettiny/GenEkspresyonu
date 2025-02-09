@@ -20,9 +20,7 @@ input_values_table = []
 
 # Verileri işleyen fonksiyon
 def parse_input_data(input_data):
-    # Boşlukları kontrol et ve veriyi sayısal hale getir
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
-    # NaN kontrolü ekleyerek sayısal dönüşüm sağla
     return np.array([float(x) if x else np.nan for x in values])
 
 for i in range(num_target_genes):
@@ -33,20 +31,11 @@ for i in range(num_target_genes):
     sample_target_ct = st.text_area(f"Hasta Grubu Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}")
     sample_reference_ct = st.text_area(f"Hasta Grubu Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}")
     
-    # Boş veri kontrolü ekleyerek sayısal hale getir
+    # Verileri işleyip sayısal hale getir
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     sample_target_ct_values = parse_input_data(sample_target_ct)
     sample_reference_ct_values = parse_input_data(sample_reference_ct)
-    
-    # Verilerin uzunluklarını eşitle
-    min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
-    min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
-    
-    control_target_ct_values = control_target_ct_values[:min_control_len]
-    control_reference_ct_values = control_reference_ct_values[:min_control_len]
-    sample_target_ct_values = sample_target_ct_values[:min_sample_len]
-    sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
     
     # ΔCt hesaplaması
     control_delta_ct = control_target_ct_values - control_reference_ct_values
@@ -122,8 +111,8 @@ for i in range(num_target_genes):
         row["Hasta Hedef Ct"] = sample_target_ct_values[j] if j < len(sample_target_ct_values) else None
         row["Hasta Referans Ct"] = sample_reference_ct_values[j] if j < len(sample_reference_ct_values) else None
         
-        # Veri var mı diye kontrol et, yoksa ekleme
-        if row["Kontrol Hedef Ct"] is not None or row["Kontrol Referans Ct"] is not None or row["Hasta Hedef Ct"] is not None or row["Hasta Referans Ct"] is not None:
+        # Boş veri olmayan satırları ekle
+        if any(value is not None for value in row.values()):
             input_values_table.append(row)
 
 # Giriş verileri tablosunu göster
