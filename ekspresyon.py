@@ -87,6 +87,10 @@ for i, row in df.iterrows():
     x_positions_control = [1] * len(control_delta_ct_values)
     x_positions_sample = [2] * len(sample_delta_ct_values)
     
+    # Aynı Y değerlerine sahip noktaları biraz kaydırarak gösterme (dağılım)
+    jittered_control = control_delta_ct_values + np.random.uniform(-0.05, 0.05, size=len(control_delta_ct_values))
+    jittered_sample = sample_delta_ct_values + np.random.uniform(-0.05, 0.05, size=len(sample_delta_ct_values))
+    
     # Delta Ct değerlerini birleşik olarak oluştur
     all_delta_ct_values = np.concatenate([control_delta_ct_values, sample_delta_ct_values])
     
@@ -95,12 +99,12 @@ for i, row in df.iterrows():
     all_labels = ['Kontrol Grubu'] * len(control_delta_ct_values) + ['Hasta Grubu'] * len(sample_delta_ct_values)
     
     # Kontrol ve Hasta Grubu için delta ct değerlerini nokta olarak çiz
-    ax.scatter(x_positions_control, control_delta_ct_values, color='lightblue', label='Kontrol Grubu')
-    ax.scatter(x_positions_sample, sample_delta_ct_values, color='lightcoral', label='Hasta Grubu')
+    ax.scatter(x_positions_control, jittered_control, color='lightblue', label='Kontrol Grubu', alpha=0.7)
+    ax.scatter(x_positions_sample, jittered_sample, color='lightcoral', label='Hasta Grubu', alpha=0.7)
 
     # Ortalama değerleri kısa çizgilerle göster
-    ax.plot([1], [row["Hasta ΔCt (Ortalama)"]], label='Hasta Grubu Ortalama', color='red', linestyle='-', marker='o', markersize=8)
-    ax.plot([2], [row["Hasta ΔCt (Ortalama)"]], label='Kontrol Grubu Ortalama', color='blue', linestyle='-', marker='o', markersize=8)
+    ax.plot([1], [row["Hasta ΔCt (Ortalama)"]], label='Kontrol Grubu Ortalama', color='blue', linestyle='-', marker='o', markersize=8)
+    ax.plot([2], [row["Hasta ΔCt (Ortalama)"]], label='Hasta Grubu Ortalama', color='red', linestyle='-', marker='o', markersize=8)
 
     ax.set_xticks([1, 2])
     ax.set_xticklabels(['Kontrol Grubu', 'Hasta Grubu'])
