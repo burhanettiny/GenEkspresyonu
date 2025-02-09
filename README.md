@@ -1,2 +1,2 @@
-# nobetcieczane
-Nöbetçi Eczane Sorgusu
+# Genekspresyonu
+Gen ekspresyonu analizi
