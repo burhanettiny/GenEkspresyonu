@@ -121,7 +121,10 @@ for i in range(num_target_genes):
         row["Kontrol Referans Ct"] = control_reference_ct_values[j] if j < len(control_reference_ct_values) else None
         row["Hasta Hedef Ct"] = sample_target_ct_values[j] if j < len(sample_target_ct_values) else None
         row["Hasta Referans Ct"] = sample_reference_ct_values[j] if j < len(sample_reference_ct_values) else None
-        input_values_table.append(row)
+        
+        # Veri var mı diye kontrol et, yoksa ekleme
+        if row["Kontrol Hedef Ct"] is not None or row["Kontrol Referans Ct"] is not None or row["Hasta Hedef Ct"] is not None or row["Hasta Referans Ct"] is not None:
+            input_values_table.append(row)
 
 # Giriş verileri tablosunu göster
 st.subheader("Giriş Verileri Tablosu")
