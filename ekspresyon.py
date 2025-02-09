@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
-from io import StringIO
 
 # Başlık
 st.title("Gen Ekspresyon Analizi Uygulaması")
@@ -17,9 +16,12 @@ num_target_genes = st.number_input("Hedef Gen Sayısını Girin", min_value=1, s
 
 data = []
 stats_data = []
+input_values_table = []
 
+# Verileri işleyen fonksiyon
 def parse_input_data(input_data):
-    return np.array([float(x.replace(",", ".").strip()) for x in input_data.split() if x.strip()])
+    values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
+    return np.array([float(x) for x in values if x])
 
 for i in range(num_target_genes):
     st.subheader(f"Hedef Gen {i+1}")
@@ -35,13 +37,18 @@ for i in range(num_target_genes):
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
-        # Uzunluk kontrolü
-        if len(control_target_ct_values) != len(control_reference_ct_values):
-            st.error("Hata: Kontrol grubu hedef ve referans Ct değerleri aynı uzunlukta olmalıdır!")
+        # Eksik veri kontrolü
+        min_len = min(len(control_target_ct_values), len(control_reference_ct_values), 
+                      len(sample_target_ct_values), len(sample_reference_ct_values))
+        
+        if min_len == 0:
+            st.error("Hata: Tüm gruplar için en az bir veri girilmelidir!")
             continue
-        if len(sample_target_ct_values) != len(sample_reference_ct_values):
-            st.error("Hata: Hasta grubu hedef ve referans Ct değerleri aynı uzunlukta olmalıdır!")
-            continue
+        
+        control_target_ct_values = control_target_ct_values[:min_len]
+        control_reference_ct_values = control_reference_ct_values[:min_len]
+        sample_target_ct_values = sample_target_ct_values[:min_len]
+        sample_reference_ct_values = sample_reference_ct_values[:min_len]
 
         control_delta_ct = control_target_ct_values - control_reference_ct_values
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
@@ -86,7 +93,8 @@ for i in range(num_target_genes):
             "Hasta ΔCt (Ortalama)": average_sample_delta_ct,
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
-            "Regülasyon Durumu": regulation_status
+            "Regülasyon Durumu": regulation_status,
+            "Analize Dahil Örnek Sayısı": min_len
         })
         
         stats_data.append({
@@ -99,11 +107,24 @@ for i in range(num_target_genes):
             "İstatistiksel Test p-değeri": test_pvalue,
             "Sonuç": significance
         })
+        
+        input_values_table.append({
+            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Kontrol Hedef Ct": list(control_target_ct_values),
+            "Kontrol Referans Ct": list(control_reference_ct_values),
+            "Hasta Hedef Ct": list(sample_target_ct_values),
+            "Hasta Referans Ct": list(sample_reference_ct_values)
+        })
 
-df = pd.DataFrame(data)
+# Sonuçları göster
 st.subheader("Sonuçlar")
+df = pd.DataFrame(data)
 st.write(df)
 
-stats_df = pd.DataFrame(stats_data)
 st.subheader("İstatistik Sonuçları")
+stats_df = pd.DataFrame(stats_data)
 st.write(stats_df)
+
+st.subheader("Giriş Verileri Tablosu")
+input_df = pd.DataFrame(input_values_table)
+st.write(input_df)
