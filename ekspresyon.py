@@ -77,29 +77,26 @@ df = pd.DataFrame(data)
 st.subheader("Sonuçlar Tablosu")
 st.write(df)
 
-# Grafik: X ekseninde hasta ve kontrol grubundaki örneklerin delta ct değerleri
-fig, ax = plt.subplots()
-
-# Her hedef gen için X ekseninde hasta ve kontrol grubundaki delta ct değerleri noktalar olarak çizilecek
+# Grafik: Her hedef gen için ayrı grafikler
 for i, row in df.iterrows():
+    fig, ax = plt.subplots(figsize=(8, 5))
+
+    # X ekseninde hasta ve kontrol grubu için verileri yerleştireceğiz
     control_delta_ct_values = row["Kontrol ΔCt"]
     sample_delta_ct_values = row["Hasta ΔCt"]
-    
-    ax.scatter(np.repeat(i, len(control_delta_ct_values)), control_delta_ct_values, color='lightblue', label='Kontrol Grubu' if i == 0 else "")
-    ax.scatter(np.repeat(i, len(sample_delta_ct_values)), sample_delta_ct_values, color='lightcoral', label='Hasta Grubu' if i == 0 else "")
 
-# Ortalama değerler çizgiyle gösterilecek
-control_means = df["Kontrol ΔCt (Ortalama)"].values
-sample_means = df["Hasta ΔCt (Ortalama)"].values
+    ax.scatter(np.repeat('Kontrol Grubu', len(control_delta_ct_values)), control_delta_ct_values, color='lightblue', label='Kontrol Grubu' if i == 0 else "")
+    ax.scatter(np.repeat('Hasta Grubu', len(sample_delta_ct_values)), sample_delta_ct_values, color='lightcoral', label='Hasta Grubu' if i == 0 else "")
 
-ax.plot(np.arange(len(df)), control_means, label='Kontrol Grubu Ortalama', color='blue', linestyle='-', marker='o')
-ax.plot(np.arange(len(df)), sample_means, label='Hasta Grubu Ortalama', color='red', linestyle='-', marker='x')
+    # Ortalama değerler çizgiyle gösterilecek
+    control_mean = row["Kontrol ΔCt (Ortalama)"]
+    sample_mean = row["Hasta ΔCt (Ortalama)"]
 
-ax.set_xlabel('Hedef Genler')
-ax.set_ylabel('ΔCt Değerleri')
-ax.set_title('Hasta ve Kontrol Grubu ΔCt Değerleri')
-ax.set_xticks(np.arange(len(df)))
-ax.set_xticklabels([f"Hedef Gen {i+1}" for i in range(len(df))])
-ax.legend()
+    ax.plot(['Kontrol Grubu', 'Hasta Grubu'], [control_mean, sample_mean], label='Ortalama Değerler', color='black', linestyle='-', marker='o')
 
-st.pyplot(fig)
+    ax.set_xlabel('Grup')
+    ax.set_ylabel('ΔCt Değerleri')
+    ax.set_title(f'Hedef Gen {i+1} ΔCt Değerleri')
+    ax.legend()
+
+    st.pyplot(fig)
