@@ -22,6 +22,7 @@ input_values_table = []
 def parse_input_data(input_data):
     # Boş veri satırlarını kontrol et ve veriyi sayısal hale getir
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
+    # NaN kontrolü ekleyerek sayısal dönüşüm sağla
     return np.array([float(x) if x else np.nan for x in values])
 
 for i in range(num_target_genes):
@@ -43,10 +44,19 @@ for i in range(num_target_genes):
     sample_target_ct_values = parse_input_data(sample_target_ct)
     sample_reference_ct_values = parse_input_data(sample_reference_ct)
     
-    # Elde edilen NaN'ları kontrol et
+    # Eğer verilerde NaN varsa, uyarı ver
     if np.any(np.isnan(control_target_ct_values)) or np.any(np.isnan(control_reference_ct_values)) or np.any(np.isnan(sample_target_ct_values)) or np.any(np.isnan(sample_reference_ct_values)):
         st.error("Hata: Veri eksik veya hatalı. Lütfen tüm verilerin doğru girildiğinden emin olun.")
         continue
+    
+    # Verilerin uzunluklarını eşitle
+    min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
+    min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
+    
+    control_target_ct_values = control_target_ct_values[:min_control_len]
+    control_reference_ct_values = control_reference_ct_values[:min_control_len]
+    sample_target_ct_values = sample_target_ct_values[:min_sample_len]
+    sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
     
     # ΔCt hesaplaması
     control_delta_ct = control_target_ct_values - control_reference_ct_values
