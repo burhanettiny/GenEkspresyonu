@@ -58,12 +58,10 @@ for i in range(num_target_genes):
         else:
             regulation_status = "Downregulated"
         
-        # Data'ya ekleme
+        # Data'ya ekleme (Kontrol ΔCt verisi tabloda yer almayacak)
         data.append({
             "Hedef Gen": f"Hedef Gen {i+1}",
-            "Kontrol ΔCt": control_delta_ct,
             "Hasta ΔCt": sample_delta_ct,
-            "Kontrol ΔCt (Ortalama)": average_control_delta_ct,
             "Hasta ΔCt (Ortalama)": average_sample_delta_ct,
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
@@ -74,29 +72,33 @@ for i in range(num_target_genes):
 df = pd.DataFrame(data)
 
 # Sonuçları göster
-st.subheader("Sonuçlar Tablosu")
+st.subheader("Sonuçlar Tablosu (Kontrol ΔCt Verisi Yok)")
 st.write(df)
 
-# Grafik: Her hedef gen için ayrı grafikler
+# Grafik: Her hedef gen için ayrı bir grafik oluşturulacak
 for i, row in df.iterrows():
-    fig, ax = plt.subplots(figsize=(8, 5))
-
-    # X ekseninde hasta ve kontrol grubu için verileri yerleştireceğiz
-    control_delta_ct_values = row["Kontrol ΔCt"]
+    # Yeni grafik oluştur
+    fig, ax = plt.subplots()
+    
+    # Hasta Grubu için X eksenini oluştur
     sample_delta_ct_values = row["Hasta ΔCt"]
+    
+    # X ekseninde her grup için etiketler oluştur (kontrol grubu olmayacak)
+    x_positions = [1] * len(sample_delta_ct_values)
+    delta_ct_values = sample_delta_ct_values
+    labels = ['Hasta Grubu'] * len(sample_delta_ct_values)
+    
+    # Hasta Grubu için delta ct değerlerini nokta olarak çiz
+    ax.scatter(x_positions, delta_ct_values, color='lightcoral', label='Hasta Grubu')
 
-    ax.scatter(np.repeat('Kontrol Grubu', len(control_delta_ct_values)), control_delta_ct_values, color='lightblue', label='Kontrol Grubu' if i == 0 else "")
-    ax.scatter(np.repeat('Hasta Grubu', len(sample_delta_ct_values)), sample_delta_ct_values, color='lightcoral', label='Hasta Grubu' if i == 0 else "")
+    # Ortalama değerleri daha kısa bir çizgi ile göster
+    ax.plot([1], [row["Hasta ΔCt (Ortalama)"]], label='Hasta Grubu Ortalama', color='red', linestyle='-', marker='o', markersize=8)
 
-    # Ortalama değerler çizgiyle gösterilecek
-    control_mean = row["Kontrol ΔCt (Ortalama)"]
-    sample_mean = row["Hasta ΔCt (Ortalama)"]
-
-    ax.plot(['Kontrol Grubu', 'Hasta Grubu'], [control_mean, sample_mean], label='Ortalama Değerler', color='black', linestyle='-', marker='o')
-
+    ax.set_xticks([1])
+    ax.set_xticklabels(['Hasta Grubu'])
     ax.set_xlabel('Grup')
     ax.set_ylabel('ΔCt Değerleri')
-    ax.set_title(f'Hedef Gen {i+1} ΔCt Değerleri')
+    ax.set_title(f'Hedef Gen {i+1} - ΔCt Değerleri')
     ax.legend()
 
     st.pyplot(fig)
