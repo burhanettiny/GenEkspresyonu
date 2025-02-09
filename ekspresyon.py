@@ -58,9 +58,10 @@ for i in range(num_target_genes):
         else:
             regulation_status = "Downregulated"
         
-        # Data'ya ekleme (Kontrol ΔCt verisi ve Hasta ΔCt verisi tabloda yer almayacak)
+        # Data'ya ekleme (Kontrol ΔCt verisi artık tabloda gösterilecek)
         data.append({
             "Hedef Gen": f"Hedef Gen {i+1}",
+            "Kontrol ΔCt (Ortalama)": average_control_delta_ct,
             "Hasta ΔCt (Ortalama)": average_sample_delta_ct,
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
@@ -80,31 +81,20 @@ for i, row in df.iterrows():
     fig, ax = plt.subplots()
     
     # Hasta ve Kontrol Grubu için X eksenini oluştur
-    control_delta_ct_values = control_delta_ct
-    sample_delta_ct_values = sample_delta_ct
-    
-    # X ekseninde her grup için etiketler oluştur
-    x_positions_control = [1] * len(control_delta_ct_values)
-    x_positions_sample = [2] * len(sample_delta_ct_values)
+    x_positions_control = [1] * len(control_delta_ct)
+    x_positions_sample = [2] * len(sample_delta_ct)
     
     # Aynı Y değerlerine sahip noktaları biraz kaydırarak gösterme (dağılım)
-    jittered_control = control_delta_ct_values + np.random.uniform(-0.05, 0.05, size=len(control_delta_ct_values))
-    jittered_sample = sample_delta_ct_values + np.random.uniform(-0.05, 0.05, size=len(sample_delta_ct_values))
+    jittered_control = control_delta_ct + np.random.uniform(-0.05, 0.05, size=len(control_delta_ct))
+    jittered_sample = sample_delta_ct + np.random.uniform(-0.05, 0.05, size=len(sample_delta_ct))
     
-    # Delta Ct değerlerini birleşik olarak oluştur
-    all_delta_ct_values = np.concatenate([control_delta_ct_values, sample_delta_ct_values])
-    
-    # X pozisyonlarını birleştir
-    all_x_positions = x_positions_control + x_positions_sample
-    all_labels = ['Kontrol Grubu'] * len(control_delta_ct_values) + ['Hasta Grubu'] * len(sample_delta_ct_values)
-    
-    # Kontrol ve Hasta Grubu için delta ct değerlerini nokta olarak çiz
+    # Delta Ct değerlerini nokta olarak çiz
     ax.scatter(x_positions_control, jittered_control, color='lightblue', label='Kontrol Grubu', alpha=0.7)
     ax.scatter(x_positions_sample, jittered_sample, color='lightcoral', label='Hasta Grubu', alpha=0.7)
 
     # Ortalama değerleri kısa çizgilerle göster
-    ax.plot([1], [row["Hasta ΔCt (Ortalama)"]], label='Kontrol Grubu Ortalama', color='blue', linestyle='-', marker='o', markersize=8)
-    ax.plot([2], [row["Hasta ΔCt (Ortalama)"]], label='Hasta Grubu Ortalama', color='red', linestyle='-', marker='o', markersize=8)
+    ax.plot([1], [row["Kontrol ΔCt (Ortalama)"]], label='Kontrol Ortalama', color='blue', linestyle='-', marker='o', markersize=8)
+    ax.plot([2], [row["Hasta ΔCt (Ortalama)"]], label='Hasta Ortalama', color='red', linestyle='-', marker='o', markersize=8)
 
     ax.set_xticks([1, 2])
     ax.set_xticklabels(['Kontrol Grubu', 'Hasta Grubu'])
