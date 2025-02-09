@@ -20,8 +20,9 @@ input_values_table = []
 
 # Verileri işleyen fonksiyon
 def parse_input_data(input_data):
+    # Boş veri satırlarını kontrol et ve veriyi sayısal hale getir
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
-    return np.array([float(x) for x in values if x])
+    return np.array([float(x) if x else np.nan for x in values])
 
 for i in range(num_target_genes):
     st.subheader(f"Hedef Gen {i+1}")
@@ -36,10 +37,16 @@ for i in range(num_target_genes):
         st.error("Hata: Tüm veriler girilmelidir! Lütfen eksik veri bırakmayın.")
         continue
     
+    # Verileri sayısal hale getirme
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     sample_target_ct_values = parse_input_data(sample_target_ct)
     sample_reference_ct_values = parse_input_data(sample_reference_ct)
+    
+    # Elde edilen NaN'ları kontrol et
+    if np.any(np.isnan(control_target_ct_values)) or np.any(np.isnan(control_reference_ct_values)) or np.any(np.isnan(sample_target_ct_values)) or np.any(np.isnan(sample_reference_ct_values)):
+        st.error("Hata: Veri eksik veya hatalı. Lütfen tüm verilerin doğru girildiğinden emin olun.")
+        continue
     
     # ΔCt hesaplaması
     control_delta_ct = control_target_ct_values - control_reference_ct_values
