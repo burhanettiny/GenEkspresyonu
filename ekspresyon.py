@@ -42,13 +42,19 @@ for i in range(num_target_genes):
     sample_reference_ct_values = parse_input_data(sample_reference_ct)
     
     # Verileri boyutlarını kontrol et
-    if len(control_target_ct_values) != len(control_reference_ct_values):
+    control_len = len(control_target_ct_values)
+    reference_len = len(control_reference_ct_values)
+    sample_len = len(sample_target_ct_values)
+    sample_reference_len = len(sample_reference_ct_values)
+
+    if control_len != reference_len:
         st.error("Hata: Kontrol Grubu Hedef Gen ve Referans Gen sayıları eşleşmiyor!")
         continue
-    if len(sample_target_ct_values) != len(sample_reference_ct_values):
+    
+    if sample_len != sample_reference_len:
         st.error("Hata: Hasta Grubu Hedef Gen ve Referans Gen sayıları eşleşmiyor!")
         continue
-
+    
     # ΔCt hesaplaması
     control_delta_ct = control_target_ct_values - control_reference_ct_values
     sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
@@ -113,17 +119,17 @@ for i in range(num_target_genes):
         "ΔΔCt": delta_delta_ct,
         "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
         "Regülasyon Durumu": regulation_status,
-        "Kontrol Grubu Örnek Sayısı": len(control_target_ct_values),
-        "Hasta Grubu Örnek Sayısı": len(sample_target_ct_values)
+        "Kontrol Grubu Örnek Sayısı": control_len,
+        "Hasta Grubu Örnek Sayısı": sample_len
     })
     
     # Her örnek için sıra numarası ver
-    for j in range(max(len(control_target_ct_values), len(sample_target_ct_values))):
+    for j in range(max(control_len, sample_len)):
         row = {"Hedef Gen": f"Hedef Gen {i+1}", "Örnek No": j+1}
-        row["Kontrol Hedef Ct"] = control_target_ct_values[j] if j < len(control_target_ct_values) else np.nan
-        row["Kontrol Referans Ct"] = control_reference_ct_values[j] if j < len(control_reference_ct_values) else np.nan
-        row["Hasta Hedef Ct"] = sample_target_ct_values[j] if j < len(sample_target_ct_values) else np.nan
-        row["Hasta Referans Ct"] = sample_reference_ct_values[j] if j < len(sample_reference_ct_values) else np.nan
+        row["Kontrol Hedef Ct"] = control_target_ct_values[j] if j < control_len else np.nan
+        row["Kontrol Referans Ct"] = control_reference_ct_values[j] if j < reference_len else np.nan
+        row["Hasta Hedef Ct"] = sample_target_ct_values[j] if j < sample_len else np.nan
+        row["Hasta Referans Ct"] = sample_reference_ct_values[j] if j < sample_reference_len else np.nan
         input_values_table.append(row)
 
 # Giriş verileri tablosunu göster
