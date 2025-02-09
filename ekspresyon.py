@@ -58,10 +58,9 @@ for i in range(num_target_genes):
         else:
             regulation_status = "Downregulated"
         
-        # Data'ya ekleme (Kontrol ΔCt verisi tabloda yer almayacak)
+        # Data'ya ekleme (Kontrol ΔCt verisi ve Hasta ΔCt verisi tabloda yer almayacak)
         data.append({
             "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta ΔCt": sample_delta_ct,
             "Hasta ΔCt (Ortalama)": average_sample_delta_ct,
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
@@ -72,7 +71,7 @@ for i in range(num_target_genes):
 df = pd.DataFrame(data)
 
 # Sonuçları göster
-st.subheader("Sonuçlar Tablosu (Kontrol ΔCt Verisi Yok)")
+st.subheader("Sonuçlar")
 st.write(df)
 
 # Grafik: Her hedef gen için ayrı bir grafik oluşturulacak
@@ -80,22 +79,31 @@ for i, row in df.iterrows():
     # Yeni grafik oluştur
     fig, ax = plt.subplots()
     
-    # Hasta Grubu için X eksenini oluştur
-    sample_delta_ct_values = row["Hasta ΔCt"]
+    # Hasta ve Kontrol Grubu için X eksenini oluştur
+    control_delta_ct_values = control_delta_ct
+    sample_delta_ct_values = sample_delta_ct
     
-    # X ekseninde her grup için etiketler oluştur (kontrol grubu olmayacak)
-    x_positions = [1] * len(sample_delta_ct_values)
-    delta_ct_values = sample_delta_ct_values
-    labels = ['Hasta Grubu'] * len(sample_delta_ct_values)
+    # X ekseninde her grup için etiketler oluştur
+    x_positions_control = [1] * len(control_delta_ct_values)
+    x_positions_sample = [2] * len(sample_delta_ct_values)
     
-    # Hasta Grubu için delta ct değerlerini nokta olarak çiz
-    ax.scatter(x_positions, delta_ct_values, color='lightcoral', label='Hasta Grubu')
+    # Delta Ct değerlerini birleşik olarak oluştur
+    all_delta_ct_values = np.concatenate([control_delta_ct_values, sample_delta_ct_values])
+    
+    # X pozisyonlarını birleştir
+    all_x_positions = x_positions_control + x_positions_sample
+    all_labels = ['Kontrol Grubu'] * len(control_delta_ct_values) + ['Hasta Grubu'] * len(sample_delta_ct_values)
+    
+    # Kontrol ve Hasta Grubu için delta ct değerlerini nokta olarak çiz
+    ax.scatter(x_positions_control, control_delta_ct_values, color='lightblue', label='Kontrol Grubu')
+    ax.scatter(x_positions_sample, sample_delta_ct_values, color='lightcoral', label='Hasta Grubu')
 
-    # Ortalama değerleri daha kısa bir çizgi ile göster
+    # Ortalama değerleri kısa çizgilerle göster
     ax.plot([1], [row["Hasta ΔCt (Ortalama)"]], label='Hasta Grubu Ortalama', color='red', linestyle='-', marker='o', markersize=8)
+    ax.plot([2], [row["Hasta ΔCt (Ortalama)"]], label='Kontrol Grubu Ortalama', color='blue', linestyle='-', marker='o', markersize=8)
 
-    ax.set_xticks([1])
-    ax.set_xticklabels(['Hasta Grubu'])
+    ax.set_xticks([1, 2])
+    ax.set_xticklabels(['Kontrol Grubu', 'Hasta Grubu'])
     ax.set_xlabel('Grup')
     ax.set_ylabel('ΔCt Değerleri')
     ax.set_title(f'Hedef Gen {i+1} - ΔCt Değerleri')
