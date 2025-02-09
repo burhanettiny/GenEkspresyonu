@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 from io import StringIO
 
 # Başlık
-st.title("Delta-Delta Ct Hesaplama Uygulaması")
+st.title("Gen Ekspresyon Analizi Uygulaması")
+st.markdown("### B. Yalçınkaya tarafından geliştirildi")
 
 # Kullanıcıdan giriş al
 st.header("Hasta ve Kontrol Grubu Verisi Girin")
