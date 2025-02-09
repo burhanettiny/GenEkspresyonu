@@ -33,21 +33,11 @@ for i in range(num_target_genes):
     sample_target_ct = st.text_area(f"Hasta Grubu Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}")
     sample_reference_ct = st.text_area(f"Hasta Grubu Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}")
     
-    # Verileri kontrol et ve eksik veri varsa hata mesajı göster
-    if not (control_target_ct and control_reference_ct and sample_target_ct and sample_reference_ct):
-        st.error("Hata: Tüm veriler girilmelidir! Lütfen eksik veri bırakmayın.")
-        continue
-    
     # Verileri sayısal hale getirme
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     sample_target_ct_values = parse_input_data(sample_target_ct)
     sample_reference_ct_values = parse_input_data(sample_reference_ct)
-    
-    # Eğer verilerde NaN varsa, uyarı ver
-    if np.any(np.isnan(control_target_ct_values)) or np.any(np.isnan(control_reference_ct_values)) or np.any(np.isnan(sample_target_ct_values)) or np.any(np.isnan(sample_reference_ct_values)):
-        st.error("Hata: Veri eksik veya hatalı. Lütfen tüm verilerin doğru girildiğinden emin olun.")
-        continue
     
     # Verilerin uzunluklarını eşitle
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
