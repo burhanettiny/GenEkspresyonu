@@ -61,6 +61,8 @@ for i in range(num_target_genes):
         # Data'ya ekleme
         data.append({
             "Hedef Gen": f"Hedef Gen {i+1}",
+            "Kontrol ΔCt": control_delta_ct,
+            "Hasta ΔCt": sample_delta_ct,
             "Kontrol ΔCt (Ortalama)": average_control_delta_ct,
             "Hasta ΔCt (Ortalama)": average_sample_delta_ct,
             "ΔΔCt": delta_delta_ct,
@@ -80,8 +82,8 @@ fig, ax = plt.subplots()
 
 # Her hedef gen için X ekseninde hasta ve kontrol grubundaki delta ct değerleri noktalar olarak çizilecek
 for i, row in df.iterrows():
-    control_delta_ct_values = np.array([float(x) for x in control_target_ct.split() if x.strip()]) - np.array([float(x) for x in control_reference_ct.split() if x.strip()])
-    sample_delta_ct_values = np.array([float(x) for x in sample_target_ct.split() if x.strip()]) - np.array([float(x) for x in sample_reference_ct.split() if x.strip()])
+    control_delta_ct_values = row["Kontrol ΔCt"]
+    sample_delta_ct_values = row["Hasta ΔCt"]
     
     ax.scatter(np.repeat(i, len(control_delta_ct_values)), control_delta_ct_values, color='lightblue', label='Kontrol Grubu' if i == 0 else "")
     ax.scatter(np.repeat(i, len(sample_delta_ct_values)), sample_delta_ct_values, color='lightcoral', label='Hasta Grubu' if i == 0 else "")
