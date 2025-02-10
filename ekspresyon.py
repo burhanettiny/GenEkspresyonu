@@ -1,9 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 import scipy.stats as stats
-import mplcursors  # Etkileşimli özellik için
 
 # Başlık
 st.title("Gen Ekspresyon Analizi Uygulaması")
@@ -37,19 +36,12 @@ for i in range(num_target_genes):
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
-        # Kontrol ve Hasta grubu verilerinin boyutlarını eşitleme
         control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
         sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
         
         if control_len == 0 or sample_len == 0:
             st.error("Hata: Tüm gruplar için en az bir veri girilmelidir!")
             continue
-        
-        # Verileri aynı boyutta olacak şekilde kısaltma
-        control_target_ct_values = control_target_ct_values[:control_len]
-        control_reference_ct_values = control_reference_ct_values[:control_len]
-        sample_target_ct_values = sample_target_ct_values[:sample_len]
-        sample_reference_ct_values = sample_reference_ct_values[:sample_len]
         
         control_delta_ct = control_target_ct_values - control_reference_ct_values
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
@@ -132,39 +124,54 @@ if stats_data:
 
     # Grafik oluşturma
     st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
-    plt.figure(figsize=(8, 6))
     
-    jitter = 0.05  # Değerler arasındaki küçük ofset
-    # Kontrol grubu verilerini yatayda dağıtma (daha yakın)
-    control_x_positions = np.ones(len(control_delta_ct)) + np.random.uniform(-jitter, jitter, len(control_delta_ct)) * 0.5
-    # Hasta grubu verilerini yatayda dağıtma (daha yakın)
-    sample_x_positions = np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)) * 0.5
-    
-    # Verileri çizme
-    scatter_control = plt.scatter(control_x_positions, control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
-    scatter_sample = plt.scatter(sample_x_positions, sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
-    
-    # Ortalamaları X eksenine yerleştirerek yatay çizgiler ekliyoruz, çizgilerin uzunluğunu daha kısa yapıyoruz
-    control_median = np.median(control_delta_ct)
-    sample_median = np.median(sample_delta_ct)
-    
-    # Kontrol grubu ortalama çizgisi
-    plt.hlines(y=control_median, xmin=0.9, xmax=1.1, color='blue', linestyle='--', linewidth=2, label=f"Kontrol Grubu Medyan: {control_median:.2f}")
-    # Hasta grubu ortalama çizgisi
-    plt.hlines(y=sample_median, xmin=1.9, xmax=2.1, color='red', linestyle='--', linewidth=2, label=f"Hasta Grubu Medyan: {sample_median:.2f}")
-    
+    # Plotly grafik objesi oluşturuluyor
+    fig = go.Figure()
+
+    # Kontrol grubu verilerini ekleme
+    fig.add_trace(go.Scatter(
+        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
+        y=control_delta_ct,
+        mode='markers',
+        name='Kontrol Grubu',
+        marker=dict(color='blue'),
+        text=[f'Kontrol {value:.2f}' for value in control_delta_ct],  # Tooltip metni
+        hoverinfo='text'  # Tooltip gösterimi
+    ))
+
+    # Hasta grubu verilerini ekleme
+    fig.add_trace(go.Scatter(
+        x=np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
+        y=sample_delta_ct,
+        mode='markers',
+        name='Hasta Grubu',
+        marker=dict(color='red'),
+        text=[f'Hasta {value:.2f}' for value in sample_delta_ct],  # Tooltip metni
+        hoverinfo='text'  # Tooltip gösterimi
+    ))
+
+    # Ortalamaları çizme
+    fig.add_trace(go.Scatter(
+        x=[1, 2],
+        y=[average_control_delta_ct, average_sample_delta_ct],
+        mode='lines',
+        line=dict(color='black', dash='dash'),
+        name='Ortalama'
+    ))
+
     # Grafik ayarları
-    plt.xticks([1, 2], 
-               [f"Kontrol Grubu Medyan: {control_median:.2f}", f"Hasta Grubu Medyan: {sample_median:.2f}"])
-    plt.xlabel('Grup')
-    plt.ylabel('ΔCt Değeri')
-    plt.title(f"Hedef Gen {i+1} - ΔCt Dağılımı")
-    
-    # Açıklama kutusunu dışarıya yerleştiriyoruz
-    plt.legend(loc='upper left', bbox_to_anchor=(1, 1), title="Açıklamalar")
-    
-    # Etkileşimli cursor ekliyoruz
-    mplcursors.cursor(scatter_control, hover=True).connect("add", lambda sel: sel.annotation.set_text(f'Kontrol {sel.target[1]:.2f}'))
-    mplcursors.cursor(scatter_sample, hover=True).connect("add", lambda sel: sel.annotation.set_text(f'Hasta {sel.target[1]:.2f}'))
-    
-    st.pyplot(plt)
+    fig.update_layout(
+        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+        xaxis=dict(
+            tickvals=[1, 2],
+            ticktext=['Kontrol Grubu', 'Hasta Grubu'],
+            title='Grup'
+        ),
+        yaxis=dict(
+            title='ΔCt Değeri'
+        ),
+        showlegend=True
+    )
+
+    # Etkileşimli grafik gösterimi
+    st.plotly_chart(fig)
