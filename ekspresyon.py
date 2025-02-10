@@ -36,12 +36,19 @@ for i in range(num_target_genes):
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
-        control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
-        sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
+        # Verilerin boyutlarının eşit olduğundan emin olalım
+        min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
+        min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
         
-        if control_len == 0 or sample_len == 0:
+        if min_control_len == 0 or min_sample_len == 0:
             st.error("Hata: Tüm gruplar için en az bir veri girilmelidir!")
             continue
+
+        # Kontrol ve hasta grubu verilerini eşitleme
+        control_target_ct_values = control_target_ct_values[:min_control_len]
+        control_reference_ct_values = control_reference_ct_values[:min_control_len]
+        sample_target_ct_values = sample_target_ct_values[:min_sample_len]
+        sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
         
         control_delta_ct = control_target_ct_values - control_reference_ct_values
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
@@ -92,16 +99,16 @@ for i in range(num_target_genes):
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
             "Regülasyon Durumu": regulation_status,
-            "Kontrol Grubu Örnek Sayısı": control_len,
-            "Hasta Grubu Örnek Sayısı": sample_len
+            "Kontrol Grubu Örnek Sayısı": min_control_len,
+            "Hasta Grubu Örnek Sayısı": min_sample_len
         })
         
-        for j in range(max(control_len, sample_len)):
+        for j in range(max(min_control_len, min_sample_len)):
             row = {"Hedef Gen": f"Hedef Gen {i+1}", "Örnek No": j+1}
-            if j < control_len:
+            if j < min_control_len:
                 row["Kontrol Hedef Ct"] = control_target_ct_values[j]
                 row["Kontrol Referans Ct"] = control_reference_ct_values[j]
-            if j < sample_len:
+            if j < min_sample_len:
                 row["Hasta Hedef Ct"] = sample_target_ct_values[j]
                 row["Hasta Referans Ct"] = sample_reference_ct_values[j]
             input_values_table.append(row)
