@@ -160,18 +160,18 @@ if stats_data:
         hoverinfo='text'  # Tooltip gösterimi
     ))
 
-    # Kontrol grubunun ortalama değerini çizme
+    # Kontrol grubunun ortalama değerini çizme (kesik çizgi)
     fig.add_trace(go.Scatter(
-        x=[1] * 2,
+        x=[1, 1],
         y=[average_control_delta_ct, average_control_delta_ct],
         mode='lines',
         line=dict(color='blue', dash='dash'),
         name='Kontrol Grubu Ortalama'
     ))
 
-    # Hasta grubunun ortalama değerini çizme
+    # Hasta grubunun ortalama değerini çizme (kesik çizgi)
     fig.add_trace(go.Scatter(
-        x=[2] * 2,
+        x=[2, 2],
         y=[average_sample_delta_ct, average_sample_delta_ct],
         mode='lines',
         line=dict(color='red', dash='dash'),
