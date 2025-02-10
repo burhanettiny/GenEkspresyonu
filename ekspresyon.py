@@ -140,9 +140,9 @@ if stats_data:
     plt.scatter(np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)), 
                 sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
     
-    # Her grubun ortalama değerini gösteren kısa çizgiler
-    plt.plot([1, 1], [average_control_delta_ct - 0.05, average_control_delta_ct + 0.05], color='blue', lw=2)
-    plt.plot([2, 2], [average_sample_delta_ct - 0.05, average_sample_delta_ct + 0.05], color='red', lw=2)
+    # Her grubun ortalama değerini gösteren dikey çizgiler
+    plt.axvline(x=1, ymin=0, ymax=1, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
+    plt.axvline(x=2, ymin=0, ymax=1, color='red', linestyle='--', label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
     
     # Grafik ayarları
     plt.xticks([1, 2], ['Kontrol Grubu', 'Hasta Grubu'])
