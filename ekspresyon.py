@@ -113,7 +113,7 @@ for i in range(num_target_genes):
                 row["Hasta Referans Ct"] = sample_reference_ct_values[j]
             input_values_table.append(row)
 
-# Giriş Verileri Tablosu için numaralandırma ve index kolonunu silme
+# Sıralamayı belirledik
 if input_values_table:
     st.subheader("Giriş Verileri Tablosu")
     
@@ -122,10 +122,6 @@ if input_values_table:
         row["Örnek No"] = idx + 1  # 1'den başlayacak şekilde numaralandırma yapıyoruz
     
     input_df = pd.DataFrame(input_values_table)
-    
-    # Index sütununu kaldırıyoruz
-    input_df = input_df.reset_index(drop=True)
-    
     st.write(input_df)
 
 if data:
