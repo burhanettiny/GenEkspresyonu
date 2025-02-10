@@ -110,9 +110,12 @@ for i in range(num_target_genes):
         st.subheader(f"Hedef Gen {i+1} - Veri Dağılımı ve Ortalama Çizgileri")
         plt.figure(figsize=(8, 6))
         
-        # Verileri dağılacak şekilde çizme
-        plt.scatter(np.ones(len(control_delta_ct)), control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
-        plt.scatter(np.ones(len(sample_delta_ct)) * 2, sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
+        # Verileri dağılacak şekilde çizme (X eksenine küçük jitter ekleniyor)
+        jitter = 0.05  # Değerler arasındaki küçük ofset
+        plt.scatter(np.ones(len(control_delta_ct)) + np.random.uniform(-jitter, jitter, len(control_delta_ct)), 
+                    control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
+        plt.scatter(np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)), 
+                    sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
         
         # Ortalamaları gösteren kısa çizgiler
         plt.axhline(y=average_control_delta_ct, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama ({average_control_delta_ct:.2f})")
