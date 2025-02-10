@@ -105,7 +105,7 @@ for i in range(num_target_genes):
                 row["Hasta Hedef Ct"] = sample_target_ct_values[j]
                 row["Hasta Referans Ct"] = sample_reference_ct_values[j]
             input_values_table.append(row)
-        
+
 # Sıralamayı belirledik
 if input_values_table:
     st.subheader("Giriş Verileri Tablosu")
@@ -133,7 +133,7 @@ if stats_data:
     plt.scatter(np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)), 
                 sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
     
-    # Ortalamaları gösteren kısa çizgiler
+    # Her grubun ortalama değerini gösteren kısa çizgiler
     plt.plot([1, 1], [average_control_delta_ct - 0.05, average_control_delta_ct + 0.05], color='blue', lw=2)
     plt.plot([2, 2], [average_sample_delta_ct - 0.05, average_sample_delta_ct + 0.05], color='red', lw=2)
     
