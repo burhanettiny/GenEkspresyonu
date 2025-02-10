@@ -182,4 +182,15 @@ if stats_data:
     fig.update_layout(
         title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
         xaxis=dict(
-            tickvals
+            tickvals=[1, 2],
+            ticktext=['Kontrol Grubu', 'Hasta Grubu'],
+            title='Grup'
+        ),
+        yaxis=dict(
+            title='ΔCt Değeri'
+        ),
+        showlegend=True
+    )
+
+    # Etkileşimli grafik gösterimi
+    st.plotly_chart(fig)
