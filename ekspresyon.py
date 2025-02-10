@@ -63,12 +63,8 @@ for i in range(num_target_genes):
         levene_test = stats.levene(control_delta_ct, sample_delta_ct)
         equal_variance = levene_test.pvalue > 0.05
         
-        if control_normal and sample_normal and equal_variance:
-            test_name = "T-Test (Parametrik)"
-            test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
-        else:
-            test_name = "Mann-Whitney U (Nonparametrik)"
-            test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
+        test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
+        test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue if test_type == "Parametrik" else stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
         
         significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
         
@@ -77,7 +73,7 @@ for i in range(num_target_genes):
             "Normalite Testi Kontrol Grubu (Shapiro P-value)": shapiro_control.pvalue,
             "Normalite Testi Hasta Grubu (Shapiro P-value)": shapiro_sample.pvalue,
             "Varyans Testi (Levene P-value)": levene_test.pvalue,
-            "Test Türü": test_name,
+            "Test Türü": test_type,
             "Test P-değeri": test_pvalue,
             "Anlamlılık": significance
         })
@@ -92,6 +88,16 @@ for i in range(num_target_genes):
             "Kontrol Grubu Örnek Sayısı": control_len,
             "Hasta Grubu Örnek Sayısı": sample_len
         })
+        
+        for j in range(max(control_len, sample_len)):
+            row = {"Hedef Gen": f"Hedef Gen {i+1}", "Örnek No": j+1}
+            if j < control_len:
+                row["Kontrol Hedef Ct"] = control_target_ct_values[j]
+                row["Kontrol Referans Ct"] = control_reference_ct_values[j]
+            if j < sample_len:
+                row["Hasta Hedef Ct"] = sample_target_ct_values[j]
+                row["Hasta Referans Ct"] = sample_reference_ct_values[j]
+            input_values_table.append(row)
 
 if data:
     st.subheader("Sonuçlar Tablosu")
