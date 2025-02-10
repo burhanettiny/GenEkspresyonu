@@ -160,21 +160,21 @@ if stats_data:
         hoverinfo='text'  # Tooltip gösterimi
     ))
 
-    # Kontrol grubunun ortalama değerini çizme (kesik çizgi)
+    # Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
     fig.add_trace(go.Scatter(
         x=[1, 1],  # X ekseninde 1 (Kontrol grubu) için
         y=[average_control_delta_ct, average_control_delta_ct],  # Y ekseninde ortalama değer
         mode='lines',
-        line=dict(color='blue', dash='dot', width=4),  # Kesik çizgi ve kalınlık arttırıldı
+        line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
         name='Kontrol Grubu Ortalama'
     ))
 
-    # Hasta grubunun ortalama değerini çizme (kesik çizgi)
+    # Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
     fig.add_trace(go.Scatter(
         x=[2, 2],  # X ekseninde 2 (Hasta grubu) için
         y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
         mode='lines',
-        line=dict(color='red', dash='dot', width=4),  # Kesik çizgi ve kalınlık arttırıldı
+        line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
         name='Hasta Grubu Ortalama'
     ))
 
@@ -182,15 +182,4 @@ if stats_data:
     fig.update_layout(
         title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
         xaxis=dict(
-            tickvals=[1, 2],
-            ticktext=['Kontrol Grubu', 'Hasta Grubu'],
-            title='Grup'
-        ),
-        yaxis=dict(
-            title='ΔCt Değeri'
-        ),
-        showlegend=True
-    )
-
-    # Etkileşimli grafik gösterimi
-    st.plotly_chart(fig)
+            tickvals
