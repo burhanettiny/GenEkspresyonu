@@ -172,4 +172,7 @@ if stats_data:
     # Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
     fig.add_trace(go.Scatter(
         x=[2, 2],  # X ekseninde 2 (Hasta grubu) için
-        y=[average_sample_delta_ct, average_sample_delta_ct],
+        y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
+        mode='lines',
+        line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
+        name='Hasta Grubu
