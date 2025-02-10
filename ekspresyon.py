@@ -141,11 +141,11 @@ if stats_data:
                 sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
     
     # Ortalamaları X eksenine yerleştirerek yatay çizgiler ekliyoruz
-    plt.hlines(y=average_control_delta_ct, xmin=0, xmax=average_control_delta_ct + 1, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
-    plt.hlines(y=average_sample_delta_ct, xmin=0, xmax=average_sample_delta_ct + 1, color='red', linestyle='--', label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
+    plt.hlines(y=average_control_delta_ct, xmin=0, xmax=0.5, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
+    plt.hlines(y=average_sample_delta_ct, xmin=1.5, xmax=2, color='red', linestyle='--', label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
     
     # Grafik ayarları
-    plt.xticks([average_control_delta_ct, average_sample_delta_ct], 
+    plt.xticks([0.25, 1.75], 
                [f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}", f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}"])
     plt.xlabel('Gen Ekspresyon Değişimi (ΔCt)')
     plt.ylabel('ΔCt Değeri')
