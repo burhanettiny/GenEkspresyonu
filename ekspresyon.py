@@ -143,13 +143,18 @@ if stats_data:
     plt.scatter(control_x_positions, control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
     plt.scatter(sample_x_positions, sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
     
-    # Ortalamaları X eksenine yerleştirerek yatay çizgiler ekliyoruz, çizgilerin uzunluğunu 8 karakter yapıyoruz
-    plt.hlines(y=average_control_delta_ct, xmin=0, xmax=1.25, color='blue', linestyle='--', linewidth=2, label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
-    plt.hlines(y=average_sample_delta_ct, xmin=1.75, xmax=2.5, color='red', linestyle='--', linewidth=2, label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
+    # Ortalamaları X eksenine yerleştirerek yatay çizgiler ekliyoruz, çizgilerin uzunluğunu daha kısa yapıyoruz
+    control_median = np.median(control_delta_ct)
+    sample_median = np.median(sample_delta_ct)
+    
+    # Kontrol grubu ortalama çizgisi
+    plt.hlines(y=control_median, xmin=0.9, xmax=1.1, color='blue', linestyle='--', linewidth=2, label=f"Kontrol Grubu Medyan: {control_median:.2f}")
+    # Hasta grubu ortalama çizgisi
+    plt.hlines(y=sample_median, xmin=1.9, xmax=2.1, color='red', linestyle='--', linewidth=2, label=f"Hasta Grubu Medyan: {sample_median:.2f}")
     
     # Grafik ayarları
     plt.xticks([1, 2], 
-               [f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}", f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}"])
+               [f"Kontrol Grubu Medyan: {control_median:.2f}", f"Hasta Grubu Medyan: {sample_median:.2f}"])
     plt.xlabel('Grup')
     plt.ylabel('ΔCt Değeri')
     plt.title(f"Hedef Gen {i+1} - ΔCt Dağılımı")
