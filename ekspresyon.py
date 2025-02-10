@@ -65,7 +65,6 @@ for i in range(num_target_genes):
         
         test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
         
-        # Test türünü ve kullanılan testin adını belirtme
         if test_type == "Parametrik":
             test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
             test_method = "t-test"
@@ -81,7 +80,7 @@ for i in range(num_target_genes):
             "Normalite Testi Hasta Grubu (Shapiro P-value)": shapiro_sample.pvalue,
             "Varyans Testi (Levene P-value)": levene_test.pvalue,
             "Test Türü": test_type,
-            "Kullanılan Test": test_method,  # Yeni eklenen sütun
+            "Kullanılan Test": test_method,  
             "Test P-değeri": test_pvalue,
             "Anlamlılık": significance
         })
@@ -106,6 +105,27 @@ for i in range(num_target_genes):
                 row["Hasta Hedef Ct"] = sample_target_ct_values[j]
                 row["Hasta Referans Ct"] = sample_reference_ct_values[j]
             input_values_table.append(row)
+        
+        # Grafik oluşturma
+        st.subheader(f"Hedef Gen {i+1} - Veri Dağılımı ve Ortalama Çizgileri")
+        plt.figure(figsize=(8, 6))
+        
+        # Verileri dağılacak şekilde çizme
+        plt.scatter(np.ones(len(control_delta_ct)), control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
+        plt.scatter(np.ones(len(sample_delta_ct)) * 2, sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
+        
+        # Ortalamaları gösteren kısa çizgiler
+        plt.axhline(y=average_control_delta_ct, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama ({average_control_delta_ct:.2f})")
+        plt.axhline(y=average_sample_delta_ct, color='red', linestyle='--', label=f"Hasta Grubu Ortalama ({average_sample_delta_ct:.2f})")
+        
+        # Grafik ayarları
+        plt.xticks([1, 2], ['Kontrol Grubu', 'Hasta Grubu'])
+        plt.xlabel('Grup')
+        plt.ylabel('ΔCt Değeri')
+        plt.title(f"Hedef Gen {i+1} - ΔCt Değerleri")
+        plt.legend()
+        
+        st.pyplot(plt)
 
 if input_values_table:
     st.subheader("Giriş Verileri Tablosu")
