@@ -160,13 +160,22 @@ if stats_data:
         hoverinfo='text'  # Tooltip gösterimi
     ))
 
-    # Ortalamaları çizme
+    # Kontrol grubunun ortalama değerini çizme
     fig.add_trace(go.Scatter(
-        x=[1, 2],
-        y=[average_control_delta_ct, average_sample_delta_ct],
+        x=[1] * 2,
+        y=[average_control_delta_ct, average_control_delta_ct],
         mode='lines',
-        line=dict(color='black', dash='dash'),
-        name='Ortalama'
+        line=dict(color='blue', dash='dash'),
+        name='Kontrol Grubu Ortalama'
+    ))
+
+    # Hasta grubunun ortalama değerini çizme
+    fig.add_trace(go.Scatter(
+        x=[2] * 2,
+        y=[average_sample_delta_ct, average_sample_delta_ct],
+        mode='lines',
+        line=dict(color='red', dash='dash'),
+        name='Hasta Grubu Ortalama'
     ))
 
     # Grafik ayarları
