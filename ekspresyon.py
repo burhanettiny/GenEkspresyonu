@@ -64,7 +64,14 @@ for i in range(num_target_genes):
         equal_variance = levene_test.pvalue > 0.05
         
         test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
-        test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue if test_type == "Parametrik" else stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
+        
+        # Test türünü ve kullanılan testin adını belirtme
+        if test_type == "Parametrik":
+            test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
+            test_method = "t-test"
+        else:
+            test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
+            test_method = "Mann-Whitney U testi"
         
         significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
         
@@ -74,6 +81,7 @@ for i in range(num_target_genes):
             "Normalite Testi Hasta Grubu (Shapiro P-value)": shapiro_sample.pvalue,
             "Varyans Testi (Levene P-value)": levene_test.pvalue,
             "Test Türü": test_type,
+            "Kullanılan Test": test_method,  # Yeni eklenen sütun
             "Test P-değeri": test_pvalue,
             "Anlamlılık": significance
         })
@@ -99,6 +107,11 @@ for i in range(num_target_genes):
                 row["Hasta Referans Ct"] = sample_reference_ct_values[j]
             input_values_table.append(row)
 
+if input_values_table:
+    st.subheader("Giriş Verileri Tablosu")
+    input_df = pd.DataFrame(input_values_table)
+    st.write(input_df)
+
 if data:
     st.subheader("Sonuçlar Tablosu")
     df = pd.DataFrame(data)
@@ -108,8 +121,3 @@ if stats_data:
     st.subheader("İstatistik Sonuçları")
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
-
-if input_values_table:
-    st.subheader("Giriş Verileri Tablosu")
-    input_df = pd.DataFrame(input_values_table)
-    st.write(input_df)
