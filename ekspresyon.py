@@ -142,7 +142,7 @@ if stats_data:
         mode='markers',
         name='Kontrol Grubu',
         marker=dict(color='blue'),
-        text=[f'Kontrol {value:.2f}' for value in control_delta_ct],  # Tooltip metni
+        text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],  # Tooltip metni
         hoverinfo='text'  # Tooltip gösterimi
     ))
 
@@ -153,7 +153,7 @@ if stats_data:
         mode='markers',
         name='Hasta Grubu',
         marker=dict(color='red'),
-        text=[f'Hasta {value:.2f}' for value in sample_delta_ct],  # Tooltip metni
+        text=[f'Hasta {value:.2f}, Örnek {i+1}' for i, value in enumerate(sample_delta_ct)],  # Tooltip metni
         hoverinfo='text'  # Tooltip gösterimi
     ))
 
