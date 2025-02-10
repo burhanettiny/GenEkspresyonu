@@ -153,6 +153,8 @@ if stats_data:
     plt.xlabel('Grup')
     plt.ylabel('ΔCt Değeri')
     plt.title(f"Hedef Gen {i+1} - ΔCt Dağılımı")
-    plt.legend()
+    
+    # Açıklama kutusunu dışarıya yerleştiriyoruz
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1), title="Açıklamalar")
     
     st.pyplot(plt)
