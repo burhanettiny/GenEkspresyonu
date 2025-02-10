@@ -106,36 +106,7 @@ for i in range(num_target_genes):
                 row["Hasta Referans Ct"] = sample_reference_ct_values[j]
             input_values_table.append(row)
         
-        # İstatistik Sonuçları Tablosu
-        if stats_data:
-            st.subheader("İstatistik Sonuçları")
-            stats_df = pd.DataFrame(stats_data)
-            st.write(stats_df)
-        
-        # Grafik oluşturma
-        st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
-        plt.figure(figsize=(8, 6))
-        
-        # Verileri dağılacak şekilde çizme (X eksenine küçük jitter ekleniyor)
-        jitter = 0.05  # Değerler arasındaki küçük ofset
-        plt.scatter(np.ones(len(control_delta_ct)) + np.random.uniform(-jitter, jitter, len(control_delta_ct)), 
-                    control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
-        plt.scatter(np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)), 
-                    sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
-        
-        # Ortalamaları gösteren kısa çizgiler
-        plt.plot([1, 1], [average_control_delta_ct - 0.05, average_control_delta_ct + 0.05], color='blue', lw=2)
-        plt.plot([2, 2], [average_sample_delta_ct - 0.05, average_sample_delta_ct + 0.05], color='red', lw=2)
-        
-        # Grafik ayarları
-        plt.xticks([1, 2], ['Kontrol Grubu', 'Hasta Grubu'])
-        plt.xlabel('Grup')
-        plt.ylabel('ΔCt Değeri')
-        plt.title(f"Hedef Gen {i+1} - ΔCt Değerleri")
-        plt.legend()
-        
-        st.pyplot(plt)
-
+# Sıralamayı belirledik
 if input_values_table:
     st.subheader("Giriş Verileri Tablosu")
     input_df = pd.DataFrame(input_values_table)
@@ -145,3 +116,32 @@ if data:
     st.subheader("Sonuçlar Tablosu")
     df = pd.DataFrame(data)
     st.write(df)
+
+if stats_data:
+    st.subheader("İstatistik Sonuçları")
+    stats_df = pd.DataFrame(stats_data)
+    st.write(stats_df)
+
+    # Grafik oluşturma
+    st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
+    plt.figure(figsize=(8, 6))
+    
+    # Verileri dağılacak şekilde çizme (X eksenine küçük jitter ekleniyor)
+    jitter = 0.05  # Değerler arasındaki küçük ofset
+    plt.scatter(np.ones(len(control_delta_ct)) + np.random.uniform(-jitter, jitter, len(control_delta_ct)), 
+                control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
+    plt.scatter(np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)), 
+                sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
+    
+    # Ortalamaları gösteren kısa çizgiler
+    plt.plot([1, 1], [average_control_delta_ct - 0.05, average_control_delta_ct + 0.05], color='blue', lw=2)
+    plt.plot([2, 2], [average_sample_delta_ct - 0.05, average_sample_delta_ct + 0.05], color='red', lw=2)
+    
+    # Grafik ayarları
+    plt.xticks([1, 2], ['Kontrol Grubu', 'Hasta Grubu'])
+    plt.xlabel('Grup')
+    plt.ylabel('ΔCt Değeri')
+    plt.title(f"Hedef Gen {i+1} - ΔCt Değerleri")
+    plt.legend()
+    
+    st.pyplot(plt)
