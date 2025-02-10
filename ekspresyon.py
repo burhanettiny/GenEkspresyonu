@@ -175,4 +175,22 @@ if stats_data:
         y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
         mode='lines',
         line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
-        name='Hasta Grubu
+        name='Hasta Grubu Ortalama'
+    ))
+
+    # Grafik ayarları
+    fig.update_layout(
+        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+        xaxis=dict(
+            tickvals=[1, 2],
+            ticktext=['Kontrol Grubu', 'Hasta Grubu'],
+            title='Grup'
+        ),
+        yaxis=dict(
+            title='ΔCt Değeri'
+        ),
+        showlegend=True
+    )
+
+    # Etkileşimli grafik gösterimi
+    st.plotly_chart(fig)
