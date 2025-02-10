@@ -165,7 +165,7 @@ if stats_data:
         x=[1, 1],
         y=[average_control_delta_ct, average_control_delta_ct],
         mode='lines',
-        line=dict(color='blue', dash='dash'),
+        line=dict(color='blue', dash='dot', width=3),  # Kesik çizgi ve kalınlık arttırıldı
         name='Kontrol Grubu Ortalama'
     ))
 
@@ -174,7 +174,7 @@ if stats_data:
         x=[2, 2],
         y=[average_sample_delta_ct, average_sample_delta_ct],
         mode='lines',
-        line=dict(color='red', dash='dash'),
+        line=dict(color='red', dash='dot', width=3),  # Kesik çizgi ve kalınlık arttırıldı
         name='Hasta Grubu Ortalama'
     ))
 
