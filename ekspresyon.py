@@ -134,10 +134,10 @@ if stats_data:
     plt.figure(figsize=(8, 6))
     
     jitter = 0.05  # Değerler arasındaki küçük ofset
-    # Kontrol grubu verilerini yatayda dağıtma
-    control_x_positions = np.ones(len(control_delta_ct)) + np.random.uniform(-jitter, jitter, len(control_delta_ct))
-    # Hasta grubu verilerini yatayda dağıtma
-    sample_x_positions = np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct))
+    # Kontrol grubu verilerini yatayda dağıtma (daha yakın)
+    control_x_positions = np.ones(len(control_delta_ct)) + np.random.uniform(-jitter, jitter, len(control_delta_ct)) * 0.5
+    # Hasta grubu verilerini yatayda dağıtma (daha yakın)
+    sample_x_positions = np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)) * 0.5
     
     # Verileri çizme
     plt.scatter(control_x_positions, control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
