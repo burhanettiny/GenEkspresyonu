@@ -110,6 +110,10 @@ for i in range(num_target_genes):
             "Hasta Grubu Örnek Sayısı": min_sample_len
         })
 
+if input_values_table:
+    st.subheader("Giriş Verileri Tablosu")
+    input_df = pd.DataFrame(input_values_table)
+
 if data:
     st.subheader("Sonuçlar Tablosu")
     df = pd.DataFrame(data)
