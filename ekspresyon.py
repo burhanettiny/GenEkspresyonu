@@ -162,19 +162,19 @@ if stats_data:
 
     # Kontrol grubunun ortalama değerini çizme (kesik çizgi)
     fig.add_trace(go.Scatter(
-        x=[1, 1],
-        y=[average_control_delta_ct, average_control_delta_ct],
+        x=[1, 1],  # X ekseninde 1 (Kontrol grubu) için
+        y=[average_control_delta_ct, average_control_delta_ct],  # Y ekseninde ortalama değer
         mode='lines',
-        line=dict(color='blue', dash='dot', width=3),  # Kesik çizgi ve kalınlık arttırıldı
+        line=dict(color='blue', dash='dot', width=4),  # Kesik çizgi ve kalınlık arttırıldı
         name='Kontrol Grubu Ortalama'
     ))
 
     # Hasta grubunun ortalama değerini çizme (kesik çizgi)
     fig.add_trace(go.Scatter(
-        x=[2, 2],
-        y=[average_sample_delta_ct, average_sample_delta_ct],
+        x=[2, 2],  # X ekseninde 2 (Hasta grubu) için
+        y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
         mode='lines',
-        line=dict(color='red', dash='dot', width=3),  # Kesik çizgi ve kalınlık arttırıldı
+        line=dict(color='red', dash='dot', width=4),  # Kesik çizgi ve kalınlık arttırıldı
         name='Hasta Grubu Ortalama'
     ))
 
