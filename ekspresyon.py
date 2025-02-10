@@ -123,8 +123,8 @@ if input_values_table:
     
     input_df = pd.DataFrame(input_values_table)
     
-    # Index sütununu kaldırıyoruz
-    input_df = input_df.reset_index(drop=True)
+    # İlk sütunu (index) silme
+    input_df = input_df.iloc[:, 1:]  # İlk sütunu atıyoruz
     
     st.write(input_df)
 
