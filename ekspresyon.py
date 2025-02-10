@@ -133,6 +133,26 @@ if stats_data:
     st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
     plt.figure(figsize=(8, 6))
     
-    # Y ekseninde verilerin dağılımını gösterme
     jitter = 0.05  # Değerler arasındaki küçük ofset
-    # Kontrol grubu verilerini yatayda dağıtm
+    # Kontrol grubu verilerini yatayda dağıtma
+    control_x_positions = np.ones(len(control_delta_ct)) + np.random.uniform(-jitter, jitter, len(control_delta_ct))
+    # Hasta grubu verilerini yatayda dağıtma
+    sample_x_positions = np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct))
+    
+    # Verileri çizme
+    plt.scatter(control_x_positions, control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
+    plt.scatter(sample_x_positions, sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
+    
+    # Ortalamaları X eksenine yerleştirerek yatay çizgiler ekliyoruz
+    plt.hlines(y=average_control_delta_ct, xmin=0, xmax=1, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
+    plt.hlines(y=average_sample_delta_ct, xmin=1.5, xmax=2, color='red', linestyle='--', label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
+    
+    # Grafik ayarları
+    plt.xticks([1, 2], 
+               [f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}", f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}"])
+    plt.xlabel('Grup')
+    plt.ylabel('ΔCt Değeri')
+    plt.title(f"Hedef Gen {i+1} - ΔCt Dağılımı")
+    plt.legend()
+    
+    st.pyplot(plt)
