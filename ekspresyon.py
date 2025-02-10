@@ -117,6 +117,9 @@ for i in range(num_target_genes):
 if input_values_table:
     st.subheader("Giriş Verileri Tablosu")
     input_df = pd.DataFrame(input_values_table)
+    
+    # İlk sütunu (index sütunu) silme
+    input_df = input_df.drop(columns=input_df.columns[0])  # ilk sütunu siliyoruz
     st.write(input_df)
 
 if data:
