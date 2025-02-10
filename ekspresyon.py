@@ -36,12 +36,19 @@ for i in range(num_target_genes):
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
+        # Kontrol ve Hasta grubu verilerinin boyutlarını eşitleme
         control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
         sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
         
         if control_len == 0 or sample_len == 0:
             st.error("Hata: Tüm gruplar için en az bir veri girilmelidir!")
             continue
+        
+        # Verileri aynı boyutta olacak şekilde kısaltma
+        control_target_ct_values = control_target_ct_values[:control_len]
+        control_reference_ct_values = control_reference_ct_values[:control_len]
+        sample_target_ct_values = sample_target_ct_values[:sample_len]
+        sample_reference_ct_values = sample_reference_ct_values[:sample_len]
         
         control_delta_ct = control_target_ct_values - control_reference_ct_values
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
