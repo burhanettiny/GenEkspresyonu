@@ -106,8 +106,14 @@ for i in range(num_target_genes):
                 row["Hasta Referans Ct"] = sample_reference_ct_values[j]
             input_values_table.append(row)
         
+        # İstatistik Sonuçları Tablosu
+        if stats_data:
+            st.subheader("İstatistik Sonuçları")
+            stats_df = pd.DataFrame(stats_data)
+            st.write(stats_df)
+        
         # Grafik oluşturma
-        st.subheader(f"Hedef Gen {i+1} - Veri Dağılımı ve Ortalama Çizgileri")
+        st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
         plt.figure(figsize=(8, 6))
         
         # Verileri dağılacak şekilde çizme (X eksenine küçük jitter ekleniyor)
@@ -118,8 +124,8 @@ for i in range(num_target_genes):
                     sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
         
         # Ortalamaları gösteren kısa çizgiler
-        plt.axhline(y=average_control_delta_ct, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama ({average_control_delta_ct:.2f})")
-        plt.axhline(y=average_sample_delta_ct, color='red', linestyle='--', label=f"Hasta Grubu Ortalama ({average_sample_delta_ct:.2f})")
+        plt.plot([1, 1], [average_control_delta_ct - 0.05, average_control_delta_ct + 0.05], color='blue', lw=2)
+        plt.plot([2, 2], [average_sample_delta_ct - 0.05, average_sample_delta_ct + 0.05], color='red', lw=2)
         
         # Grafik ayarları
         plt.xticks([1, 2], ['Kontrol Grubu', 'Hasta Grubu'])
@@ -139,8 +145,3 @@ if data:
     st.subheader("Sonuçlar Tablosu")
     df = pd.DataFrame(data)
     st.write(df)
-
-if stats_data:
-    st.subheader("İstatistik Sonuçları")
-    stats_df = pd.DataFrame(stats_data)
-    st.write(stats_df)
