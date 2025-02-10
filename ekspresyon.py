@@ -143,9 +143,9 @@ if stats_data:
     plt.scatter(control_x_positions, control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
     plt.scatter(sample_x_positions, sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
     
-    # Ortalamaları X eksenine yerleştirerek yatay çizgiler ekliyoruz, çizgilerin uzunluğunu 15 karakter yapıyoruz
-    plt.hlines(y=average_control_delta_ct, xmin=0, xmax=1.5, color='blue', linestyle='--', linewidth=2, label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
-    plt.hlines(y=average_sample_delta_ct, xmin=1.5, xmax=2.5, color='red', linestyle='--', linewidth=2, label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
+    # Ortalamaları X eksenine yerleştirerek yatay çizgiler ekliyoruz, çizgilerin uzunluğunu 8 karakter yapıyoruz
+    plt.hlines(y=average_control_delta_ct, xmin=0, xmax=1.25, color='blue', linestyle='--', linewidth=2, label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
+    plt.hlines(y=average_sample_delta_ct, xmin=1.75, xmax=2.5, color='red', linestyle='--', linewidth=2, label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
     
     # Grafik ayarları
     plt.xticks([1, 2], 
