@@ -116,6 +116,11 @@ for i in range(num_target_genes):
 # Sıralamayı belirledik
 if input_values_table:
     st.subheader("Giriş Verileri Tablosu")
+    
+    # Örnek numarasını 1'den başlatacak şekilde ayarlıyoruz
+    for idx, row in enumerate(input_values_table):
+        row["Örnek No"] = idx + 1  # 1'den başlayacak şekilde numaralandırma yapıyoruz
+    
     input_df = pd.DataFrame(input_values_table)
     st.write(input_df)
 
