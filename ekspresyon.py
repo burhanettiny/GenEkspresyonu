@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
+import mplcursors  # Etkileşimli özellik için
 
 # Başlık
 st.title("Gen Ekspresyon Analizi Uygulaması")
@@ -140,8 +141,8 @@ if stats_data:
     sample_x_positions = np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)) * 0.5
     
     # Verileri çizme
-    plt.scatter(control_x_positions, control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
-    plt.scatter(sample_x_positions, sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
+    scatter_control = plt.scatter(control_x_positions, control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
+    scatter_sample = plt.scatter(sample_x_positions, sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
     
     # Ortalamaları X eksenine yerleştirerek yatay çizgiler ekliyoruz, çizgilerin uzunluğunu daha kısa yapıyoruz
     control_median = np.median(control_delta_ct)
@@ -161,5 +162,9 @@ if stats_data:
     
     # Açıklama kutusunu dışarıya yerleştiriyoruz
     plt.legend(loc='upper left', bbox_to_anchor=(1, 1), title="Açıklamalar")
+    
+    # Etkileşimli cursor ekliyoruz
+    mplcursors.cursor(scatter_control, hover=True).connect("add", lambda sel: sel.annotation.set_text(f'Kontrol {sel.target[1]:.2f}'))
+    mplcursors.cursor(scatter_sample, hover=True).connect("add", lambda sel: sel.annotation.set_text(f'Hasta {sel.target[1]:.2f}'))
     
     st.pyplot(plt)
