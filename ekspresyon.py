@@ -71,49 +71,20 @@ for i in range(num_target_genes):
                 
                 regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
                 
-                shapiro_control = stats.shapiro(control_delta_ct)
-                shapiro_sample = stats.shapiro(sample_delta_ct)
+                # Grafik oluşturma
+                st.subheader(f"Hedef Gen {i+1} - Hasta Grubu {j+1} ve Kontrol Grubu Dağılım Grafiği")
+                fig = go.Figure()
                 
-                control_normal = shapiro_control.pvalue > 0.05
-                sample_normal = shapiro_sample.pvalue > 0.05
+                fig.add_trace(go.Box(y=control_delta_ct, name='Kontrol Grubu', marker_color='blue'))
+                fig.add_trace(go.Box(y=sample_delta_ct, name=f'Hasta Grubu {j+1}', marker_color='red'))
                 
-                levene_test = stats.levene(control_delta_ct, sample_delta_ct)
-                equal_variance = levene_test.pvalue > 0.05
+                fig.update_layout(
+                    title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+                    yaxis_title='ΔCt Değeri',
+                    boxmode='group'
+                )
                 
-                test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
-                
-                if test_type == "Parametrik":
-                    test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
-                    test_method = "t-test"
-                else:
-                    test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
-                    test_method = "Mann-Whitney U testi"
-                
-                significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
-                
-                stats_data.append({
-                    "Hedef Gen": f"Hedef Gen {i+1}",
-                    "Hasta Grubu": f"Hasta Grubu {j+1}",
-                    "Normalite Testi Kontrol Grubu (Shapiro P-value)": shapiro_control.pvalue,
-                    "Normalite Testi Hasta Grubu (Shapiro P-value)": shapiro_sample.pvalue,
-                    "Varyans Testi (Levene P-value)": levene_test.pvalue,
-                    "Test Türü": test_type,
-                    "Kullanılan Test": test_method,  
-                    "Test P-değeri": test_pvalue,
-                    "Anlamlılık": significance
-                })
-                
-                data.append({
-                    "Hedef Gen": f"Hedef Gen {i+1}",
-                    "Hasta Grubu": f"Hasta Grubu {j+1}",
-                    "Kontrol ΔCt (Ortalama)": average_control_delta_ct,
-                    "Hasta ΔCt (Ortalama)": average_sample_delta_ct,
-                    "ΔΔCt": delta_delta_ct,
-                    "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
-                    "Regülasyon Durumu": regulation_status,
-                    "Kontrol Grubu Örnek Sayısı": min_control_len,
-                    "Hasta Grubu Örnek Sayısı": min_sample_len
-                })
+                st.plotly_chart(fig)
 
 if data:
     st.subheader("Sonuçlar Tablosu")
