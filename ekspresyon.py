@@ -140,12 +140,13 @@ if stats_data:
     plt.scatter(np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)), 
                 sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
     
-    # Her grubun ortalama değerini gösteren dikey çizgiler
-    plt.axvline(x=1, ymin=0, ymax=1, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
-    plt.axvline(x=2, ymin=0, ymax=1, color='red', linestyle='--', label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
+    # Her grubun ortalama değerini gösteren yatay çizgiler
+    plt.hlines(y=average_control_delta_ct, xmin=0, xmax=16, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
+    plt.hlines(y=average_sample_delta_ct, xmin=0, xmax=16, color='red', linestyle='--', label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
     
     # Grafik ayarları
-    plt.xticks([1, 2], ['Kontrol Grubu', 'Hasta Grubu'])
+    plt.yticks([average_control_delta_ct, average_sample_delta_ct], 
+               [f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}", f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}"])
     plt.xlabel('Grup')
     plt.ylabel('ΔCt Değeri')
     plt.title(f"Hedef Gen {i+1} - ΔCt Değerleri")
