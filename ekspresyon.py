@@ -133,23 +133,23 @@ if stats_data:
     st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
     plt.figure(figsize=(8, 6))
     
-    # Verileri dağılacak şekilde çizme (X eksenine küçük jitter ekleniyor)
+    # Y ekseninde verilerin dağılımını gösterme
     jitter = 0.05  # Değerler arasındaki küçük ofset
     plt.scatter(np.ones(len(control_delta_ct)) + np.random.uniform(-jitter, jitter, len(control_delta_ct)), 
                 control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
     plt.scatter(np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)), 
                 sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
     
-    # Her grubun ortalama değerini gösteren yatay çizgiler
-    plt.hlines(y=average_control_delta_ct, xmin=0, xmax=16, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
-    plt.hlines(y=average_sample_delta_ct, xmin=0, xmax=16, color='red', linestyle='--', label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
+    # Ortalamaları X eksenine yerleştirerek yatay çizgiler ekliyoruz
+    plt.hlines(y=average_control_delta_ct, xmin=0, xmax=average_control_delta_ct + 1, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
+    plt.hlines(y=average_sample_delta_ct, xmin=0, xmax=average_sample_delta_ct + 1, color='red', linestyle='--', label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
     
     # Grafik ayarları
-    plt.yticks([average_control_delta_ct, average_sample_delta_ct], 
+    plt.xticks([average_control_delta_ct, average_sample_delta_ct], 
                [f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}", f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}"])
-    plt.xlabel('Grup')
+    plt.xlabel('Gen Ekspresyon Değişimi (ΔCt)')
     plt.ylabel('ΔCt Değeri')
-    plt.title(f"Hedef Gen {i+1} - ΔCt Değerleri")
+    plt.title(f"Hedef Gen {i+1} - ΔCt Dağılımı")
     plt.legend()
     
     st.pyplot(plt)
