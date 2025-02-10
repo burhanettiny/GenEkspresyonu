@@ -135,21 +135,4 @@ if stats_data:
     
     # Y ekseninde verilerin dağılımını gösterme
     jitter = 0.05  # Değerler arasındaki küçük ofset
-    plt.scatter(np.ones(len(control_delta_ct)) + np.random.uniform(-jitter, jitter, len(control_delta_ct)), 
-                control_delta_ct, color='blue', alpha=0.6, label="Kontrol Grubu")
-    plt.scatter(np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-jitter, jitter, len(sample_delta_ct)), 
-                sample_delta_ct, color='red', alpha=0.6, label="Hasta Grubu")
-    
-    # Ortalamaları X eksenine yerleştirerek yatay çizgiler ekliyoruz
-    plt.hlines(y=average_control_delta_ct, xmin=0, xmax=0.5, color='blue', linestyle='--', label=f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}")
-    plt.hlines(y=average_sample_delta_ct, xmin=1.5, xmax=2, color='red', linestyle='--', label=f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}")
-    
-    # Grafik ayarları
-    plt.xticks([0.25, 1.75], 
-               [f"Kontrol Grubu Ortalama: {average_control_delta_ct:.2f}", f"Hasta Grubu Ortalama: {average_sample_delta_ct:.2f}"])
-    plt.xlabel('Gen Ekspresyon Değişimi (ΔCt)')
-    plt.ylabel('ΔCt Değeri')
-    plt.title(f"Hedef Gen {i+1} - ΔCt Dağılımı")
-    plt.legend()
-    
-    st.pyplot(plt)
+    # Kontrol grubu verilerini yatayda dağıtm
