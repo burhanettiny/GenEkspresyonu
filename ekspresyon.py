@@ -114,17 +114,6 @@ for i in range(num_target_genes):
             "Regülasyon Durumu": regulation_status
         })
 
-        # Hasta grubunun verilerini giriş tablosuna ekliyoruz
-        for idx in range(min_sample_len):
-            input_values_table.append({
-                "Örnek Numarası": sample_counter,
-                "Hedef Gen": f"Hedef Gen {i+1}",
-                "Grup": f"Hasta Grubu {j+1}",
-                "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
-                "Referans Ct": sample_reference_ct_values[idx]
-            })
-            sample_counter += 1
-
 if input_values_table: 
     st.subheader("📋 Giriş Verileri Tablosu") 
     input_df = pd.DataFrame(input_values_table) 
@@ -187,4 +176,26 @@ if stats_data:
     # Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
     for j in range(num_patient_groups):
         fig.add_trace(go.Scatter(
-            x=[(j + 2), (j + 2)], 
+            x=[(j + 2), (j + 2)],  # X ekseninde 2 (Hasta grubu) için
+            y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
+            mode='lines',
+            line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
+            name=f'Hasta Grubu {j+1} Ortalama'
+        ))
+
+    # Grafik ayarları
+    fig.update_layout(
+        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+        xaxis=dict(
+            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
+            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
+            title='Grup'
+        ),
+        yaxis=dict(
+            title='ΔCt Değeri'
+        ),
+        showlegend=True
+    )
+
+    # Etkileşimli grafik gösterimi
+    st.plotly_chart(fig)
