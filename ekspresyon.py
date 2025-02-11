@@ -226,3 +226,46 @@ if st.button("📥 PDF Raporu İndir"):
         st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("PDF raporu oluşturmak için yeterli veri yok.")
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
+
+def create_pdf(result_data, stats_data, input_df):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(100, height - 50, "Gen Ekspresyon Analizi Raporu")
+    
+    y = height - 80
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(100, y, "📊 Sonuçlar:")
+    y -= 20
+
+    for row in result_data:
+        text = f"{row['Hedef Gen']} - {row['Hasta Grubu']} - ΔΔCt: {row['ΔΔCt']:.2f}, Ekspresyon Değişimi: {row['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f}"
+        c.setFont("Helvetica", 10)
+        c.drawString(100, y, text)
+        y -= 15
+        if y < 50:
+            c.showPage()
+            y = height - 50
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(100, y, "📈 İstatistik Sonuçları:")
+    y -= 20
+
+    for row in stats_data:
+        text = f"{row['Hedef Gen']} - {row['Hasta Grubu']} - {row['Kullanılan Test']}: p={row['Test P-değeri']:.4f} ({row['Anlamlılık']})"
+        c.setFont("Helvetica", 10)
+        c.drawString(100, y, text)
+        y -= 15
+        if y < 50:
+            c.showPage()
+            y = height - 50
+
+    c.save()
+    buffer.seek(0)
+    return buffer
