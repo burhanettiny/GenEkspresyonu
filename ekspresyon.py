@@ -180,4 +180,106 @@ for i in range(num_target_genes):
         test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
         
         if test_type == "Parametrik":
-            test_pvalue = stats.ttest_ind(control_delta_ct,
+            test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
+            test_method = "t-test"
+        else:
+            test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
+            test_method = "Mann-Whitney U testi"
+        
+        significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
+        
+        stats_data.append({
+            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Hasta Grubu": f"Hasta Grubu {j+1}",
+            "Test Türü": test_type,
+            "Kullanılan Test": test_method,  
+            "Test P-değeri": test_pvalue,
+            "Anlamlılık": significance
+        })
+        
+        data.append({
+            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Hasta Grubu": f"Hasta Grubu {j+1}",
+            "ΔΔCt": delta_delta_ct,
+            "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
+            "Regülasyon Durumu": regulation_status
+        })
+        
+        # Grafik oluşturma
+        st.subheader(f"Hedef Gen {i+1} - Hasta Grubu {j+1} Dağılım Grafiği")
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
+            y=control_delta_ct,
+            mode='markers',
+            name='Kontrol Grubu',
+            marker=dict(color='blue'),
+            text=[f'Kontrol: {val:.2f}' for val in control_delta_ct],
+            hoverinfo='text'
+        ))
+        fig.add_trace(go.Scatter(
+            x=np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
+            y=sample_delta_ct,
+            mode='markers',
+            name=f'Hasta Grubu {j+1}',
+            marker=dict(color='red'),
+            text=[f'Hasta: {val:.2f}' for val in sample_delta_ct],
+            hoverinfo='text'
+        ))
+        fig.add_trace(go.Scatter(
+            x=[1, 1],
+            y=[average_control_delta_ct, average_control_delta_ct],
+            mode='lines',
+            line=dict(color='black', dash='dot', width=4),
+            name='Kontrol Ortalama'
+        ))
+        fig.add_trace(go.Scatter(
+            x=[2, 2],
+            y=[average_sample_delta_ct, average_sample_delta_ct],
+            mode='lines',
+            line=dict(color='black', dash='dot', width=4),
+            name='Hasta Ortalama'
+        ))
+        fig.update_layout(
+            title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+            xaxis=dict(
+                tickvals=[1, 2],
+                ticktext=['Kontrol', f'Hasta Grubu {j+1}'],
+                title='Grup'
+            ),
+            yaxis=dict(title='ΔCt Değeri'),
+            showlegend=True
+        )
+        st.plotly_chart(fig)
+
+        # PDF raporu indir butonunu her grafik için gösterebiliriz
+        input_df = pd.DataFrame(input_values_table)
+        pdf_buffer = create_pdf(data, stats_data, input_df)
+        st.download_button(
+            label=f"📥 Hedef Gen {i+1} - Hasta Grubu {j+1} PDF Raporu İndir",
+            data=pdf_buffer,
+            file_name=f"gen_ekspresyon_raporu_HedefGen_{i+1}_HastaGrubu_{j+1}.pdf",
+            mime="application/pdf"
+        )
+
+# Giriş Verileri, Sonuçlar ve İstatistik Sonuçları tablolarını (ve CSV indirme butonlarını) sayfanın sonuna ekleyelim.
+if input_values_table:
+    st.subheader("📋 Giriş Verileri Tablosu")
+    input_df = pd.DataFrame(input_values_table)
+    st.write(input_df)
+    csv = input_df.to_csv(index=False).encode("utf-8")
+    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv")
+
+if data:
+    st.subheader("📊 Sonuçlar")
+    results_df = pd.DataFrame(data)
+    st.write(results_df)
+    csv_results = results_df.to_csv(index=False).encode("utf-8")
+    st.download_button(label="📥 Sonuçları CSV İndir", data=csv_results, file_name="sonuclar.csv", mime="text/csv")
+
+if stats_data:
+    st.subheader("📈 İstatistik Sonuçları")
+    stats_df = pd.DataFrame(stats_data)
+    st.write(stats_df)
+    csv_stats = stats_df.to_csv(index=False).encode("utf-8")
+    st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
