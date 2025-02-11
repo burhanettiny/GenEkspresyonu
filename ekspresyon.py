@@ -284,3 +284,15 @@ if stats_data:
     st.write(stats_df)
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
     st.download_button(label="📥 İstatistiksel Sonuçları CSV İndir", data=csv_stats, file_name="istatistikler.csv", mime="text/csv")
+
+# PDF raporunu her grup için indirilebilir yapalım
+st.markdown("---")
+input_df = pd.DataFrame(input_values_table)
+pdf_buffer = create_pdf(data, stats_data, input_df)
+st.download_button(
+    label="📥 PDF Raporu İndir",
+    data=pdf_buffer,
+    file_name=f"gen_ekspresyon_raporu_{i+1}_{j+1}.pdf",
+    mime="application/pdf"
+)
+
