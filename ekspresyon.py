@@ -3,28 +3,33 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import scipy.stats as stats
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import io
 
-# Başlık
+# Uygulama Başlığı
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
 st.markdown("### B. Yalçınkaya tarafından geliştirildi")
 
-# Kullanıcıdan giriş al
+# Kullanıcıdan Giriş Al
 st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
 
 # Hedef Gen ve Hasta Grubu Sayısı
 num_target_genes = st.number_input("🔹 Hedef Gen Sayısını Girin", min_value=1, step=1)
 num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_value=1, step=1)
 
-# Veri listeleri
+# Veri listeleri ve örnek numaralandırması
 input_values_table = []
 data = []
 stats_data = []
-sample_counter = 1  # Örnek numaralandırması için sayaç
+sample_counter = 1
 
+# Girdi verisini sayısal değerlere çeviren fonksiyon
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
 
+# Her hedef gen için verileri alıp hesaplamaları yapıyoruz
 for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
     
@@ -39,13 +44,16 @@ for i in range(num_target_genes):
         st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
         continue
     
+    # Her iki veriden ortak uzunlukta veriyi almak için:
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
+    
+    # ΔCt hesaplama
     control_delta_ct = control_target_ct_values - control_reference_ct_values
     average_control_delta_ct = np.mean(control_delta_ct)
 
-    # Kontrol Grubu Verilerini Tabloya Ekleyin
+    # Kontrol grubuna ait verileri tabloya ekle
     for idx in range(min_control_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
@@ -56,9 +64,9 @@ for i in range(num_target_genes):
         })
         sample_counter += 1
     
-    # Hasta Grubu Verileri
+    # Hasta Grubu Verileri ve İşlemleri
     for j in range(num_patient_groups):
-        st.subheader(f"🩸 Hasta Grubu {j+1}")
+        st.subheader(f"🩸 Hasta Grubu {j+1} (Hedef Gen {i+1})")
         
         sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
         sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
@@ -76,7 +84,7 @@ for i in range(num_target_genes):
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
         average_sample_delta_ct = np.mean(sample_delta_ct)
 
-        # Hasta Grubu Verilerini Tabloya Ekleyin
+        # Hasta grubuna ait verileri tabloya ekle
         for idx in range(min_sample_len):
             input_values_table.append({
                 "Örnek Numarası": sample_counter,
@@ -91,9 +99,11 @@ for i in range(num_target_genes):
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
         expression_change = 2 ** (-delta_delta_ct)
         
-        regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
+        regulation_status = "Değişim Yok" if expression_change == 1 else (
+            "Upregulated" if expression_change > 1 else "Downregulated"
+        )
         
-        # İstatistiksel Testler
+        # İstatistiksel Testler: Normallik ve varyans eşitliğine bakarak test seçimi
         shapiro_control = stats.shapiro(control_delta_ct)
         shapiro_sample = stats.shapiro(sample_delta_ct)
         levene_test = stats.levene(control_delta_ct, sample_delta_ct)
@@ -129,95 +139,152 @@ for i in range(num_target_genes):
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
             "Regülasyon Durumu": regulation_status
         })
+        
+        # Hasta ve Kontrol Grubu verileri için grafik çizimi
+        st.subheader(f"Hedef Gen {i+1} - Hasta Grubu {j+1} Dağılım Grafiği")
+        fig = go.Figure()
+        
+        # Kontrol Grubu verileri
+        fig.add_trace(go.Scatter(
+            x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
+            y=control_delta_ct,
+            mode='markers',
+            name='Kontrol Grubu',
+            marker=dict(color='blue'),
+            text=[f'Kontrol: {val:.2f}' for val in control_delta_ct],
+            hoverinfo='text'
+        ))
+        
+        # Hasta Grubu verileri
+        fig.add_trace(go.Scatter(
+            x=np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
+            y=sample_delta_ct,
+            mode='markers',
+            name=f'Hasta Grubu {j+1}',
+            marker=dict(color='red'),
+            text=[f'Hasta: {val:.2f}' for val in sample_delta_ct],
+            hoverinfo='text'
+        ))
+        
+        # Ortalama çizgiler
+        fig.add_trace(go.Scatter(
+            x=[1, 1],
+            y=[average_control_delta_ct, average_control_delta_ct],
+            mode='lines',
+            line=dict(color='black', dash='dot', width=4),
+            name='Kontrol Ortalama'
+        ))
+        fig.add_trace(go.Scatter(
+            x=[2, 2],
+            y=[average_sample_delta_ct, average_sample_delta_ct],
+            mode='lines',
+            line=dict(color='black', dash='dot', width=4),
+            name='Hasta Ortalama'
+        ))
+        
+        fig.update_layout(
+            title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+            xaxis=dict(
+                tickvals=[1, 2],
+                ticktext=['Kontrol', f'Hasta Grubu {j+1}'],
+                title='Grup'
+            ),
+            yaxis=dict(title='ΔCt Değeri'),
+            showlegend=True
+        )
+        st.plotly_chart(fig)
 
-# Giriş Verileri Tablosunu Göster
+# Giriş Verileri Tablosunu Göster ve CSV Olarak İndir
 if input_values_table: 
     st.subheader("📋 Giriş Verileri Tablosu") 
     input_df = pd.DataFrame(input_values_table) 
     st.write(input_df) 
-
     csv = input_df.to_csv(index=False).encode("utf-8") 
     st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
 
-# Sonuçlar Tablosunu Göster
+# Sonuçlar Tablosu ve CSV İndirme
 if data:
     st.subheader("📊 Sonuçlar")
-    df = pd.DataFrame(data)
-    st.write(df)
+    results_df = pd.DataFrame(data)
+    st.write(results_df)
+    csv_results = results_df.to_csv(index=False).encode("utf-8")
+    st.download_button(label="📥 Sonuçları CSV İndir", data=csv_results, file_name="sonuclar.csv", mime="text/csv")
 
-# İstatistik Sonuçları
+# İstatistik Sonuçları Tablosu ve CSV İndirme
 if stats_data:
     st.subheader("📈 İstatistik Sonuçları")
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
-    
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
     st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
-    # Grafik oluşturma
-    st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
+# PDF Raporu Oluşturma Fonksiyonu
+def create_pdf(data, stats_data, input_df):
+    buffer = io.BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
     
-    # Plotly grafik objesi oluşturuluyor
-    fig = go.Figure()
-
-    # Kontrol grubu verilerini ekleme
-    fig.add_trace(go.Scatter(
-        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
-        y=control_delta_ct,
-        mode='markers',  # Kontrol grubu için
-        name='Kontrol Grubu',
-        marker=dict(color='blue'),
-        text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],  # Tooltip metni
-        hoverinfo='text'  # Tooltip gösterimi
-    ))
-
-    # Hasta grubu verilerini ekleme
-    for j in range(num_patient_groups):
-        fig.add_trace(go.Scatter(
-            x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
-            y=sample_delta_ct,
-            mode='markers',  # Hasta grubu için
-            name=f'Hasta Grubu {j+1}',
-            marker=dict(color='red'),
-            text=[f'Hasta {value:.2f}, Örnek {i+1}' for i, value in enumerate(sample_delta_ct)],  # Tooltip metni
-            hoverinfo='text'  # Tooltip gösterimi
-        ))
-
-    # Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
-    fig.add_trace(go.Scatter(
-        x=[1, 1],  # X ekseninde 1 (Kontrol grubu) için
-        y=[average_control_delta_ct, average_control_delta_ct],  # Y ekseninde ortalama değer
-        mode='lines',
-        line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
-        name='Kontrol Grubu Ortalama'
-    ))
-
-    # Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
-    for j in range(num_patient_groups):
-        fig.add_trace(go.Scatter(
-            x=[(j + 2), (j + 2)],  # X ekseninde 2 (Hasta grubu) için
-            y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
-            mode='lines',
-            line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
-            name=f'Hasta Grubu {j+1} Ortalama'
-        ))
-
-    # Grafik ayarları
-    fig.update_layout(
-        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
-        xaxis=dict(
-            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
-            title='Grup'
-        ),
-        yaxis=dict(
-            title='ΔCt Değeri'
-        ),
-        showlegend=True
-    )
-
-    # Etkileşimli grafik gösterimi
-    st.plotly_chart(fig)
+    # Başlık Bölümü
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(50, height - 50, "🧬 Gen Ekspresyon Analizi Sonuçları")
+    c.setFont("Helvetica", 12)
+    c.drawString(50, height - 70, "B. Yalçınkaya tarafından geliştirildi")
+    
+    y_position = height - 100
+    
+    # Giriş Verileri
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y_position, "📋 Giriş Verileri")
+    y_position -= 20
+    c.setFont("Helvetica", 8)
+    for index, row in input_df.iterrows():
+        text_line = (
+            f"Örnek {row['Örnek Numarası']} - {row['Grup']} - {row['Hedef Gen']} - "
+            f"Hedef Gen Ct: {row['Hedef Gen Ct Değeri']} - Referans Ct: {row['Referans Ct']}"
+        )
+        c.drawString(50, y_position, text_line)
+        y_position -= 12
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+    y_position -= 20
+    
+    # Sonuçlar
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y_position, "📊 Sonuçlar")
+    y_position -= 20
+    c.setFont("Helvetica", 8)
+    for result in data:
+        text_line = (
+            f"{result['Hedef Gen']} - {result['Hasta Grubu']} - ΔΔCt: {result['ΔΔCt']} - "
+            f"Ekspresyon: {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']} - {result['Regülasyon Durumu']}"
+        )
+        c.drawString(50, y_position, text_line)
+        y_position -= 12
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+    y_position -= 20
+    
+    # İstatistik Sonuçları
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y_position, "📈 İstatistik Sonuçları")
+    y_position -= 20
+    c.setFont("Helvetica", 8)
+    for stat in stats_data:
+        text_line = (
+            f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} - {stat['Test Türü']} ({stat['Kullanılan Test']}) - "
+            f"P-değeri: {stat['Test P-değeri']:.4f} - {stat['Anlamlılık']}"
+        )
+        c.drawString(50, y_position, text_line)
+        y_position -= 12
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+    
+    c.save()
+    buffer.seek(0)
+    return buffer
 
 # PDF Raporu İndir Butonu
 if st.button("📥 PDF Raporu İndir"):
