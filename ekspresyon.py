@@ -267,7 +267,7 @@ def create_pdf(results, stats, input_df):
 
     y_position = height - 100  # Başlangıç noktası eklendi
 
-    c.setFont("Helvetica-Bold", 12)
+    c.setFont("FreeSerif-Bold", 12)
     c.drawString(50, y_position, "Giriş Verileri Tablosu:")
     
     y_position -= 50
@@ -279,12 +279,12 @@ def create_pdf(results, stats, input_df):
             c.showPage()
             y_position = height - 50
             
-    c.setFont("Helvetica-Bold", 14)
+    c.setFont("FreeSerif-Bold", 14)
     c.drawString(50, y_position - 30, "Gen Ekspresyon Analizi Raporu")
     
     y_position -= 50  # Yeni bölümler arasında boşluk bırakmak için
     
-    c.setFont("Helvetica", 12)
+    c.setFont("FreeSerif", 12)
     c.drawString(50, y_position, "Sonuçlar:")
     
     y_position -= 20
@@ -296,7 +296,7 @@ def create_pdf(results, stats, input_df):
             c.showPage()
             y_position = height - 50
 
-    c.setFont("Helvetica-Bold", 12)
+    c.setFont("FreeSerif-Bold", 12)
     c.drawString(50, y_position - 30, "İstatistiksel Sonuçlar:")
 
     y_position -= 50
