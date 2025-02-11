@@ -304,34 +304,19 @@ def create_pdf(results, stats, input_df):
     table.wrapOn(c, width, height)
     table.drawOn(c, 50, height - 320)  # Tabloyu yazdırma noktasını ayarlayın
 
+    # Sonuçlar yazma
+    c.setFont("Helvetica", 12)
+    y_position = height - 280
+    c.drawString(50, y_position, "Sonuçlar:")
 
-
-
-# Sonuçlar tablo şeklinde ekleme
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, height - 80, "Sonuçlar:")
-    
-    # Veriyi tabloya dönüştürme
-    input_data_str = input_df.to_string(index=False)
-    
-    # Tabloyu oluşturmak için platypus kullanmak
-    table_data = [input_df.columns.tolist()] + input_df.values.tolist()
-    table = Table(table_data, colWidths=[100, 100, 100, 100, 100])
-    
-    # Tablo stilini ayarlama
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-        ('LINEBEFORE', (0, 0), (0, -1), 0.5, colors.black)
-    ]))
-    
-    # Tabloyu PDF'ye ekleme
-    table.wrapOn(c, width, height)
-    table.drawOn(c, 50, height - 600)  # Tabloyu yazdırma noktasını ayarlayın
+    y_position -= 20
+    for result in results:
+        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f}"
+        c.drawString(50, y_position, text)
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
 
     # İstatistiksel Sonuçlar
     c.setFont("Helvetica-Bold", 12)
