@@ -186,5 +186,5 @@ if stats_data:
 
     # Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
     for j in range(num_patient_groups):
-        fig.add_trace(go.Scatter()
+        fig.add_trace(go.Scatter(
             x=[(j + 2), (j + 2)], 
