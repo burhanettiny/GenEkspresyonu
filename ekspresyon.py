@@ -302,7 +302,7 @@ def create_pdf(results, stats, input_df):
     
     # Tabloyu PDF'ye ekleme
     table.wrapOn(c, width, height)
-    table.drawOn(c, 80, height - 180)  # Tabloyu yazdırma noktasını ayarlayın
+    table.drawOn(c, 50, height - 280)  # Tabloyu yazdırma noktasını ayarlayın
 
     # Sonuçlar yazma
     c.setFont("Helvetica", 12)
