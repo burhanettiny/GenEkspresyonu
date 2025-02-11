@@ -31,13 +31,11 @@ for i in range(num_target_genes):
     control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
     
-    # Verileri parse etme
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
-    # Veri eksikliği kontrolü
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error("⚠️ Hata: Kontrol grubu için veriler eksik!")
+        st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
         continue
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
@@ -65,9 +63,8 @@ for i in range(num_target_genes):
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
-        # Veri eksikliği kontrolü
         if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            st.error(f"⚠️ Hata: Hasta grubu {j+1} için veriler eksik!")
+            st.error(f"⚠️ Hata: Hasta Grubu {j+1} için veriler eksik! Lütfen verileri doğru girin.")
             continue
         
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
@@ -117,15 +114,9 @@ for i in range(num_target_genes):
             "Regülasyon Durumu": regulation_status
         })
 
-# Giriş verilerinin tamamlanıp tamamlanmadığını kontrol etme
 if input_values_table: 
     st.subheader("📋 Giriş Verileri Tablosu") 
     input_df = pd.DataFrame(input_values_table) 
-    
-    # Eksik veriler kontrol ediliyor
-    if input_df.isnull().values.any():
-        st.error("⚠️ Tabloyu tam doldurduğunuzdan emin olun!")
-    
     st.write(input_df) 
 
     csv = input_df.to_csv(index=False).encode("utf-8") 
@@ -173,4 +164,38 @@ if stats_data:
             hoverinfo='text'  # Tooltip gösterimi
         ))
 
-    # Kontrol grubunun ort
+    # Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
+    fig.add_trace(go.Scatter(
+        x=[1, 1],  # X ekseninde 1 (Kontrol grubu) için
+        y=[average_control_delta_ct, average_control_delta_ct],  # Y ekseninde ortalama değer
+        mode='lines',
+        line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
+        name='Kontrol Grubu Ortalama'
+    ))
+
+    # Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
+    for j in range(num_patient_groups):
+        fig.add_trace(go.Scatter(
+            x=[(j + 2), (j + 2)],  # X ekseninde 2 (Hasta grubu) için
+            y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
+            mode='lines',
+            line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
+            name=f'Hasta Grubu {j+1} Ortalama'
+        ))
+
+    # Grafik ayarları
+    fig.update_layout(
+        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+        xaxis=dict(
+            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
+            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
+            title='Grup'
+        ),
+        yaxis=dict(
+            title='ΔCt Değeri'
+        ),
+        showlegend=True
+    )
+
+    # Etkileşimli grafik gösterimi
+    st.plotly_chart(fig)
