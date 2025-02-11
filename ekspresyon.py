@@ -114,6 +114,17 @@ for i in range(num_target_genes):
             "Regülasyon Durumu": regulation_status
         })
 
+if input_values_table: 
+    st.subheader("📋 Giriş Verileri Tablosu") 
+    input_df = pd.DataFrame(input_values_table) 
+    st.write(input_df) 
+
+    csv = input_df.to_csv(index=False).encode("utf-8") 
+    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
+
+if data: st.subheader("📊 Sonuçlar") 
+    df = pd.DataFrame(data) st.write(df)
+
 if stats_data:
     st.subheader("📈 İstatistik Sonuçları")
     stats_df = pd.DataFrame(stats_data)
