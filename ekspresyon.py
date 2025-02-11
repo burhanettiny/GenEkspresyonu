@@ -266,3 +266,48 @@ if st.button("📥 PDF Raporu İndir"):
         st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("PDF raporu oluşturmak için yeterli veri yok.")
+
+# PDF oluşturma fonksiyonu
+def create_pdf(results, stats_results, input_df, graphs):
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(200, 10, "Gen Ekspresyon Analizi Raporu", ln=True, align='C')
+    pdf.ln(10)
+
+    # Giriş Verileri Tablosu
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(200, 10, "Giris Verileri Tablosu", ln=True)
+    pdf.set_font("Arial", "", 10)
+    for index, row in input_df.iterrows():
+        pdf.cell(200, 10, f"{row.to_dict()}", ln=True)
+    pdf.ln(5)
+
+    # Sonuçlar Tablosu
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(200, 10, "Sonuclar", ln=True)
+    pdf.set_font("Arial", "", 10)
+    for result in results:
+        pdf.cell(200, 10, f"{result}", ln=True)
+    pdf.ln(5)
+
+    # İstatistik Sonuçları
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(200, 10, "Istatistik Sonuclari", ln=True)
+    pdf.set_font("Arial", "", 10)
+    for stat in stats_results:
+        pdf.cell(200, 10, f"{stat}", ln=True)
+    pdf.ln(5)
+
+    # Grafikleri ekleme
+    for idx, fig in enumerate(graphs):
+        img_buffer = io.BytesIO()
+        fig.savefig(img_buffer, format='png')
+        img_buffer.seek(0)
+        pdf.image(img_buffer, x=10, w=180)
+        pdf.ln(10)
+
+    pdf_buffer = io.BytesIO()
+    pdf.output(pdf_buffer)
+    return pdf_buffer.getvalue()
