@@ -3,6 +3,12 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import scipy.stats as stats
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle
 
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
@@ -265,28 +271,44 @@ def create_pdf(results, stats, input_df):
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
 
-    y_position = height - 100  # Başlangıç noktası eklendi
+    # Türkçe karakterleri destekleyen font ayarı
+    c.setFont("Helvetica", 12)
 
-    c.setFont("FreeSerif-Bold", 12)
-    c.drawString(50, y_position, "Giriş Verileri Tablosu:")
+    # Başlık yazma
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, height - 50, "Gen Ekspresyon Analizi Raporu")
+
+    # Giriş verilerini tablo şeklinde ekleme
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, height - 80, "Giriş Verileri Tablosu:")
     
-    y_position -= 50
+    # Veriyi tabloya dönüştürme
     input_data_str = input_df.to_string(index=False)
-    for line in input_data_str.split("\n"):
-        c.drawString(50, y_position, line)
-        y_position -= 15
-        if y_position < 50:
-            c.showPage()
-            y_position = height - 50
-            
-    c.setFont("FreeSerif-Bold", 14)
-    c.drawString(50, y_position - 30, "Gen Ekspresyon Analizi Raporu")
     
-    y_position -= 50  # Yeni bölümler arasında boşluk bırakmak için
+    # Tabloyu oluşturmak için platypus kullanmak
+    table_data = [input_df.columns.tolist()] + input_df.values.tolist()
+    table = Table(table_data, colWidths=[100, 100, 100, 100, 100])
     
-    c.setFont("FreeSerif", 12)
+    # Tablo stilini ayarlama
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ('LINEBEFORE', (0, 0), (0, -1), 0.5, colors.black)
+    ]))
+    
+    # Tabloyu PDF'ye ekleme
+    table.wrapOn(c, width, height)
+    table.drawOn(c, 50, height - 180)  # Tabloyu yazdırma noktasını ayarlayın
+
+    # Sonuçlar yazma
+    c.setFont("Helvetica", 12)
+    y_position = height - 280
     c.drawString(50, y_position, "Sonuçlar:")
-    
+
     y_position -= 20
     for result in results:
         text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f}"
@@ -296,7 +318,8 @@ def create_pdf(results, stats, input_df):
             c.showPage()
             y_position = height - 50
 
-    c.setFont("FreeSerif-Bold", 12)
+    # İstatistiksel Sonuçlar
+    c.setFont("Helvetica-Bold", 12)
     c.drawString(50, y_position - 30, "İstatistiksel Sonuçlar:")
 
     y_position -= 50
@@ -311,10 +334,11 @@ def create_pdf(results, stats, input_df):
     c.save()
     buffer.seek(0)
     return buffer
-    
+
+# PDF raporu oluşturma ve indirme
 if st.button("📥 PDF Raporu İndir"):
     if input_values_table:
         pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
         st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
-        st.error("PDF raporu oluşturmak için yeterli veri yok.")
+        st.error("Veri bulunamadı, PDF oluşturulamadı.")
