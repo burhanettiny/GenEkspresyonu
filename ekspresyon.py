@@ -23,9 +23,10 @@ input_values_table = []
 data = []
 stats_data = []
 sample_counter = 1
+graphs = []  # Grafikleri depolamak için
 
 # PDF oluşturma fonksiyonu (global rapor)
-def create_pdf(data, stats_data, input_df):
+def create_pdf(data, stats_data, input_df, graphs):
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
@@ -87,7 +88,12 @@ def create_pdf(data, stats_data, input_df):
         if y_position < 50:
             c.showPage()
             y_position = height - 50
-    
+
+    # Grafiklerin eklenmesi
+    for graph in graphs:
+        c.showPage()
+        c.drawImage(graph, 50, height - 550, width=500, height=400)  # Grafikler için yer ayırıyoruz
+
     c.save()
     buffer.seek(0)
     return buffer
@@ -97,7 +103,7 @@ def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
 
-# Her hedef gen için verileri alıp hesaplamaları yapıyoruz
+# Grafik oluşturma ve veri işleme
 for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
     
@@ -112,16 +118,13 @@ for i in range(num_target_genes):
         st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
         continue
     
-    # Ortak uzunlukta veriyi almak için:
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
     
-    # ΔCt hesaplama
     control_delta_ct = control_target_ct_values - control_reference_ct_values
     average_control_delta_ct = np.mean(control_delta_ct)
 
-    # Kontrol grubuna ait verileri tabloya ekle
     for idx in range(min_control_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
@@ -152,7 +155,6 @@ for i in range(num_target_genes):
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
         average_sample_delta_ct = np.mean(sample_delta_ct)
 
-        # Hasta grubuna ait verileri tabloya ekle
         for idx in range(min_sample_len):
             input_values_table.append({
                 "Örnek Numarası": sample_counter,
@@ -163,12 +165,10 @@ for i in range(num_target_genes):
             })
             sample_counter += 1
         
-        # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
         expression_change = 2 ** (-delta_delta_ct)
         regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
         
-        # İstatistiksel Testler
         shapiro_control = stats.shapiro(control_delta_ct)
         shapiro_sample = stats.shapiro(sample_delta_ct)
         levene_test = stats.levene(control_delta_ct, sample_delta_ct)
@@ -205,10 +205,9 @@ for i in range(num_target_genes):
             "Regülasyon Durumu": regulation_status
         })
         
-        # Grafik oluşturma
-        st.subheader(f"Hedef Gen {i+1} - Hasta Grubu {j+1} Dağılım Grafiği")
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(
+        # Grafik oluşturma (tek bir grafik)
+        graphs.append(go.Figure())
+        graphs[-1].add_trace(go.Scatter(
             x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
             y=control_delta_ct,
             mode='markers',
@@ -217,7 +216,7 @@ for i in range(num_target_genes):
             text=[f'Kontrol: {val:.2f}' for val in control_delta_ct],
             hoverinfo='text'
         ))
-        fig.add_trace(go.Scatter(
+        graphs[-1].add_trace(go.Scatter(
             x=np.ones(len(sample_delta_ct)) * 2 + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
             y=sample_delta_ct,
             mode='markers',
@@ -226,21 +225,21 @@ for i in range(num_target_genes):
             text=[f'Hasta: {val:.2f}' for val in sample_delta_ct],
             hoverinfo='text'
         ))
-        fig.add_trace(go.Scatter(
+        graphs[-1].add_trace(go.Scatter(
             x=[1, 1],
             y=[average_control_delta_ct, average_control_delta_ct],
             mode='lines',
             line=dict(color='black', dash='dot', width=4),
             name='Kontrol Ortalama'
         ))
-        fig.add_trace(go.Scatter(
+        graphs[-1].add_trace(go.Scatter(
             x=[2, 2],
             y=[average_sample_delta_ct, average_sample_delta_ct],
             mode='lines',
             line=dict(color='black', dash='dot', width=4),
             name='Hasta Ortalama'
         ))
-        fig.update_layout(
+        graphs[-1].update_layout(
             title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
             xaxis=dict(
                 tickvals=[1, 2],
@@ -250,19 +249,9 @@ for i in range(num_target_genes):
             yaxis=dict(title='ΔCt Değeri'),
             showlegend=True
         )
-        st.plotly_chart(fig)
+        graphs[-1].write_image("/tmp/graph.png")
 
-        # PDF raporu indir butonunu her grafik için gösterebiliriz
-        input_df = pd.DataFrame(input_values_table)
-        pdf_buffer = create_pdf(data, stats_data, input_df)
-        st.download_button(
-            label=f"📥 Hedef Gen {i+1} - Hasta Grubu {j+1} PDF Raporu İndir",
-            data=pdf_buffer,
-            file_name=f"gen_ekspresyon_raporu_HedefGen_{i+1}_HastaGrubu_{j+1}.pdf",
-            mime="application/pdf"
-        )
-
-# Giriş Verileri, Sonuçlar ve İstatistik Sonuçları tablolarını (ve CSV indirme butonlarını) sayfanın sonuna ekleyelim.
+# Son analiz grafiğinin altına PDF raporu indir butonunu yalnızca son grafik için gösterelim
 if input_values_table:
     st.subheader("📋 Giriş Verileri Tablosu")
     input_df = pd.DataFrame(input_values_table)
@@ -283,3 +272,15 @@ if stats_data:
     st.write(stats_df)
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
     st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
+
+# PDF raporu indirme
+if (i == num_target_genes - 1) and (j == num_patient_groups - 1):
+    st.markdown("---")
+    input_df = pd.DataFrame(input_values_table)
+    pdf_buffer = create_pdf(data, stats_data, input_df, graphs)
+    st.download_button(
+        label="📥 PDF Raporu İndir",
+        data=pdf_buffer,
+        file_name="gen_ekspresyon_raporu.pdf",
+        mime="application/pdf"
+    )
