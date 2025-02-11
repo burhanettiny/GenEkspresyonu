@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import scipy.stats as stats
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
 
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
@@ -45,7 +48,6 @@ for i in range(num_target_genes):
     control_delta_ct = control_target_ct_values - control_reference_ct_values
     average_control_delta_ct = np.mean(control_delta_ct)
 
-    # Kontrol Grubu Verilerini Tabloya Ekleyin
     for idx in range(min_control_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
@@ -56,7 +58,6 @@ for i in range(num_target_genes):
         })
         sample_counter += 1
     
-    # Hasta Grubu Verileri
     for j in range(num_patient_groups):
         st.subheader(f"🩸 Hasta Grubu {j+1}")
         
@@ -76,7 +77,6 @@ for i in range(num_target_genes):
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
         average_sample_delta_ct = np.mean(sample_delta_ct)
 
-        # Hasta Grubu Verilerini Tabloya Ekleyin
         for idx in range(min_sample_len):
             input_values_table.append({
                 "Örnek Numarası": sample_counter,
@@ -87,37 +87,17 @@ for i in range(num_target_genes):
             })
             sample_counter += 1
         
-        # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
         expression_change = 2 ** (-delta_delta_ct)
         
         regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
         
-        # İstatistiksel Testler
-        shapiro_control = stats.shapiro(control_delta_ct)
-        shapiro_sample = stats.shapiro(sample_delta_ct)
-        levene_test = stats.levene(control_delta_ct, sample_delta_ct)
-        
-        control_normal = shapiro_control.pvalue > 0.05
-        sample_normal = shapiro_sample.pvalue > 0.05
-        equal_variance = levene_test.pvalue > 0.05
-        
-        test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
-        
-        if test_type == "Parametrik":
-            test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
-            test_method = "t-test"
-        else:
-            test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
-            test_method = "Mann-Whitney U testi"
-        
+        test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
         significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
         
         stats_data.append({
             "Hedef Gen": f"Hedef Gen {i+1}",
             "Hasta Grubu": f"Hasta Grubu {j+1}",
-            "Test Türü": test_type,
-            "Kullanılan Test": test_method,  
             "Test P-değeri": test_pvalue,
             "Anlamlılık": significance
         })
@@ -130,106 +110,7 @@ for i in range(num_target_genes):
             "Regülasyon Durumu": regulation_status
         })
 
-# Giriş Verileri Tablosunu Göster
-if input_values_table: 
-    st.subheader("📋 Giriş Verileri Tablosu") 
-    input_df = pd.DataFrame(input_values_table) 
-    st.write(input_df) 
-
-    csv = input_df.to_csv(index=False).encode("utf-8") 
-    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
-
-# Sonuçlar Tablosunu Göster
-if data:
-    st.subheader("📊 Sonuçlar")
-    df = pd.DataFrame(data)
-    st.write(df)
-
-# İstatistik Sonuçları
-if stats_data:
-    st.subheader("📈 İstatistik Sonuçları")
-    stats_df = pd.DataFrame(stats_data)
-    st.write(stats_df)
-    
-    csv_stats = stats_df.to_csv(index=False).encode("utf-8")
-    st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
-
-    # Grafik oluşturma
-    st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
-    
-    # Plotly grafik objesi oluşturuluyor
-    fig = go.Figure()
-
-    # Kontrol grubu verilerini ekleme
-    fig.add_trace(go.Scatter(
-        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
-        y=control_delta_ct,
-        mode='markers',  # Kontrol grubu için
-        name='Kontrol Grubu',
-        marker=dict(color='blue'),
-        text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],  # Tooltip metni
-        hoverinfo='text'  # Tooltip gösterimi
-    ))
-
-    # Hasta grubu verilerini ekleme
-    for j in range(num_patient_groups):
-        fig.add_trace(go.Scatter(
-            x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
-            y=sample_delta_ct,
-            mode='markers',  # Hasta grubu için
-            name=f'Hasta Grubu {j+1}',
-            marker=dict(color='red'),
-            text=[f'Hasta {value:.2f}, Örnek {i+1}' for i, value in enumerate(sample_delta_ct)],  # Tooltip metni
-            hoverinfo='text'  # Tooltip gösterimi
-        ))
-
-    # Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
-    fig.add_trace(go.Scatter(
-        x=[1, 1],  # X ekseninde 1 (Kontrol grubu) için
-        y=[average_control_delta_ct, average_control_delta_ct],  # Y ekseninde ortalama değer
-        mode='lines',
-        line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
-        name='Kontrol Grubu Ortalama'
-    ))
-
-    # Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
-    for j in range(num_patient_groups):
-        fig.add_trace(go.Scatter(
-            x=[(j + 2), (j + 2)],  # X ekseninde 2 (Hasta grubu) için
-            y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
-            mode='lines',
-            line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
-            name=f'Hasta Grubu {j+1} Ortalama'
-        ))
-
-    # Grafik ayarları
-    fig.update_layout(
-        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
-        xaxis=dict(
-            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
-            title='Grup'
-        ),
-        yaxis=dict(
-            title='ΔCt Değeri'
-        ),
-        showlegend=True
-    )
-
-    # Etkileşimli grafik gösterimi
-    st.plotly_chart(fig)
-
-# PDF Raporu İndir Butonu
-if st.button("📥 PDF Raporu İndir"):
-    if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
-        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
-    else:
-        st.error("PDF raporu oluşturmak için yeterli veri yok.")
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from io import BytesIO
-
+# PDF OLUŞTURMA FONKSİYONU
 def create_pdf(result_data, stats_data, input_df):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
@@ -249,23 +130,24 @@ def create_pdf(result_data, stats_data, input_df):
         c.setFont("Helvetica", 10)
         c.drawString(100, y, text)
         y -= 15
-        if y < 50:
-            c.showPage()
-            y = height - 50
 
     c.setFont("Helvetica-Bold", 12)
     c.drawString(100, y, "📈 İstatistik Sonuçları:")
     y -= 20
 
     for row in stats_data:
-        text = f"{row['Hedef Gen']} - {row['Hasta Grubu']} - {row['Kullanılan Test']}: p={row['Test P-değeri']:.4f} ({row['Anlamlılık']})"
+        text = f"{row['Hedef Gen']} - {row['Hasta Grubu']} - P-Value: {row['Test P-değeri']:.4f} ({row['Anlamlılık']})"
         c.setFont("Helvetica", 10)
         c.drawString(100, y, text)
         y -= 15
-        if y < 50:
-            c.showPage()
-            y = height - 50
 
     c.save()
     buffer.seek(0)
     return buffer
+
+if st.button("📥 PDF Raporu İndir"):
+    if input_values_table:
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
+        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
+    else:
+        st.error("PDF raporu oluşturmak için yeterli veri yok.")
