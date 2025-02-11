@@ -28,6 +28,7 @@ def parse_input_data(input_data):
 for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
     
+    # Kontrol Grubu Verileri
     control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
     
@@ -44,6 +45,7 @@ for i in range(num_target_genes):
     control_delta_ct = control_target_ct_values - control_reference_ct_values
     average_control_delta_ct = np.mean(control_delta_ct)
 
+    # Kontrol Grubu Verilerini Tabloya Ekleyin
     for idx in range(min_control_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
@@ -54,6 +56,7 @@ for i in range(num_target_genes):
         })
         sample_counter += 1
     
+    # Hasta Grubu Verileri
     for j in range(num_patient_groups):
         st.subheader(f"🩸 Hasta Grubu {j+1}")
         
@@ -73,11 +76,24 @@ for i in range(num_target_genes):
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
         average_sample_delta_ct = np.mean(sample_delta_ct)
 
+        # Hasta Grubu Verilerini Tabloya Ekleyin
+        for idx in range(min_sample_len):
+            input_values_table.append({
+                "Örnek Numarası": sample_counter,
+                "Hedef Gen": f"Hedef Gen {i+1}",
+                "Grup": f"Hasta Grubu {j+1}",
+                "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
+                "Referans Ct": sample_reference_ct_values[idx]
+            })
+            sample_counter += 1
+        
+        # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
         expression_change = 2 ** (-delta_delta_ct)
         
         regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
         
+        # İstatistiksel Testler
         shapiro_control = stats.shapiro(control_delta_ct)
         shapiro_sample = stats.shapiro(sample_delta_ct)
         levene_test = stats.levene(control_delta_ct, sample_delta_ct)
@@ -114,6 +130,7 @@ for i in range(num_target_genes):
             "Regülasyon Durumu": regulation_status
         })
 
+# Giriş Verileri Tablosunu Göster
 if input_values_table: 
     st.subheader("📋 Giriş Verileri Tablosu") 
     input_df = pd.DataFrame(input_values_table) 
@@ -122,11 +139,13 @@ if input_values_table:
     csv = input_df.to_csv(index=False).encode("utf-8") 
     st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
 
+# Sonuçlar Tablosunu Göster
 if data:
     st.subheader("📊 Sonuçlar")
     df = pd.DataFrame(data)
     st.write(df)
 
+# İstatistik Sonuçları
 if stats_data:
     st.subheader("📈 İstatistik Sonuçları")
     stats_df = pd.DataFrame(stats_data)
