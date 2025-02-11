@@ -265,6 +265,18 @@ def create_pdf(results, stats, input_df):
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
 
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, y_position - 30, "Giriş Verileri Tablosu:")
+    
+    y_position -= 50
+    input_data_str = input_df.to_string(index=False)
+    for line in input_data_str.split("\n"):
+        c.drawString(50, y_position, line)
+        y_position -= 15
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+            
     c.setFont("Helvetica-Bold", 14)
     c.drawString(50, height - 50, "Gen Ekspresyon Analizi Raporu")
 
@@ -288,18 +300,6 @@ def create_pdf(results, stats, input_df):
         text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
         c.drawString(50, y_position, text)
         y_position -= 20
-        if y_position < 50:
-            c.showPage()
-            y_position = height - 50
-    
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y_position - 30, "Giriş Verileri Tablosu:")
-    
-    y_position -= 50
-    input_data_str = input_df.to_string(index=False)
-    for line in input_data_str.split("\n"):
-        c.drawString(50, y_position, line)
-        y_position -= 15
         if y_position < 50:
             c.showPage()
             y_position = height - 50
