@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit as st 
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -122,8 +122,10 @@ if input_values_table:
     csv = input_df.to_csv(index=False).encode("utf-8") 
     st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
 
-if data: st.subheader("📊 Sonuçlar") 
-    df = pd.DataFrame(data) st.write(df)
+if data:
+    st.subheader("📊 Sonuçlar")
+    df = pd.DataFrame(data)
+    st.write(df)
 
 if stats_data:
     st.subheader("📈 İstatistik Sonuçları")
