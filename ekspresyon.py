@@ -276,4 +276,11 @@ if data:
     results_df = pd.DataFrame(data)
     st.write(results_df)
     csv_results = results_df.to_csv(index=False).encode("utf-8")
-    st.download_button(label="📥 Sonuçları CSV İndir", data=csv_results, file_name="sonuclar.csv
+    st.download_button(label="📥 Sonuçları CSV İndir", data=csv_results, file_name="sonuclar.csv", mime="text/csv")
+
+if stats_data:
+    st.subheader("📈 İstatistiksel Sonuçlar")
+    stats_df = pd.DataFrame(stats_data)
+    st.write(stats_df)
+    csv_stats = stats_df.to_csv(index=False).encode("utf-8")
+    st.download_button(label="📥 İstatistiksel Sonuçları CSV İndir", data=csv_stats, file_name="istatistikler.csv", mime="text/csv")
