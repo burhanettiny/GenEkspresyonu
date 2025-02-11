@@ -41,6 +41,8 @@ for i in range(num_target_genes):
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
+    control_delta_ct = control_target_ct_values - control_reference_ct_values
+    average_control_delta_ct = np.mean(control_delta_ct)
 
     for idx in range(min_control_len):
         input_values_table.append({
@@ -68,6 +70,23 @@ for i in range(num_target_genes):
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
         sample_target_ct_values = sample_target_ct_values[:min_sample_len]
         sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
+        sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
+        average_sample_delta_ct = np.mean(sample_delta_ct)
+
+        delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
+        expression_change = 2 ** (-delta_delta_ct)
+        
+        regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
+        
+        data.append({
+            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Hasta Grubu": f"Hasta Grubu {j+1}",
+            "Kontrol ΔCt (Ortalama)": average_control_delta_ct,
+            "Hasta ΔCt (Ortalama)": average_sample_delta_ct,
+            "ΔΔCt": delta_delta_ct,
+            "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
+            "Regülasyon Durumu": regulation_status
+        })
 
         for idx in range(min_sample_len):
             input_values_table.append({
@@ -87,3 +106,11 @@ if input_values_table:
     # CSV dosyası olarak indirme seçeneği
     csv = input_df.to_csv(index=False).encode("utf-8")
     st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv")
+
+if data:
+    st.subheader("📊 Sonuçlar Tablosu")
+    results_df = pd.DataFrame(data)
+    st.write(results_df)
+
+    csv_results = results_df.to_csv(index=False).encode("utf-8")
+    st.download_button(label="📥 Sonuçları CSV Olarak İndir", data=csv_results, file_name="sonuclar.csv", mime="text/csv")
