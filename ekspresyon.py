@@ -251,18 +251,17 @@ for i in range(num_target_genes):
             showlegend=True
         )
         st.plotly_chart(fig)
-        
-        # Son analiz grafiğinin altına PDF raporu indir butonunu yalnızca son grafik için gösterelim
-        if (i == num_target_genes - 1) and (j == num_patient_groups - 1):
-            st.markdown("---")
-            input_df = pd.DataFrame(input_values_table)
-            pdf_buffer = create_pdf(data, stats_data, input_df)
-            st.download_button(
-                label="📥 PDF Raporu İndir",
-                data=pdf_buffer,
-                file_name="gen_ekspresyon_raporu.pdf",
-                mime="application/pdf"
-            )
+
+        # PDF raporunu her grup için indirilebilir yapalım
+        st.markdown("---")
+        input_df = pd.DataFrame(input_values_table)
+        pdf_buffer = create_pdf(data, stats_data, input_df)
+        st.download_button(
+            label="📥 PDF Raporu İndir",
+            data=pdf_buffer,
+            file_name=f"gen_ekspresyon_raporu_{i+1}_{j+1}.pdf",
+            mime="application/pdf"
+        )
 
 # Giriş Verileri, Sonuçlar ve İstatistik Sonuçları tablolarını (ve CSV indirme butonlarını) sayfanın sonuna ekleyelim.
 if input_values_table:
@@ -277,11 +276,4 @@ if data:
     results_df = pd.DataFrame(data)
     st.write(results_df)
     csv_results = results_df.to_csv(index=False).encode("utf-8")
-    st.download_button(label="📥 Sonuçları CSV İndir", data=csv_results, file_name="sonuclar.csv", mime="text/csv")
-
-if stats_data:
-    st.subheader("📈 İstatistik Sonuçları")
-    stats_df = pd.DataFrame(stats_data)
-    st.write(stats_df)
-    csv_stats = stats_df.to_csv(index=False).encode("utf-8")
-    st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
+    st.download_button(label="📥 Sonuçları CSV İndir", data=csv_results, file_name="sonuclar.csv
