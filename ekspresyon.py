@@ -306,7 +306,7 @@ def create_pdf(results, stats, input_df):
     
     # Sonuçlar yazma
     c.setFont("Helvetica", 12)
-    y_position = height - 280 table_height - 20
+    y_position = height - 280 - table_height - 20
     c.drawString(50, y_position, "Sonuçlar:")
 
     y_position -= 20
