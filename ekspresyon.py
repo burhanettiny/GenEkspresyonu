@@ -78,39 +78,46 @@ for i in range(num_target_genes):
         
         regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
         
+        shapiro_control = stats.shapiro(control_delta_ct)
+        shapiro_sample = stats.shapiro(sample_delta_ct)
+        levene_test = stats.levene(control_delta_ct, sample_delta_ct)
+        
+        control_normal = shapiro_control.pvalue > 0.05
+        sample_normal = shapiro_sample.pvalue > 0.05
+        equal_variance = levene_test.pvalue > 0.05
+        
+        test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
+        
+        if test_type == "Parametrik":
+            test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
+            test_method = "t-test"
+        else:
+            test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
+            test_method = "Mann-Whitney U testi"
+        
+        significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
+        
+        stats_data.append({
+            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Hasta Grubu": f"Hasta Grubu {j+1}",
+            "Test Türü": test_type,
+            "Kullanılan Test": test_method,  
+            "Test P-değeri": test_pvalue,
+            "Anlamlılık": significance
+        })
+        
         data.append({
             "Hedef Gen": f"Hedef Gen {i+1}",
             "Hasta Grubu": f"Hasta Grubu {j+1}",
-            "Kontrol ΔCt (Ortalama)": average_control_delta_ct,
-            "Hasta ΔCt (Ortalama)": average_sample_delta_ct,
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
             "Regülasyon Durumu": regulation_status
         })
 
-        for idx in range(min_sample_len):
-            input_values_table.append({
-                "Örnek Numarası": sample_counter,
-                "Hedef Gen": f"Hedef Gen {i+1}",
-                "Grup": f"Hasta {j+1}",
-                "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
-                "Referans Ct": sample_reference_ct_values[idx]
-            })
-            sample_counter += 1
-
-if input_values_table:
-    st.subheader("📋 Giriş Verileri Tablosu")
-    input_df = pd.DataFrame(input_values_table)
-    st.write(input_df)
+if stats_data:
+    st.subheader("📈 İstatistik Sonuçları")
+    stats_df = pd.DataFrame(stats_data)
+    st.write(stats_df)
     
-    # CSV dosyası olarak indirme seçeneği
-    csv = input_df.to_csv(index=False).encode("utf-8")
-    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv")
-
-if data:
-    st.subheader("📊 Sonuçlar Tablosu")
-    results_df = pd.DataFrame(data)
-    st.write(results_df)
-
-    csv_results = results_df.to_csv(index=False).encode("utf-8")
-    st.download_button(label="📥 Sonuçları CSV Olarak İndir", data=csv_results, file_name="sonuclar.csv", mime="text/csv")
+    csv_stats = stats_df.to_csv(index=False).encode("utf-8")
+    st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
