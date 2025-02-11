@@ -15,9 +15,10 @@ st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
 num_target_genes = st.number_input("🔹 Hedef Gen Sayısını Girin", min_value=1, step=1)
 num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_value=1, step=1)
 
+# Veri listeleri
+input_values_table = []
 data = []
 stats_data = []
-input_values_table = []
 
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
@@ -41,6 +42,13 @@ for i in range(num_target_genes):
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
     control_delta_ct = control_target_ct_values - control_reference_ct_values
     average_control_delta_ct = np.mean(control_delta_ct)
+
+    input_values_table.append({
+        "Hedef Gen": f"Hedef Gen {i+1}",
+        "Grup": "Kontrol",
+        "Hedef Ct": ", ".join(map(str, control_target_ct_values)),
+        "Referans Ct": ", ".join(map(str, control_reference_ct_values))
+    })
     
     for j in range(num_patient_groups):
         st.subheader(f"🩸 Hasta Grubu {j+1}")
@@ -85,6 +93,13 @@ for i in range(num_target_genes):
             test_method = "Mann-Whitney U testi"
         
         significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
+
+        input_values_table.append({
+            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Grup": f"Hasta {j+1}",
+            "Hedef Ct": ", ".join(map(str, sample_target_ct_values)),
+            "Referans Ct": ", ".join(map(str, sample_reference_ct_values))
+        })
         
         stats_data.append({
             "Hedef Gen": f"Hedef Gen {i+1}",
@@ -124,11 +139,3 @@ if stats_data:
     st.subheader("📈 İstatistik Sonuçları")
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
-
-    # 📉 Dağılım Grafiği
-    st.subheader(f"📌 Hedef Gen {i+1} - Dağılım Grafiği")
-    fig = go.Figure()
-    fig.add_trace(go.Box(y=control_delta_ct, name="Kontrol Grubu", marker_color="blue"))
-    fig.add_trace(go.Box(y=sample_delta_ct, name="Hasta Grubu", marker_color="red"))
-    fig.update_layout(title=f"Hedef Gen {i+1} ΔCt Dağılımı", yaxis_title="ΔCt Değeri")
-    st.plotly_chart(fig)
