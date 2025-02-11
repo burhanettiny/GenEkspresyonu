@@ -14,7 +14,7 @@ st.markdown("### B. Yalçınkaya tarafından geliştirildi")
 # Kullanıcıdan Giriş Al
 st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
 
-# Hedef Gen ve Hasta Grubu Sayısı
+# Hedef Gen ve Hasta Grubu Sayısı (Varsayılan olarak 1 değeri gelir)
 num_target_genes = st.number_input("🔹 Hedef Gen Sayısını Girin", min_value=1, step=1)
 num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_value=1, step=1)
 
@@ -44,7 +44,7 @@ for i in range(num_target_genes):
         st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
         continue
     
-    # Her iki veriden ortak uzunlukta veriyi almak için:
+    # Ortak uzunlukta veriyi almak için:
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
@@ -286,10 +286,12 @@ def create_pdf(data, stats_data, input_df):
     buffer.seek(0)
     return buffer
 
-# PDF Raporu İndir Butonu
-if st.button("📥 PDF Raporu İndir"):
-    if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
-        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
-    else:
-        st.error("PDF raporu oluşturmak için yeterli veri yok.")
+# Eğer veri girildiyse, PDF Raporu oluştur ve indir butonunu göster
+if input_values_table:
+    pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
+    st.download_button(
+        label="📥 PDF Raporu İndir",
+        data=pdf_buffer,
+        file_name="gen_ekspresyon_raporu.pdf",
+        mime="application/pdf"
+    )
