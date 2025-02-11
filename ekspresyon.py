@@ -219,6 +219,46 @@ if stats_data:
     # Etkileşimli grafik gösterimi
     st.plotly_chart(fig)
 
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
+def create_pdf(results, stats, input_df):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, height - 50, "Gen Ekspresyon Analizi Raporu")
+
+    c.setFont("Helvetica", 12)
+    c.drawString(50, height - 80, "Sonuçlar:")
+    
+    y_position = height - 100
+    for result in results:
+        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f}"
+        c.drawString(50, y_position, text)
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, y_position - 30, "İstatistiksel Sonuçlar:")
+
+    y_position -= 50
+    for stat in stats:
+        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
+        c.drawString(50, y_position, text)
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+
+    c.save()
+    buffer.seek(0)
+    return buffer
+
 # PDF Raporu İndir Butonu
 if st.button("📥 PDF Raporu İndir"):
     if input_values_table:
