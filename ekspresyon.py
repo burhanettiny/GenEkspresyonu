@@ -323,11 +323,16 @@ def create_pdf(results, stats, input_df):
     y_position -= 50
     
     explanation = (
-        "İstatistiksel değerlendirme sürecinde öncelikle veri dağılımı Shapiro-Wilk testi ile normal olup olmadığı açısından analiz edilmiştir. "
-        "Normallik varsayımı sağlandığında, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
-        "Varyans eşitliği sağlandığında bağımsız örneklem t-testi, sağlanmadığında Welch t-testi uygulanmıştır. "
-        "Eğer veriler normal dağılmıyorsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
-        "Sonuçların anlamlı olup olmadığı, p-değerinin 0.05 eşik değerinden küçük olup olmadığına göre belirlenmiştir. "
+        "İstatistiksel değerlendirme sürecinde öncelikle veri dağılımı;" 
+        "Shapiro-Wilk testi ile normal olup olmadığı açısından analiz edilmiştir."
+        "Normallik varsayımı sağlandığında,"
+        "Gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
+        "Varyans eşitliği sağlandığında,"
+        "Bağımsız örneklem t-testi, sağlanmadığında Welch t-testi uygulanmıştır. "
+        "Veriler normal dağılmıyorsa,
+        "Parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+        "Sonuçların anlamlı olup olmadığı,"
+        "p-değerinin 0.05 eşik değerinden küçük olup olmadığına göre belirlenmiştir. "
         "Eğer p < 0.05 ise sonuç istatistiksel olarak anlamlı kabul edilmiştir."
     )
 
