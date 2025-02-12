@@ -287,7 +287,7 @@ def create_pdf(results, stats, input_df):
     y_position -= 50
     
     explanation = (
-        "istatistiksel degerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmistir. "
+        "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
         "Normallik sağlanırsa, Gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmistir. "
         "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
         "Eger normal dagilim saglanmazsa, Parametrik olmayan Mann-Whitney U testi kullanılmistir. "
