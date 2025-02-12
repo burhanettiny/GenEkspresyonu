@@ -1,0 +1,5 @@
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+
+pdfmetrics.registerFont(TTFont('LiberationSans', 'fonts/LiberationSans-Regular.ttf'))
+c.setFont("LiberationSans", 12)
