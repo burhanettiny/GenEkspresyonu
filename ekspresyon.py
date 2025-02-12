@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
-import plotly.io as pio
 import scipy.stats as stats
 from io import BytesIO
 from reportlab.lib.pagesizes import letter
@@ -165,69 +164,188 @@ if stats_data:
     st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
     
     # Plotly grafik objesi oluşturuluyor
-fig = go.Figure()
+    fig = go.Figure()
 
-# Kontrol grubu verilerini ekleme
-fig.add_trace(go.Scatter(
-    x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
-    y=control_delta_ct,
-    mode='markers',  # Kontrol grubu için
-    name='Kontrol Grubu',
-    marker=dict(color='blue'),
-    text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],  # Tooltip metni
-    hoverinfo='text'  # Tooltip gösterimi
-))
-
-# Hasta grubu verilerini ekleme
-for j in range(num_patient_groups):
+    # Kontrol grubu verilerini ekleme
     fig.add_trace(go.Scatter(
-        x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
-        y=sample_delta_ct,
-        mode='markers',  # Hasta grubu için
-        name=f'Hasta Grubu {j+1}',
-        marker=dict(color='red'),
-        text=[f'Hasta {value:.2f}, Örnek {i+1}' for i, value in enumerate(sample_delta_ct)],  # Tooltip metni
+        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
+        y=control_delta_ct,
+        mode='markers',  # Kontrol grubu için
+        name='Kontrol Grubu',
+        marker=dict(color='blue'),
+        text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],  # Tooltip metni
         hoverinfo='text'  # Tooltip gösterimi
     ))
 
-# Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
-fig.add_trace(go.Scatter(
-    x=[1, 1],  # X ekseninde 1 (Kontrol grubu) için
-    y=[average_control_delta_ct, average_control_delta_ct],  # Y ekseninde ortalama değer
-    mode='lines',
-    line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
-    name='Kontrol Grubu Ortalama'
-))
+    # Hasta grubu verilerini ekleme
+    for j in range(num_patient_groups):
+        fig.add_trace(go.Scatter(
+            x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
+            y=sample_delta_ct,
+            mode='markers',  # Hasta grubu için
+            name=f'Hasta Grubu {j+1}',
+            marker=dict(color='red'),
+            text=[f'Hasta {value:.2f}, Örnek {i+1}' for i, value in enumerate(sample_delta_ct)],  # Tooltip metni
+            hoverinfo='text'  # Tooltip gösterimi
+        ))
 
-# Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
-for j in range(num_patient_groups):
+    # Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
     fig.add_trace(go.Scatter(
-        x=[(j + 2), (j + 2)],  # X ekseninde 2 (Hasta grubu) için
-        y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
+        x=[1, 1],  # X ekseninde 1 (Kontrol grubu) için
+        y=[average_control_delta_ct, average_control_delta_ct],  # Y ekseninde ortalama değer
         mode='lines',
         line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
-        name=f'Hasta Grubu {j+1} Ortalama'
+        name='Kontrol Grubu Ortalama'
     ))
 
-# Grafik ayarları
-fig.update_layout(
-    title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
-    xaxis=dict(
-        tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-        ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
-        title='Grup'
-    ),
-    yaxis=dict(
-        title='ΔCt Değeri'
-    ),
-    showlegend=True
-)
+    # Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
+    for j in range(num_patient_groups):
+        fig.add_trace(go.Scatter(
+            x=[(j + 2), (j + 2)],  # X ekseninde 2 (Hasta grubu) için
+            y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
+            mode='lines',
+            line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
+            name=f'Hasta Grubu {j+1} Ortalama'
+        ))
 
-# Etkileşimli grafik gösterimi
-st.plotly_chart(fig)
+    # Grafik ayarları
+    fig.update_layout(
+        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+        xaxis=dict(
+            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
+            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
+            title='Grup'
+        ),
+        yaxis=dict(
+            title='ΔCt Değeri'
+        ),
+        showlegend=True
+    )
+
+    # Etkileşimli grafik gösterimi
+    st.plotly_chart(fig)
 
 from io import BytesIO
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-def create_pdf(results, stats)
+def create_pdf(results, stats, input_df):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, height - 50, "Gen Ekspresyon Analizi Raporu")
+
+    c.setFont("Helvetica", 12)
+    c.drawString(50, height - 80, "Sonuçlar:")
+    
+    y_position = height - 100
+    for result in results:
+        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f}"
+        c.drawString(50, y_position, text)
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, y_position - 30, "İstatistiksel Sonuçlar:")
+
+    y_position -= 50
+    for stat in stats:
+        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
+        c.drawString(50, y_position, text)
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+
+    c.save()
+    buffer.seek(0)
+    return buffer
+
+def create_pdf(results, stats, input_df):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    c.setFont("Helvetica", 12)
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, height - 50, "Gen Ekspresyon Analizi Raporu")
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, height - 80, "Giriş Verileri Tablosu:")
+    
+    table_data = [input_df.columns.tolist()] + input_df.values.tolist()
+    table = Table(table_data, colWidths=[100, 100, 100, 100, 100])
+    
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ('LINEBEFORE', (0, 0), (0, -1), 0.5, colors.black)
+    ]))
+    
+    table.wrapOn(c, width, height)
+    table.drawOn(c, 50, height - 320)
+    
+    c.setFont("Helvetica", 12)
+    y_position = height - 440
+    c.drawString(50, y_position, "Sonuçlar:")
+    y_position -= 20
+    for result in results:
+        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f}"
+        c.drawString(50, y_position, text)
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+    
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, y_position - 30, "İstatistiksel Sonuçlar:")
+    
+    y_position -= 50
+    for stat in stats:
+        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
+        c.drawString(50, y_position, text)
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+    
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, y_position - 30, "İstatistiksel Değerlendirme:")
+    
+    y_position -= 50
+    explanation = (
+        "İstatistiksel değerlendirme sürecinde öncelikle veri dağılımı Shapiro-Wilk testi ile normal olup olmadığı açısından analiz edilmiştir. "
+        "Normallik varsayımı sağlandığında, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
+        "Varyans eşitliği sağlandığında bağımsız örneklem t-testi, sağlanmadığında Welch t-testi uygulanmıştır. "
+        "Eğer veriler normal dağılmıyorsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+        "Sonuçların anlamlı olup olmadığı, p-değerinin 0.05 eşik değerinden küçük olup olmadığına göre belirlenmiştir. "
+        "Eğer p < 0.05 ise sonuç istatistiksel olarak anlamlı kabul edilmiştir."
+    )
+    
+    c.setFont("Helvetica", 12)
+    text_lines = explanation.split(". ")
+    for line in text_lines:
+        c.drawString(50, y_position, line.strip() + '.')
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+    
+    c.save()
+    buffer.seek(0)
+    return buffer
+
+if st.button("📥 PDF Raporu İndir"):
+    if input_values_table:
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
+        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
+    else:
+        st.error("Veri bulunamadı, PDF oluşturulamadı.")
