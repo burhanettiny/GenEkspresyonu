@@ -329,7 +329,7 @@ def create_pdf(results, stats, input_df):
         "Gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
         "Varyans eşitliği sağlandığında,"
         "Bağımsız örneklem t-testi, sağlanmadığında Welch t-testi uygulanmıştır. "
-        "Veriler normal dağılmıyorsa,
+        "Veriler normal dağılmıyorsa,"
         "Parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
         "Sonuçların anlamlı olup olmadığı,"
         "p-değerinin 0.05 eşik değerinden küçük olup olmadığına göre belirlenmiştir. "
