@@ -331,19 +331,6 @@ def create_pdf(results, stats, input_df):
             c.showPage()
             y_position = height - 50
 
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y_position - 30, "İstatistiksel Değerlendirme:")
-
-    y_position -= 50
-    explanation = (
-        "İstatistiksel değerlendirme sürecinde öncelikle veri dağılımı Shapiro-Wilk testi ile normal olup olmadığı açısından analiz edilmiştir. "
-        "Normallik varsayımı sağlandığında, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
-        "Varyans eşitliği sağlandığında bağımsız örneklem t-testi, sağlanmadığında Welch t-testi uygulanmıştır. "
-        "Eğer veriler normal dağılmıyorsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
-        "Sonuçların anlamlı olup olmadığı, p-değerinin 0.05 eşik değerinden küçük olup olmadığına göre belirlenmiştir. "
-        "Eğer p < 0.05 ise sonuç istatistiksel olarak anlamlı kabul edilmiştir."
-    )
-
     c.save()
     buffer.seek(0)
     return buffer
