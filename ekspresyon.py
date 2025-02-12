@@ -165,66 +165,66 @@ if stats_data:
     st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
     
     # Plotly grafik objesi oluşturuluyor
-    fig = go.Figure()
+fig = go.Figure()
 
-    # Kontrol grubu verilerini ekleme
+# Kontrol grubu verilerini ekleme
+fig.add_trace(go.Scatter(
+    x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
+    y=control_delta_ct,
+    mode='markers',  # Kontrol grubu için
+    name='Kontrol Grubu',
+    marker=dict(color='blue'),
+    text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],  # Tooltip metni
+    hoverinfo='text'  # Tooltip gösterimi
+))
+
+# Hasta grubu verilerini ekleme
+for j in range(num_patient_groups):
     fig.add_trace(go.Scatter(
-        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
-        y=control_delta_ct,
-        mode='markers',  # Kontrol grubu için
-        name='Kontrol Grubu',
-        marker=dict(color='blue'),
-        text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],  # Tooltip metni
+        x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
+        y=sample_delta_ct,
+        mode='markers',  # Hasta grubu için
+        name=f'Hasta Grubu {j+1}',
+        marker=dict(color='red'),
+        text=[f'Hasta {value:.2f}, Örnek {i+1}' for i, value in enumerate(sample_delta_ct)],  # Tooltip metni
         hoverinfo='text'  # Tooltip gösterimi
     ))
 
-    # Hasta grubu verilerini ekleme
-    for j in range(num_patient_groups):
-        fig.add_trace(go.Scatter(
-            x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
-            y=sample_delta_ct,
-            mode='markers',  # Hasta grubu için
-            name=f'Hasta Grubu {j+1}',
-            marker=dict(color='red'),
-            text=[f'Hasta {value:.2f}, Örnek {i+1}' for i, value in enumerate(sample_delta_ct)],  # Tooltip metni
-            hoverinfo='text'  # Tooltip gösterimi
-        ))
+# Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
+fig.add_trace(go.Scatter(
+    x=[1, 1],  # X ekseninde 1 (Kontrol grubu) için
+    y=[average_control_delta_ct, average_control_delta_ct],  # Y ekseninde ortalama değer
+    mode='lines',
+    line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
+    name='Kontrol Grubu Ortalama'
+))
 
-    # Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
+# Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
+for j in range(num_patient_groups):
     fig.add_trace(go.Scatter(
-        x=[1, 1],  # X ekseninde 1 (Kontrol grubu) için
-        y=[average_control_delta_ct, average_control_delta_ct],  # Y ekseninde ortalama değer
+        x=[(j + 2), (j + 2)],  # X ekseninde 2 (Hasta grubu) için
+        y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
         mode='lines',
         line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
-        name='Kontrol Grubu Ortalama'
+        name=f'Hasta Grubu {j+1} Ortalama'
     ))
 
-    # Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
-    for j in range(num_patient_groups):
-        fig.add_trace(go.Scatter(
-            x=[(j + 2), (j + 2)],  # X ekseninde 2 (Hasta grubu) için
-            y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
-            mode='lines',
-            line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
-            name=f'Hasta Grubu {j+1} Ortalama'
-        ))
+# Grafik ayarları
+fig.update_layout(
+    title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+    xaxis=dict(
+        tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
+        ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
+        title='Grup'
+    ),
+    yaxis=dict(
+        title='ΔCt Değeri'
+    ),
+    showlegend=True
+)
 
-    # Grafik ayarları
-    fig.update_layout(
-        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
-        xaxis=dict(
-            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
-            title='Grup'
-        ),
-        yaxis=dict(
-            title='ΔCt Değeri'
-        ),
-        showlegend=True
-    )
-
-    # Etkileşimli grafik gösterimi
-    st.plotly_chart(fig)
+# Etkileşimli grafik gösterimi
+st.plotly_chart(fig)
 
 from io import BytesIO
 from reportlab.lib.pagesizes import letter
