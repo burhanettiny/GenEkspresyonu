@@ -258,7 +258,7 @@ def create_pdf(results, stats, input_df):
     table.drawOn(c, margin, height - 320)
     
     y_position = height - 440
-    c.setFont("Helvetica", 12)
+    c.setFont("Helvetica-Bold", 12)
     c.drawString(margin, y_position, "Sonuçlar:")
     y_position -= 20
     
