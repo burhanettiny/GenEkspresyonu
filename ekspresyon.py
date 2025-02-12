@@ -233,42 +233,6 @@ def create_pdf(results, stats, input_df):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
-
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(50, height - 50, "Gen Ekspresyon Analizi Raporu")
-
-    c.setFont("Helvetica", 12)
-    c.drawString(50, height - 80, "Sonuçlar:")
-    
-    y_position = height - 100
-    for result in results:
-        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f}"
-        c.drawString(50, y_position, text)
-        y_position -= 20
-        if y_position < 50:
-            c.showPage()
-            y_position = height - 50
-
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y_position - 30, "İstatistiksel Sonuçlar:")
-
-    y_position -= 50
-    for stat in stats:
-        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
-        c.drawString(50, y_position, text)
-        y_position -= 20
-        if y_position < 50:
-            c.showPage()
-            y_position = height - 50
-
-    c.save()
-    buffer.seek(0)
-    return buffer
-
-def create_pdf(results, stats, input_df):
-    buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=letter)
-    width, height = letter
     margin = 40  # Kenar boşluklarını optimize et
 
     c.setFont("Helvetica-Bold", 14)
@@ -323,17 +287,12 @@ def create_pdf(results, stats, input_df):
     y_position -= 50
     
     explanation = (
-        "İstatistiksel değerlendirme sürecinde öncelikle veri dağılımı;" 
-        "Shapiro-Wilk testi ile normal olup olmadığı açısından analiz edilmiştir."
-        "Normallik varsayımı sağlandığında,"
-        "Gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
-        "Varyans eşitliği sağlandığında,"
-        "Bağımsız örneklem t-testi, sağlanmadığında Welch t-testi uygulanmıştır. "
-        "Veriler normal dağılmıyorsa,"
-        "Parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
-        "Sonuçların anlamlı olup olmadığı,"
+        "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
+        "Normallik sağlanırsa, Gruplar arasındaki varyans eşitliği Levene testi ile varyans eşitliği kontrol edilmiştir. "
+        "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
+        "Eğer normal dağılım sağlanmazsa, Parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
         "p-değerinin 0.05 eşik değerinden küçük olup olmadığına göre belirlenmiştir. "
-        "Eğer p < 0.05 ise sonuç istatistiksel olarak anlamlı kabul edilmiştir."
+        "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir."
     )
 
     c.setFont("Helvetica", 12)
