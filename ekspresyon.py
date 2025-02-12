@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import plotly.io as pio
 import scipy.stats as stats
 from io import BytesIO
 from reportlab.lib.pagesizes import letter
@@ -338,6 +339,11 @@ def create_pdf(results, stats, input_df):
         if y_position < 50:
             c.showPage()
             y_position = height - 50
+
+    # Convert Plotly figure to image (PNG format)
+    plotly_image = pio.to_image(plotly_figure, format='png')
+    plotly_image_stream = BytesIO(plotly_image)
+    c.drawImage(plotly_image_stream, 50, height - 350, width=500, height=300)
     
     # Grafik Görselini PDF'ye ekleyelim
     plotly_image = pio.to_image(plotly_figure, format='png')
@@ -350,7 +356,8 @@ def create_pdf(results, stats, input_df):
 
 if st.button("📥 PDF Raporu İndir"):
     if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table), fig)  # Pass the Plotly figure here
         st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
+
