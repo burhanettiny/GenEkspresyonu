@@ -9,7 +9,6 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
-import textwrap
 
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
