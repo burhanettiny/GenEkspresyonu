@@ -331,6 +331,29 @@ def create_pdf(results, stats, input_df):
             c.showPage()
             y_position = height - 50
 
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, y_position - 30, "İstatistiksel Değerlendirme:")
+
+    y_position -= 50
+    explanation = (
+        "İstatistiksel değerlendirme sürecinde öncelikle veri dağılımı Shapiro-Wilk testi ile normal olup olmadığı açısından analiz edilmiştir. "
+        "Normallik varsayımı sağlandığında, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
+        "Varyans eşitliği sağlandığında bağımsız örneklem t-testi, sağlanmadığında Welch t-testi uygulanmıştır. "
+        "Eğer veriler normal dağılmıyorsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+        "Sonuçların anlamlı olup olmadığı, p-değerinin 0.05 eşik değerinden küçük olup olmadığına göre belirlenmiştir. "
+        "Eğer p < 0.05 ise sonuç istatistiksel olarak anlamlı kabul edilmiştir."
+    )
+
+    # Metni satırlara bölme
+    c.setFont("Helvetica", 12)
+    text_lines = textwrap.wrap(explanation, width=80)  # 80 karakter genişliğinde satırlara böler
+    for line in text_lines:
+        c.drawString(50, y_position, line.strip() + '.')
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+
     c.save()
     buffer.seek(0)
     return buffer
