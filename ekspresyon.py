@@ -230,7 +230,7 @@ from io import BytesIO
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-def create_pdf(results, stats, input_df):
+ def create_pdf(results, stats, input_df):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
@@ -239,30 +239,9 @@ def create_pdf(results, stats, input_df):
     c.drawString(50, height - 50, "Gen Ekspresyon Analizi Raporu")
 
     c.setFont("Helvetica", 12)
-    c.drawString(50, height - 80, "Giriş Verileri Tablosu:")
-
-    # Tabloyu ekleme
-    table_data = [input_df.columns.tolist()] + input_df.values.tolist()
-    table = Table(table_data, colWidths=[100, 100, 100, 100, 100])
-
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-        ('LINEBEFORE', (0, 0), (0, -1), 0.5, colors.black)
-    ]))
-
-    table.wrapOn(c, width, height)
-    table.drawOn(c, 50, height - 320)
-
-    # Sonuçlar kısmını yazdırma
-    c.setFont("Helvetica", 12)
-    y_position = height - 440
-    c.drawString(50, y_position, "Sonuçlar:")
-    y_position -= 20
+    c.drawString(50, height - 80, "Sonuçlar:")
+    
+    y_position = height - 100
     for result in results:
         text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f}"
         c.drawString(50, y_position, text)
@@ -283,9 +262,65 @@ def create_pdf(results, stats, input_df):
             c.showPage()
             y_position = height - 50
 
+    c.save()
+    buffer.seek(0)
+    return buffer
+
+def create_pdf(results, stats, input_df):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    c.setFont("Helvetica", 12)
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, height - 50, "Gen Ekspresyon Analizi Raporu")
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, height - 80, "Giriş Verileri Tablosu:")
+    
+    table_data = [input_df.columns.tolist()] + input_df.values.tolist()
+    table = Table(table_data, colWidths=[100, 100, 100, 100, 100])
+    
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ('LINEBEFORE', (0, 0), (0, -1), 0.5, colors.black)
+    ]))
+    
+    table.wrapOn(c, width, height)
+    table.drawOn(c, 50, height - 320)
+    
+    c.setFont("Helvetica", 12)
+    y_position = height - 440
+    c.drawString(50, y_position, "Sonuçlar:")
+    y_position -= 20
+    for result in results:
+        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f}"
+        c.drawString(50, y_position, text)
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+    
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, y_position - 30, "İstatistiksel Sonuçlar:")
+    
+    y_position -= 50
+    for stat in stats:
+        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
+        c.drawString(50, y_position, text)
+        y_position -= 20
+        if y_position < 50:
+            c.showPage()
+            y_position = height - 50
+    
     c.setFont("Helvetica-Bold", 12)
     c.drawString(50, y_position - 30, "İstatistiksel Değerlendirme:")
-
+    
     y_position -= 50
     explanation = (
         "İstatistiksel değerlendirme sürecinde öncelikle veri dağılımı Shapiro-Wilk testi ile normal olup olmadığı açısından analiz edilmiştir. "
@@ -295,17 +330,23 @@ def create_pdf(results, stats, input_df):
         "Sonuçların anlamlı olup olmadığı, p-değerinin 0.05 eşik değerinden küçük olup olmadığına göre belirlenmiştir. "
         "Eğer p < 0.05 ise sonuç istatistiksel olarak anlamlı kabul edilmiştir."
     )
-
-    # Metni satırlara bölme
+    
     c.setFont("Helvetica", 12)
-    text_lines = textwrap.wrap(explanation, width=80)  # 80 karakter genişliğinde satırlara böler
+    text_lines = explanation.split(". ")
     for line in text_lines:
         c.drawString(50, y_position, line.strip() + '.')
         y_position -= 20
         if y_position < 50:
             c.showPage()
             y_position = height - 50
-
+    
     c.save()
     buffer.seek(0)
     return buffer
+
+if st.button("📥 PDF Raporu İndir"):
+    if input_values_table:
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
+        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
+    else:
+        st.error("Veri bulunamadı, PDF oluşturulamadı.")
