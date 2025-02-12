@@ -229,7 +229,7 @@ from io import BytesIO
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-def create_pdf(results, stats, input_df):
+def create_pdf(results, stats, input_df, plotly_figure):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
@@ -339,6 +339,11 @@ def create_pdf(results, stats, input_df):
             c.showPage()
             y_position = height - 50
     
+    # Grafik Görselini PDF'ye ekleyelim
+    plotly_image = pio.to_image(plotly_figure, format='png')
+    image_buffer = BytesIO(plotly_image)
+    c.drawImage(image_buffer, 50, y_position - 150, width=500, height=300)
+
     c.save()
     buffer.seek(0)
     return buffer
