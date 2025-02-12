@@ -230,4 +230,4 @@ from io import BytesIO
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-def create_pdf(results, stats
+def create_pdf(results, stats)
