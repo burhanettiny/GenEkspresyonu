@@ -282,7 +282,7 @@ def create_pdf(results, stats, input_df):
             c.showPage()
             y_position = height - margin
     
-    c.setFont("LiberationSans-Bold", 12)
+    c.setFont("Helvetica-Bold", 12)
     c.drawString(margin, y_position - 30, "İstatistiksel Değerlendirme:")
     y_position -= 50
     
