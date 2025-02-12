@@ -344,16 +344,6 @@ def create_pdf(results, stats, input_df):
         "Eğer p < 0.05 ise sonuç istatistiksel olarak anlamlı kabul edilmiştir."
     )
 
-    # Metni satırlara bölme
-    c.setFont("Helvetica", 12)
-    text_lines = textwrap.wrap(explanation, width=80)  # 80 karakter genişliğinde satırlara böler
-    for line in text_lines:
-        c.drawString(50, y_position, line.strip() + '.')
-        y_position -= 20
-        if y_position < 50:
-            c.showPage()
-            y_position = height - 50
-
     c.save()
     buffer.seek(0)
     return buffer
