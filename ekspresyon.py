@@ -239,9 +239,9 @@ def create_pdf(results, stats, input_df):
     c.drawString(margin, height - margin, "Gen Ekspresyon Analizi Raporu")
     
     c.setFont("Helvetica-Bold", 12)
-    c.drawString(margin, height - margin, "Giriş Verileri Tablosu:")
+    c.drawString(margin, height - 80, "Giriş Verileri Tablosu:")
     
-    col_width = (width - 2 * margin) / len(input_df.columns)
+    col_width = (width - 2 * margin, height - 80) / len(input_df.columns)
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
     table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
     
