@@ -288,9 +288,3 @@ def create_pdf(results, stats, input_df, fig):
     doc.build(elements)
     buffer.seek(0)
     return buffer
-if st.button("📥 PDF Raporu İndir"):
-    if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
-        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
-    else:
-        st.error("Veri bulunamadı, PDF oluşturulamadı.")
