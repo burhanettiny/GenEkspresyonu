@@ -263,7 +263,7 @@ def create_pdf(results, stats, input_df):
     y_position -= 20
     
     for result in results:
-        text = f"{result.get('Hedef Gen', 'N/A')} - {result.get('Hasta Grubu', 'N/A')} | ΔΔCt: {result.get('ΔΔCt', 0):.2f} | 2^(-ΔΔCt): {result.get('Gen Ekspresyon Değişimi (2^(-ΔΔCt))', 0):.2f} | Regülasyon Durumu: {result.get('regulation_status', 'Bilinmiyor')}"
+        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['ΔΔCt']} | p-değeri: {stat['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.4f} | {stat['Regülasyon Durumu']}"
         c.drawString(margin, y_position, text)
         y_position -= 20
         if y_position < margin:
