@@ -135,7 +135,7 @@ for i in range(num_target_genes):
             "Hasta Grubu": f"Hasta Grubu {j+1}",
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
-            "Regülasyon Durumu": regulation_status
+            "Regülasyon Durumu": regulation_status, # Add regulation_status
             "ΔCt (Kontrol)": average_control_delta_ct,  # Add average ΔCt (Kontrol) for visualization
             "ΔCt (Hasta)": average_sample_delta_ct   # Add average ΔCt (Hasta) for visualization
         })
