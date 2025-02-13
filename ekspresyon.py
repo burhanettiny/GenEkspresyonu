@@ -303,6 +303,11 @@ def create_pdf(results, stats, input_df):
         elements.append(Paragraph(line.strip() + '.', styles['Normal']))
         elements.append(Spacer(1, 6))
     
+    # Grafik ekleme
+    img_path = '/mnt/data/gen_exp_analysis.png'
+    fig.write_image(img_path)
+    elements.append(Image(img_path, width=5*inch, height=3*inch))
+    
     doc.build(elements)
     buffer.seek(0)
     return buffer
