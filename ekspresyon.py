@@ -59,6 +59,7 @@ for i in range(num_target_genes):
             "Grup": "Kontrol",
             "Hedef Gen Ct Değeri": control_target_ct_values[idx],
             "Referans Ct": control_reference_ct_values[idx]
+            "ΔCt (Kontrol)": control_delta_ct[idx]  # Add ΔCt (Kontrol) value        
         })
         sample_counter += 1
     
