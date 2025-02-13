@@ -240,8 +240,17 @@ def create_pdf(results, stats, input_df):
     
     c.setFont("Helvetica-Bold", 12)
     c.drawString(margin, height - 80, "Giriş Verileri Tablosu:")
+
+    # Tabloyu başlığın hemen altına konumlandır
+    table_y_position = height - 100  # Başlığın hemen altına biraz boşluk bırak
+    table.wrapOn(c, width, height)
+    table_height = len(table_data) * 15  # Satır başına yaklaşık 15 birim yükseklik hesapla
+    table.drawOn(c, margin, table_y_position - table_height)
     
-    col_width = (width - 2 * margin, height - 80) / len(input_df.columns)
+    # Yeni y konumunu hesapla
+    y_position = table_y_position - table_height - 40  # Tablo altına boşluk bırak
+    
+    col_width = (width - 2 * margin) / len(input_df.columns)
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
     table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
     
