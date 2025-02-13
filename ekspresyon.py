@@ -309,4 +309,4 @@ def create_pdf(results, stats, input_df):
 
 if st.button("📥 PDF Raporu İndir"):
     if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.D
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
