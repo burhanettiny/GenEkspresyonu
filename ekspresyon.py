@@ -58,7 +58,8 @@ for i in range(num_target_genes):
             "Hedef Gen": f"Hedef Gen {i+1}",
             "Grup": "Kontrol",
             "Hedef Gen Ct Değeri": control_target_ct_values[idx],
-            "Referans Ct": control_reference_ct_values[idx]   
+            "Referans Ct": control_reference_ct_values[idx]  
+            "ΔCt (Kontrol)": control_delta_ct[idx]  # Add ΔCt (Kontrol) value
         })
         sample_counter += 1
     
@@ -89,7 +90,8 @@ for i in range(num_target_genes):
                 "Hedef Gen": f"Hedef Gen {i+1}",
                 "Grup": f"Hasta Grubu {j+1}",
                 "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
-                "Referans Ct": sample_reference_ct_values[idx]
+                "Referans Ct": sample_reference_ct_values[idx],
+                "ΔCt (Hasta)": sample_delta_ct[idx]  # Add ΔCt (Hasta) value
             })
             sample_counter += 1
         
@@ -134,6 +136,8 @@ for i in range(num_target_genes):
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
             "Regülasyon Durumu": regulation_status
+            "ΔCt (Kontrol)": average_control_delta_ct,  # Add average ΔCt (Kontrol) for visualization
+            "ΔCt (Hasta)": average_sample_delta_ct   # Add average ΔCt (Hasta) for visualization
         })
 
 # Giriş Verileri Tablosunu Göster
