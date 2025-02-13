@@ -1,4 +1,4 @@
-import streamlit as st 
+import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -7,7 +7,8 @@ from io import BytesIO
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak, Image
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle
 
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
@@ -169,11 +170,11 @@ if stats_data:
     fig.add_trace(go.Scatter(
         x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
         y=control_delta_ct,
-        mode='markers',
+        mode='markers',  # Kontrol grubu için
         name='Kontrol Grubu',
         marker=dict(color='blue'),
-        text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],
-        hoverinfo='text'
+        text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],  # Tooltip metni
+        hoverinfo='text'  # Tooltip gösterimi
     ))
 
     # Hasta grubu verilerini ekleme
@@ -181,29 +182,29 @@ if stats_data:
         fig.add_trace(go.Scatter(
             x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
             y=sample_delta_ct,
-            mode='markers',
+            mode='markers',  # Hasta grubu için
             name=f'Hasta Grubu {j+1}',
             marker=dict(color='red'),
-            text=[f'Hasta {value:.2f}, Örnek {i+1}' for i, value in enumerate(sample_delta_ct)],
-            hoverinfo='text'
+            text=[f'Hasta {value:.2f}, Örnek {i+1}' for i, value in enumerate(sample_delta_ct)],  # Tooltip metni
+            hoverinfo='text'  # Tooltip gösterimi
         ))
 
-    # Kontrol grubunun ortalama değerini çizme
+    # Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
     fig.add_trace(go.Scatter(
-        x=[1, 1],
-        y=[average_control_delta_ct, average_control_delta_ct],
+        x=[1, 1],  # X ekseninde 1 (Kontrol grubu) için
+        y=[average_control_delta_ct, average_control_delta_ct],  # Y ekseninde ortalama değer
         mode='lines',
-        line=dict(color='black', dash='dot', width=4),
+        line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
         name='Kontrol Grubu Ortalama'
     ))
 
-    # Hasta grubunun ortalama değerini çizme
+    # Hasta grubunun ortalama değerini çizme (kesik çizgi - siyah)
     for j in range(num_patient_groups):
         fig.add_trace(go.Scatter(
-            x=[(j + 2), (j + 2)],
-            y=[average_sample_delta_ct, average_sample_delta_ct],
+            x=[(j + 2), (j + 2)],  # X ekseninde 2 (Hasta grubu) için
+            y=[average_sample_delta_ct, average_sample_delta_ct],  # Y ekseninde ortalama değer
             mode='lines',
-            line=dict(color='black', dash='dot', width=4),
+            line=dict(color='black', dash='dot', width=4),  # Kesik siyah çizgi
             name=f'Hasta Grubu {j+1} Ortalama'
         ))
 
@@ -233,7 +234,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 import pandas as pd
 import streamlit as st
 
-def create_pdf(results, stats, input_df, fig):
+def create_pdf(results, stats, input_df):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
@@ -249,42 +250,65 @@ def create_pdf(results, stats, input_df, fig):
     
     # Tablo Verisi
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
-    col_width = 100
-    table_style = TableStyle([
+    col_width = (letter[0] - 80) / len(input_df.columns)
+    table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
+    
+    table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-    ])
-    table = Table(table_data, colWidths=col_width, rowHeights=12, style=table_style)
+    ]))
+    
     elements.append(table)
     elements.append(Spacer(1, 12))
     
-    # Sonuçlar
+    # Sonuçlar Başlığı
     elements.append(Paragraph("Sonuçlar:", styles['Heading2']))
-    results_table_data = [["Hedef Gen", "Hasta Grubu", "ΔΔCt", "Gen Ekspresyon Değişimi", "Regülasyon Durumu"]]
-    for result in results:
-        results_table_data.append([result["Hedef Gen"], result["Hasta Grubu"], f"{result['ΔΔCt']:.2f}", f"{result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f}", result["Regülasyon Durumu"]])
-    table = Table(results_table_data, colWidths=col_width, rowHeights=12, style=table_style)
-    elements.append(table)
     elements.append(Spacer(1, 12))
     
-    # İstatistik Sonuçları
-    elements.append(Paragraph("İstatistik Sonuçları:", styles['Heading2']))
-    stats_table_data = [["Hedef Gen", "Hasta Grubu", "Test Türü", "Kullanılan Test", "Test P-değeri", "Anlamlılık"]]
-    for stat in stats:
-        stats_table_data.append([stat["Hedef Gen"], stat["Hasta Grubu"], stat["Test Türü"], stat["Kullanılan Test"], f"{stat['Test P-değeri']:.2e}", stat["Anlamlılık"]])
-    table = Table(stats_table_data, colWidths=col_width, rowHeights=12, style=table_style)
-    elements.append(table)
+    for result in results:
+        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f} | {result['Regülasyon Durumu']}"
+        elements.append(Paragraph(text, styles['Normal']))
+        elements.append(Spacer(1, 6))
+    
+    elements.append(PageBreak())  # Sayfa sonu
+    
+    # İstatistiksel Sonuçlar
+    elements.append(Paragraph("İstatistiksel Sonuçlar:", styles['Heading2']))
     elements.append(Spacer(1, 12))
-
-    # Grafik ekleme
-    img_path = '/mnt/data/gen_exp_analysis.png'
-    fig.write_image(img_path)
-    elements.append(Image(img_path, width=5*inch, height=3*inch))
-
-    # PDF Dosyasını Kaydet
+    
+    for stat in stats:
+        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
+        elements.append(Paragraph(text, styles['Normal']))
+        elements.append(Spacer(1, 6))
+    
+    elements.append(PageBreak())  # Sayfa sonu
+    
+    # İstatistiksel Değerlendirme
+    elements.append(Paragraph("İstatistiksel Değerlendirme:", styles['Heading2']))
+    elements.append(Spacer(1, 12))
+    
+    explanation = (
+        "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
+        "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
+        "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
+        "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+        "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir."
+    )
+    
+    for line in explanation.split(". "):
+        elements.append(Paragraph(line.strip() + '.', styles['Normal']))
+        elements.append(Spacer(1, 6))
+    
     doc.build(elements)
     buffer.seek(0)
     return buffer
+if st.button("📥 PDF Raporu İndir"):
+    if input_values_table:
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
+        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
+    else:
+        st.error("Veri bulunamadı, PDF oluşturulamadı.")
