@@ -227,23 +227,30 @@ if stats_data:
 
 from io import BytesIO
 from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+import pandas as pd
+import streamlit as st
 
 def create_pdf(results, stats, input_df):
     buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=letter)
-    width, height = letter
-    margin = 40  # Kenar boşlukları
-
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(margin, height - margin, "Gen Ekspresyon Analizi Raporu")
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    elements = []
     
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(margin, height - 80, "Giriş Verileri Tablosu:")
+    styles = getSampleStyleSheet()
+    
+    # Başlık
+    elements.append(Paragraph("Gen Ekspresyon Analizi Raporu", styles['Title']))
+    elements.append(Spacer(1, 12))
 
-    # Tablo verisi
+    # Giriş Verileri Tablosu Başlığı
+    elements.append(Paragraph("Giriş Verileri Tablosu:", styles['Heading2']))
+    
+    # Tablo Verisi
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
-    col_width = (width - 2 * margin) / len(input_df.columns)
+    col_width = (letter[0] - 80) / len(input_df.columns)
     table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
     
     table.setStyle(TableStyle([
@@ -255,40 +262,34 @@ def create_pdf(results, stats, input_df):
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
     
-    # Tabloyu başlığın hemen altına konumlandır
-    table_y_position = height - 100  # Başlıktan hemen sonra
-    table.wrapOn(c, width, height)
-    table_height = len(table_data) * 15  # Satır başına 15 birim yükseklik hesapla
-    table.drawOn(c, margin, table_y_position - table_height)
+    elements.append(table)
+    elements.append(Spacer(1, 12))
     
-    y_position = table_y_position - table_height - 40  # Boşluk bırak
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(margin, y_position, "Sonuçlar:")
-    y_position -= 20
-
+    # Sonuçlar Başlığı
+    elements.append(Paragraph("Sonuçlar:", styles['Heading2']))
+    elements.append(Spacer(1, 12))
+    
     for result in results:
         text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f} | {result['Regülasyon Durumu']}"
-        c.drawString(margin, y_position, text)
-        y_position -= 20
-        if y_position < margin:
-            c.showPage()
-            y_position = height - margin
-
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(margin, y_position - 30, "İstatistiksel Sonuçlar:")
-    y_position -= 50
+        elements.append(Paragraph(text, styles['Normal']))
+        elements.append(Spacer(1, 6))
+    
+    elements.append(PageBreak())  # Sayfa sonu
+    
+    # İstatistiksel Sonuçlar
+    elements.append(Paragraph("İstatistiksel Sonuçlar:", styles['Heading2']))
+    elements.append(Spacer(1, 12))
     
     for stat in stats:
         text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
-        c.drawString(margin, y_position, text)
-        y_position -= 20
-        if y_position < margin:
-            c.showPage()
-            y_position = height - margin
+        elements.append(Paragraph(text, styles['Normal']))
+        elements.append(Spacer(1, 6))
     
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(margin, y_position - 30, "İstatistiksel Değerlendirme:")
-    y_position -= 50
+    elements.append(PageBreak())  # Sayfa sonu
+    
+    # İstatistiksel Değerlendirme
+    elements.append(Paragraph("İstatistiksel Değerlendirme:", styles['Heading2']))
+    elements.append(Spacer(1, 12))
     
     explanation = (
         "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
@@ -298,22 +299,14 @@ def create_pdf(results, stats, input_df):
         "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir."
     )
     
-    c.setFont("Helvetica", 12)
-    text_lines = explanation.split(". ")
-    for line in text_lines:
-        c.drawString(margin, y_position, line.strip() + '.')
-        y_position -= 20
-        if y_position < margin:
-            c.showPage()
-            y_position = height - margin
+    for line in explanation.split(". "):
+        elements.append(Paragraph(line.strip() + '.', styles['Normal']))
+        elements.append(Spacer(1, 6))
     
-    c.save()
+    doc.build(elements)
     buffer.seek(0)
     return buffer
 
 if st.button("📥 PDF Raporu İndir"):
     if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
-        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
-    else:
-        st.error("Veri bulunamadı, PDF oluşturulamadı.")
+        pdf_buffer = create_pdf(data, stats_data, pd.D
