@@ -233,7 +233,7 @@ def create_pdf(results, stats, input_df):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
-    margin = 40  # Kenar boşluklarını optimize et
+    margin = 40  # Kenar boşlukları
 
     c.setFont("Helvetica-Bold", 14)
     c.drawString(margin, height - margin, "Gen Ekspresyon Analizi Raporu")
@@ -241,17 +241,9 @@ def create_pdf(results, stats, input_df):
     c.setFont("Helvetica-Bold", 12)
     c.drawString(margin, height - 80, "Giriş Verileri Tablosu:")
 
-    # Tabloyu başlığın hemen altına konumlandır
-    table_y_position = height - 100  # Başlığın hemen altına biraz boşluk bırak
-    table.wrapOn(c, width, height)
-    table_height = len(table_data) * 15  # Satır başına yaklaşık 15 birim yükseklik hesapla
-    table.drawOn(c, margin, table_y_position - table_height)
-    
-    # Yeni y konumunu hesapla
-    y_position = table_y_position - table_height - 40  # Tablo altına boşluk bırak
-    
-    col_width = (width - 2 * margin) / len(input_df.columns)
+    # Tablo verisi
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
+    col_width = (width - 2 * margin) / len(input_df.columns)
     table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
     
     table.setStyle(TableStyle([
@@ -263,14 +255,17 @@ def create_pdf(results, stats, input_df):
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
     
+    # Tabloyu başlığın hemen altına konumlandır
+    table_y_position = height - 100  # Başlıktan hemen sonra
     table.wrapOn(c, width, height)
-    table.drawOn(c, margin, height - 320)
+    table_height = len(table_data) * 15  # Satır başına 15 birim yükseklik hesapla
+    table.drawOn(c, margin, table_y_position - table_height)
     
-    y_position = height - 440
+    y_position = table_y_position - table_height - 40  # Boşluk bırak
     c.setFont("Helvetica-Bold", 12)
     c.drawString(margin, y_position, "Sonuçlar:")
     y_position -= 20
-    
+
     for result in results:
         text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f} | {result['Regülasyon Durumu']}"
         c.drawString(margin, y_position, text)
@@ -278,7 +273,7 @@ def create_pdf(results, stats, input_df):
         if y_position < margin:
             c.showPage()
             y_position = height - margin
-    
+
     c.setFont("Helvetica-Bold", 12)
     c.drawString(margin, y_position - 30, "İstatistiksel Sonuçlar:")
     y_position -= 50
@@ -296,14 +291,13 @@ def create_pdf(results, stats, input_df):
     y_position -= 50
     
     explanation = (
-        "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
-        "Normallik sağlanırsa, Gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmistir. "
+        "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
+        "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
         "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
-        "Eger normal dagilim saglanmazsa, Parametrik olmayan Mann-Whitney U testi kullanılmistir. "
-        "p-degerinin 0.05 eşik değerinden küçük olup olmadiğina göre belirlenmistir. "
-        "Sonuçların anlamliligi p < 0.05 kriterine göre belirlenmiştir."
+        "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+        "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir."
     )
-
+    
     c.setFont("Helvetica", 12)
     text_lines = explanation.split(". ")
     for line in text_lines:
