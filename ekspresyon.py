@@ -263,7 +263,7 @@ def create_pdf(results, stats, input_df):
     y_position -= 20
     
     for result in results:
-        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['ΔΔCt']} | p-değeri: {stat['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.4f} | {stat['Regülasyon Durumu']}"
+        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | Test: {result['ΔΔCt']} | p-değeri: {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.4f} | {result['Regülasyon Durumu']}"
         c.drawString(margin, y_position, text)
         y_position -= 20
         if y_position < margin:
@@ -310,7 +310,7 @@ def create_pdf(results, stats, input_df):
 
 if st.button("📥 PDF Raporu İndir"):
     if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
+        pdf_buffer = create_pdf(data, result, stats_data, pd.DataFrame(input_values_table))
         st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
