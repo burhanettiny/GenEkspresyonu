@@ -185,7 +185,7 @@ if stats_data:
     for j in range(num_patient_groups):
         fig.add_trace(go.Scatter(
             x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
-            y=sample_delta_ct,
+            y=[d["ΔCt (Hasta)"] for d in data if d["Hasta Grubu"] == f"Hasta Grubu {j+1}"],
             mode='markers',  # Hasta grubu için
             name=f'Hasta Grubu {j+1}',
             marker=dict(color='red'),
