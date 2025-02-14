@@ -183,6 +183,13 @@ if stats_data:
 
     # Hasta grubu verilerini ekleme
     for j in range(num_patient_groups):
+        sample_delta_ct_values = [
+        d["ΔCt (Hasta)"] for d in input_values_table if d["Grup"] == f"Hasta Grubu {j+1}"
+    ]
+
+    # Eğer grup boşsa hata almamak için atla
+    if not sample_delta_ct_values:
+        continue  
         fig.add_trace(go.Scatter(
             x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
             y=sample_delta_ct_values,
