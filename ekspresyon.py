@@ -189,7 +189,7 @@ if stats_data:
 
     # Eğer grup boşsa hata almamak için atla
     if not sample_delta_ct_values:
-        continue  
+          
         fig.add_trace(go.Scatter(
             x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
             y=sample_delta_ct_values,
