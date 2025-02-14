@@ -174,11 +174,21 @@ fig = go.Figure()
 fig.add_trace(go.Scatter(
     x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
     y=control_delta_ct,
-    mode='markers',  # Kontrol grubu için
+    mode='markers',  
     name='Kontrol Grubu',
     marker=dict(color='blue'),
-    text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],  # Tooltip metni
-    hoverinfo='text'  # Tooltip gösterimi
+    text=[f'Kontrol {value:.2f}, Örnek {i+1}' for i, value in enumerate(control_delta_ct)],  
+    hoverinfo='text'  
+))
+
+# Ortalama kontrol grubu değeri (kesik çizgi)
+average_control_delta_ct = np.mean(control_delta_ct)  # Ortalama hesaplama
+fig.add_trace(go.Scatter(
+    x=[1, 1],  
+    y=[min(control_delta_ct), max(control_delta_ct)],  # Daha belirgin olması için min-max kullanıldı
+    mode='lines',
+    line=dict(color='black', dash='dot', width=4),  
+    name='Kontrol Grubu Ortalama'
 ))
 
 # Hasta grubu verilerini ekleme
@@ -187,7 +197,6 @@ for j in range(num_patient_groups):
         d["ΔCt (Hasta)"] for d in input_values_table if d["Grup"] == f"Hasta Grubu {j+1}"
     ]
 
-    # Eğer grup boşsa hata almamak için atla
     if not sample_delta_ct_values:
         continue  
 
@@ -201,20 +210,11 @@ for j in range(num_patient_groups):
         hoverinfo='text'
     ))
 
-# Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
-fig.add_trace(go.Scatter(
-    x=[1, 1],  
-    y=[average_control_delta_ct, average_control_delta_ct],  
-    mode='lines',
-    line=dict(color='black', dash='dot', width=4),  
-    name='Kontrol Grubu Ortalama'
-))
-
-# Hasta gruplarının ortalama değerlerini çizme (kesik çizgi - siyah)
-for j in range(num_patient_groups):
+    # Ortalama hasta grubu değeri (kesik çizgi)
+    average_sample_delta_ct = np.mean(sample_delta_ct_values)  
     fig.add_trace(go.Scatter(
-        x=[(j + 2), (j + 2)],  
-        y=[average_sample_delta_ct, average_sample_delta_ct],  
+        x=[j + 2, j + 2],  
+        y=[min(sample_delta_ct_values), max(sample_delta_ct_values)],  # Daha belirgin olması için min-max
         mode='lines',
         line=dict(color='black', dash='dot', width=4),  
         name=f'Hasta Grubu {j+1} Ortalama'
@@ -228,9 +228,7 @@ fig.update_layout(
         ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
         title='Grup'
     ),
-    yaxis=dict(
-        title='ΔCt Değeri'
-    ),
+    yaxis=dict(title='ΔCt Değeri'),
     showlegend=True
 )
 
