@@ -27,39 +27,28 @@ data = []
 stats_data = []
 
 def parse_input_data(input_data):
-    # Veriyi virgülleri nokta olarak değiştirip, boşluklardan temizliyoruz
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
-    
-    # Geçerli sayıları alıyoruz
-    values = [float(x) for x in values if x]
-    
-    # Verilerdeki ölçüm tekrarlarını gruplandırıp, her grup için ortalama alıyoruz
-    if len(values) > 1:
-        values = [np.mean(values)]  # Aynı örneğe ait birden fazla ölçüm varsa ortalama alıyoruz
-    
-    return np.array(values)
+    return np.array([float(x) for x in values if x])
 
 for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
     
     # Kontrol Grubu Verileri
-control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
-control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
-
-control_target_ct_values = parse_input_data(control_target_ct)
-control_reference_ct_values = parse_input_data(control_reference_ct)
-
-if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-    st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
-    continue
-
-min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
-control_target_ct_values = control_target_ct_values[:min_control_len]
-control_reference_ct_values = control_reference_ct_values[:min_control_len]
-
-# ΔCt Hesaplama
-control_delta_ct = control_target_ct_values - control_reference_ct_values
-average_control_delta_ct = np.mean(control_delta_ct)
+    control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
+    control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
+    
+    control_target_ct_values = parse_input_data(control_target_ct)
+    control_reference_ct_values = parse_input_data(control_reference_ct)
+    
+    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
+        st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
+        continue
+    
+    min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
+    control_target_ct_values = control_target_ct_values[:min_control_len]
+    control_reference_ct_values = control_reference_ct_values[:min_control_len]
+    control_delta_ct = control_target_ct_values - control_reference_ct_values
+    average_control_delta_ct = np.mean(control_delta_ct)
 
     # Kontrol Grubu Verilerini Tabloya Ekleyin
     sample_counter = 1  # Reset sample_counter for Control group
