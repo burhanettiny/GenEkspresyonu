@@ -43,9 +43,6 @@ for i in range(num_target_genes):
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
         st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
         continue
-    else:
-        control_delta_ct = np.array([])  # Boş bir NumPy array olarak tanımlayın
-        average_control_delta_ct = None  # None olarak işaretleyin
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
