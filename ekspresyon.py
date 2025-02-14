@@ -182,23 +182,24 @@ if stats_data:
     ))
 
     # Hasta grubu verilerini ekleme
-    for j in range(num_patient_groups):
-        sample_delta_ct_values = [
+for j in range(num_patient_groups):
+    sample_delta_ct_values = [
         d["ΔCt (Hasta)"] for d in input_values_table if d["Grup"] == f"Hasta Grubu {j+1}"
     ]
 
     # Eğer grup boşsa hata almamak için atla
     if not sample_delta_ct_values:
-          
-        fig.add_trace(go.Scatter(
-            x=np.ones(len(sample_delta_ct)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct)),
-            y=sample_delta_ct_values,
-            mode='markers',  # Hasta grubu için
-            name=f'Hasta Grubu {j+1}',
-            marker=dict(color='red'),
-            text=[f'Hasta {value:.2f}, Örnek {i+1}' for i, value in enumerate(sample_delta_ct)],  # Tooltip metni
-            hoverinfo='text'  # Tooltip gösterimi
-        ))
+        continue  # Boş liste varsa döngünün sonraki iterasyonuna geç
+
+    fig.add_trace(go.Scatter(
+        x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
+        y=sample_delta_ct_values,
+        mode='markers',  # Hasta grubu için
+        name=f'Hasta Grubu {j+1}',
+        marker=dict(color='red'),
+        text=[f'Hasta {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(sample_delta_ct_values)],  # Tooltip metni
+        hoverinfo='text'  # Tooltip gösterimi
+    ))
 
     # Kontrol grubunun ortalama değerini çizme (kesik çizgi - siyah)
     fig.add_trace(go.Scatter(
