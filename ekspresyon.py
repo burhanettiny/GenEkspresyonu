@@ -170,17 +170,17 @@ st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
 # Plotly grafik objesi oluşturuluyor
 fig = go.Figure()
 
-# **Önce kontrol grubunun ortalama değeri (DÜZ çizgi - VERİLERİN ALTINDA OLACAK)**
+# **Önce Kontrol Grubu Ortalama Çizgisi Ekleniyor**
 average_control_delta_ct = np.mean(control_delta_ct)
 fig.add_trace(go.Scatter(
     x=[0.8, 1.2],  
     y=[average_control_delta_ct, average_control_delta_ct],  
     mode='lines',
-    line=dict(color='black', width=4),  
+    line=dict(color='black', width=4),  # **Düz çizgi**
     name='Kontrol Grubu Ortalama'
 ))
 
-# **Önce hasta gruplarının ortalama değerleri ekleniyor (VERİLERİN ALTINDA OLACAK)**
+# **Önce Hasta Gruplarının Ortalama Çizgileri Ekleniyor**
 for j in range(num_patient_groups):
     sample_delta_ct_values = [
         d["ΔCt (Hasta)"] for d in input_values_table if d["Grup"] == f"Hasta Grubu {j+1}"
@@ -194,12 +194,11 @@ for j in range(num_patient_groups):
         x=[(j + 1.8), (j + 2.2)],  
         y=[average_sample_delta_ct, average_sample_delta_ct],  
         mode='lines',
-        line=dict(color='black', width=4),  
+        line=dict(color='black', width=4),  # **Düz çizgi**
         name=f'Hasta Grubu {j+1} Ortalama'
     ))
 
-# **Şimdi asıl verileri ekleyelim (ÇİZGİLERİN ÜZERİNE GELMESİ İÇİN)**
-# Kontrol grubu verileri
+# **Sonra Veri Noktaları Ekleniyor (Çizgiler Altta Kalır)**
 fig.add_trace(go.Scatter(
     x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
     y=control_delta_ct,
@@ -210,7 +209,6 @@ fig.add_trace(go.Scatter(
     hoverinfo='text'  
 ))
 
-# Hasta grubu verileri
 for j in range(num_patient_groups):
     sample_delta_ct_values = [
         d["ΔCt (Hasta)"] for d in input_values_table if d["Grup"] == f"Hasta Grubu {j+1}"
