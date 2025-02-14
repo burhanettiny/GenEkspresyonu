@@ -25,7 +25,6 @@ num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_v
 input_values_table = []
 data = []
 stats_data = []
-sample_counter = 1  # Örnek numaralandırması için sayaç
 
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
@@ -52,6 +51,7 @@ for i in range(num_target_genes):
     average_control_delta_ct = np.mean(control_delta_ct)
 
     # Kontrol Grubu Verilerini Tabloya Ekleyin
+    sample_counter = 1  # Reset sample_counter for Control group
     for idx in range(min_control_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
@@ -84,6 +84,7 @@ for i in range(num_target_genes):
         average_sample_delta_ct = np.mean(sample_delta_ct)
 
         # Hasta Grubu Verilerini Tabloya Ekleyin
+        sample_counter = 1  # Reset sample_counter for each Patient Group
         for idx in range(min_sample_len):
             input_values_table.append({
                 "Örnek Numarası": sample_counter,
@@ -296,36 +297,31 @@ def create_pdf(results, stats, input_df):
     # İstatistiksel Sonuçlar
     elements.append(Paragraph("İstatistiksel Sonuçlar:", styles['Heading2']))
     elements.append(Spacer(1, 12))
+
+    # Tabloyu oluşturma
+    stats_data = [list(stats.columns)] + stats.values.tolist()
+    stats_table = Table(stats_data)
+    stats_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+    ]))
     
-    for stat in stats:
-        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
-        elements.append(Paragraph(text, styles['Normal']))
-        elements.append(Spacer(1, 6))
+    elements.append(stats_table)
     
-    elements.append(PageBreak())  # Sayfa sonu
-    
-    # İstatistiksel Değerlendirme
-    elements.append(Paragraph("İstatistiksel Değerlendirme:", styles['Heading2']))
-    elements.append(Spacer(1, 12))
-    
-    explanation = (
-        "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
-        "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
-        "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
-        "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
-        "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir."
-    )
-    
-    for line in explanation.split(". "):
-        elements.append(Paragraph(line.strip() + '.', styles['Normal']))
-        elements.append(Spacer(1, 6))
-    
+    # PDF'yi oluştur
     doc.build(elements)
     buffer.seek(0)
+    
     return buffer
-if st.button("📥 PDF Raporu İndir"):
-    if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
-        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
-    else:
-        st.error("Veri bulunamadı, PDF oluşturulamadı.")
+
+# PDF Dosyasını İndir
+st.download_button(
+    label="📄 PDF Olarak İndir", 
+    data=create_pdf(df, stats_df, input_df),
+    file_name="gen_ekspresyon_raporu.pdf",
+    mime="application/pdf"
+)
