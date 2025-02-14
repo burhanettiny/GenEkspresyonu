@@ -181,13 +181,13 @@ fig.add_trace(go.Scatter(
     hoverinfo='text'  
 ))
 
-# **Kontrol grubunun ortalama değeri (YATAY kesik çizgi)**
+# **Kontrol grubunun ortalama değeri (DÜZ çizgi)**
 average_control_delta_ct = np.mean(control_delta_ct)
 fig.add_trace(go.Scatter(
-    x=[0.8, 1.2],  # X ekseninde küçük bir aralık tanımlandı (YATAY çizgi)
+    x=[0.8, 1.2],  
     y=[average_control_delta_ct, average_control_delta_ct],  
     mode='lines',
-    line=dict(color='black', dash='dot', width=4),  
+    line=dict(color='black', width=4),  # **Kesik çizgi kaldırıldı (artık düz çizgi)**
     name='Kontrol Grubu Ortalama'
 ))
 
@@ -210,13 +210,13 @@ for j in range(num_patient_groups):
         hoverinfo='text'
     ))
 
-    # **Hasta grubunun ortalama değeri (YATAY kesik çizgi)**
+    # **Hasta grubunun ortalama değeri (DÜZ çizgi)**
     average_sample_delta_ct = np.mean(sample_delta_ct_values)
     fig.add_trace(go.Scatter(
-        x=[(j + 1.8), (j + 2.2)],  # X ekseninde küçük bir aralık tanımlandı (YATAY çizgi)
+        x=[(j + 1.8), (j + 2.2)],  
         y=[average_sample_delta_ct, average_sample_delta_ct],  
         mode='lines',
-        line=dict(color='black', dash='dot', width=4),  
+        line=dict(color='black', width=4),  # **Kesik çizgi kaldırıldı (artık düz çizgi)**
         name=f'Hasta Grubu {j+1} Ortalama'
     ))
 
