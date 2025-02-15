@@ -194,6 +194,7 @@ for gene_index, target_gen_name in enumerate(target_gen_names):
     
     fig = go.Figure()
 
+    # Kontrol Grubu için çizgi
     fig.add_trace(go.Scatter(
         x=[0.8, 1.2],
         y=[average_control_delta_ct, average_control_delta_ct],
@@ -204,22 +205,33 @@ for gene_index, target_gen_name in enumerate(target_gen_names):
 
     # Hasta Gruplarının Ortalama Çizgileri
     for j in range(num_patient_groups):
+        # Hasta grubu için ΔCt değerlerini al
         sample_delta_ct_values = [
             d["ΔCt (Hasta)"] for d in input_values_table
-            if d["Grup"] == f"{patient_groups_names[j]}" and d["Hedef Gen"] == target_gen_names[gene_index]
+            if d["Grup"] == patient_groups_names[j] and d["Hedef Gen"] == target_gen_name
         ]
-    
-        if not sample_delta_ct_values:
-            continue  # Eğer bu gen için hasta grubu verisi yoksa, grafiği atla
-    
-        average_sample_delta_ct = np.mean(sample_delta_ct_values)
-        fig.add_trace(go.Scatter(
-            x=[(j + 1.8), (j + 2.2)],  
-            y=[average_sample_delta_ct, average_sample_delta_ct],  
-            mode='lines',
-            line=dict(color='black', width=4),
-            name=f"{patient_groups_names[j]} Ortalama"
-        ))
+        
+        # Eğer hasta grubu verisi varsa, çizgi ekle
+        if sample_delta_ct_values:
+            average_sample_delta_ct = np.mean(sample_delta_ct_values)
+            
+            # Hasta grubu için çizgi ekle
+            fig.add_trace(go.Scatter(
+                x=[j + 1.8, j + 2.2],  
+                y=[average_sample_delta_ct, average_sample_delta_ct],  
+                mode='lines',
+                line=dict(color='black', width=4),
+                name=f"{patient_groups_names[j]} Ortalama"
+            ))
+
+            # Eğer veriler varsa, her bir örnek için de noktalar ekleyebiliriz:
+            fig.add_trace(go.Scatter(
+                x=[j + 1] * len(sample_delta_ct_values),
+                y=sample_delta_ct_values,
+                mode='markers',
+                name=f"{patient_groups_names[j]} Verileri",
+                marker=dict(color='blue', size=8)
+            ))
 
     # Grafik düzenlemesi
     fig.update_layout(
@@ -227,8 +239,8 @@ for gene_index, target_gen_name in enumerate(target_gen_names):
         xaxis=dict(
             title="Gruplar", 
             tickmode="array", 
-            tickvals=[1, 2, 3],  # Hasta grubu sayısına göre ayarlama yapabilirsiniz
-            ticktext=patient_groups_names + ['Kontrol']
+            tickvals=[1, 2] + list(range(3, num_patient_groups + 3)),  # X eksenine grupları yerleştir
+            ticktext=['Kontrol'] + patient_groups_names  # Kontrol ve hasta grup isimleri
         ),
         yaxis=dict(title="ΔCt"),
         showlegend=True,
