@@ -367,8 +367,6 @@ def create_pdf(results, stats, input_df, plots=None):
     buffer.seek(0)
     return buffer
 
-# Kodun devamı ve verilerin hazırlanması kısmı...
-
 # PDF oluşturulacaksa:
 if st.button("📥 PDF Raporu Hazırla"):
     if input_values_table:
