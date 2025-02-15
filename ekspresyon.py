@@ -342,16 +342,16 @@ def create_pdf(results, stats, input_df):
     # İstatistiksel Değerlendirme
     elements.append(Paragraph("istatistiksel Degerlendirme:", styles['Heading2']))
     elements.append(Spacer(1, 12))
-    
-    explanation = (
-        "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
-        "Normallik saglanirsa, gruplar arasindaki varyans esitligi Levene testi ile kontrol edilmistir. "
-        "Varyans esitligi varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
-        "Eger normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmistir. "
-        "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir. "
-        "--- "
-        "Gorus ve onerileriniz icin; mailtoburhanettin@gmail.com"
-    )
+
+explanation = (
+    "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
+    "Normallik saglanirsa, gruplar arasindaki varyans esitligi Levene testi ile kontrol edilmistir. "
+    "Varyans esitligi varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
+    "Eger normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmistir. "
+    "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir. "
+    "--- "
+    "<b>Görus ve önerileriniz icin; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
+)
     
     for line in explanation.split(". "):
         elements.append(Paragraph(line.strip() + '.', styles['Normal']))
