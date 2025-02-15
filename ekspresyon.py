@@ -285,21 +285,21 @@ def create_pdf(results, stats, input_df, plots=None):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
-    
+
     styles = getSampleStyleSheet()
-    
+
     # Başlık
     elements.append(Paragraph("Gen Ekspresyon Analizi Raporu", styles['Title']))
     elements.append(Spacer(1, 12))
 
     # Giriş Verileri Tablosu Başlığı
     elements.append(Paragraph("Giriş Verileri Tablosu:", styles['Heading2']))
-    
+
     # Tablo Verisi
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
     col_width = (letter[0] - 80) / len(input_df.columns)
     table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
-    
+
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -308,32 +308,32 @@ def create_pdf(results, stats, input_df, plots=None):
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
-    
+
     elements.append(table)
     elements.append(Spacer(1, 12))
-    
+
     # Sonuçlar Başlığı
     elements.append(Paragraph("Sonuçlar:", styles['Heading2']))
     elements.append(Spacer(1, 12))
-    
+
     for result in results:
         text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f} | {result['Regülasyon Durumu']}"
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
-    
+
     elements.append(PageBreak())
-    
+
     # İstatistiksel Sonuçlar
     elements.append(Paragraph("İstatistiksel Sonuçlar:", styles['Heading2']))
     elements.append(Spacer(1, 12))
-    
+
     for stat in stats:
         text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
-    
+
     elements.append(PageBreak())
-    
+
     # Grafik Ekleme
     if plots:
         # Add plots to the PDF. You can save plots as images and include them.
@@ -344,13 +344,14 @@ def create_pdf(results, stats, input_df, plots=None):
             img = Image(io.BytesIO(plot_image), width=4*inch, height=3*inch)
             elements.append(img)
 
-        img = Image(image_data)
-        elements.append(img)
-    
+        # You can also include a static image here if needed:
+        # img = Image(image_data)
+        # elements.append(img)
+
     # İstatistiksel Değerlendirme
     elements.append(Paragraph("İstatistiksel Değerlendirme:", styles['Heading2']))
     elements.append(Spacer(1, 12))
-    
+
     explanation = (
         "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
         "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
@@ -358,19 +359,20 @@ def create_pdf(results, stats, input_df, plots=None):
         "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
         "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir."
     )
-    
+
     for line in explanation.split(". "):
         elements.append(Paragraph(line.strip() + '.', styles['Normal']))
         elements.append(Spacer(1, 6))
-    
+
     doc.build(elements)
     buffer.seek(0)
     return buffer
 
-# PDF oluşturulacaksa:
-if st.button("📥 PDF Raporu Hazırla"):
-    if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table), plots)
-        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
-    else:
-        st.error("Veri bulunamadı, PDF oluşturulamadı.")
+
+
+
+
+
+    
+    
+ 
