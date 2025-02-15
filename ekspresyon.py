@@ -221,9 +221,15 @@ for gene_index, target_gen_name in enumerate(target_gen_names):
             name=f"{patient_groups_names[j]} Ortalama"
         ))
 
+    # Grafik düzenlemesi
     fig.update_layout(
         title=f"{target_gen_name} - Hasta ve Kontrol Grubu Dağılımı",
-        xaxis=dict(title="Gruplar", tickmode="array", tickvals=[1, 2]),
+        xaxis=dict(
+            title="Gruplar", 
+            tickmode="array", 
+            tickvals=[1, 2, 3],  # Hasta grubu sayısına göre ayarlama yapabilirsiniz
+            ticktext=patient_groups_names + ['Kontrol']
+        ),
         yaxis=dict(title="ΔCt"),
         showlegend=True,
         width=700,
