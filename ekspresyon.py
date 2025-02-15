@@ -208,7 +208,7 @@ for gene_index, target_gen_name in enumerate(target_gen_names):
         # Hasta grubu için ΔCt değerlerini al
         sample_delta_ct_values = [
             d["ΔCt (Hasta)"] for d in input_values_table
-            if d["Grup"] == patient_groups_names[j] and d["Hedef Gen"] == target_gen_name
+            if d["Hedef Gen"] == target_gen_name and d["Grup"] == patient_groups_names[j]
         ]
         
         # Eğer hasta grubu verisi varsa, çizgi ekle
