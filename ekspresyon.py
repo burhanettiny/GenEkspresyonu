@@ -10,9 +10,64 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
-# Başlık
-st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
-st.markdown("### B. Yalçınkaya tarafından geliştirildi")
+
+# Language selection
+language = st.selectbox("Select Language", ["Türkçe", "English"])
+
+# Text content based on selected language
+texts = {
+    "title": {
+        "Türkçe": "🧬 Gen Ekspresyon Analizi Uygulaması",
+        "English": "🧬 Gene Expression Analysis Application"
+    },
+    "developer": {
+        "Türkçe": "B. Yalçınkaya tarafından geliştirildi",
+        "English": "Developed by B. Yalçınkaya"
+    },
+    "data_input_header": {
+        "Türkçe": "📊 Hasta ve Kontrol Grubu Verisi Girin",
+        "English": "📊 Enter Patient and Control Group Data"
+    },
+    "target_genes_label": {
+        "Türkçe": "🔹 Hedef Gen Sayısını Girin",
+        "English": "🔹 Enter Number of Target Genes"
+    },
+    "patient_groups_label": {
+        "Türkçe": "🔹 Hasta Grubu Sayısını Girin",
+        "English": "🔹 Enter Number of Patient Groups"
+    },
+    "csv_download_button": {
+        "Türkçe": "📥 CSV İndir",
+        "English": "📥 Download CSV"
+    },
+    "statistics_results": {
+        "Türkçe": "📈 İstatistik Sonuçları",
+        "English": "📈 Statistical Results"
+    },
+    "pdf_report_button": {
+        "Türkçe": "📥 PDF Raporu Hazırla",
+        "English": "📥 Prepare PDF Report"
+    },
+    "no_data_for_pdf": {
+        "Türkçe": "Veri bulunamadı, PDF oluşturulamadı.",
+        "English": "No data found, PDF cannot be created."
+    },
+    "no_valid_data_for_graph": {
+        "Türkçe": "Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.",
+        "English": "At least one valid dataset is required to generate a graph."
+    }
+}
+
+# Set title and developer name based on language
+st.title(texts["title"][language])
+st.markdown(f"### {texts['developer'][language]}")
+
+# Data input header
+st.header(texts["data_input_header"][language])
+
+# Number of target genes and patient groups
+num_target_genes = st.number_input(texts["target_genes_label"][language], min_value=1, step=1, key="gene_count")
+num_patient_groups = st.number_input(texts["patient_groups_label"][language], min_value=1, step=1, key="patient_count")
 
 # Kullanıcıdan giriş al
 st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
@@ -158,12 +213,12 @@ for i in range(num_target_genes):
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table: 
-    st.subheader("📋 Giriş Verileri Tablosu") 
+    st.subheader("📋 Giriş Verileri Tablosu" if language == "Türkçe" else "📋 Input Data Table") 
     input_df = pd.DataFrame(input_values_table) 
     st.write(input_df) 
 
     csv = input_df.to_csv(index=False).encode("utf-8") 
-    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
+    st.download_button(label=texts["csv_download_button"][language], data=csv, file_name="giris_verileri.csv", mime="text/csv") 
 
 # Sonuçlar Tablosunu Göster
 if data:
@@ -173,7 +228,7 @@ if data:
 
 # İstatistik Sonuçları
 if stats_data:
-    st.subheader("📈 İstatistik Sonuçları")
+    st.subheader("📈 İstatistik Sonuçları"if language == "Türkçe" else "📋 Statistics"))
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
     
@@ -342,9 +397,9 @@ def create_pdf(results, stats, input_df):
     buffer.seek(0)
     return buffer
 
-if st.button("📥 PDF Raporu Hazırla"):
+if st.button(texts["pdf_report_button"][language]):
     if input_values_table:
         pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
-        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
+        st.download_button(label="PDF Olarak İndir" if language == "Türkçe" else "Download PDF", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
-        st.error("Veri bulunamadı, PDF oluşturulamadı.")
+        st.error(texts["no_data_for_pdf"][language])
