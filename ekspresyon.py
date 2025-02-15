@@ -30,13 +30,6 @@ def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
 
-st.title("Gen Ekspresyon Analizi")
-
-# Yeniden sayı girişleri (aynı key'lerle, çakışmayı önlemek için)
-num_target_genes = st.number_input("🧬 Hedef Gen Sayısı", min_value=1, step=1, key="gene_count_2")
-num_patient_groups = st.number_input("🩸 Hasta Grubu Sayısı", min_value=1, step=1, key="patient_count_2")
-input_values_table = []
-
 # Grafik için son işlenen Hedef Genın kontrol verilerini saklamak amacıyla değişkenler
 last_control_delta_ct = None
 last_gene_index = None
