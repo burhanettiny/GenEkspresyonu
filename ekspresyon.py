@@ -8,7 +8,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
@@ -282,16 +282,18 @@ else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
 
 # PDF rapor oluşturma kısmı
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from reportlab.lib.styles import getSampleStyleSheet
-
 def create_pdf(results, stats, input_df):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
     
     styles = getSampleStyleSheet()
+    
+    # Define a custom font for Turkish characters (you can also embed a custom font)
+    styles['Normal'].fontName = 'Helvetica'
+    styles['Normal'].fontSize = 10
+    styles['Heading2'].fontName = 'Helvetica-Bold'
+    styles['Heading2'].fontSize = 12
     
     # Başlık
     elements.append(Paragraph("Gen Ekspresyon Analizi Raporu", styles['Title']))
@@ -350,7 +352,6 @@ def create_pdf(results, stats, input_df):
         "Eger normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmistir. "
         "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir. "
         "<b>Görüs ve önerileriniz icin; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
-        
     )
     
     for line in explanation.split(". "):
