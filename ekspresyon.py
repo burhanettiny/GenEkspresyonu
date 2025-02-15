@@ -189,8 +189,13 @@ if stats_data:
 for gene_index, target_gen_name in enumerate(target_gen_names):
     st.subheader(f"{target_gen_name} - Hasta ve Kontrol Grubu Dağılım Grafiği")
     
+    # Kontrol Grubu Verilerini Al
+    control_delta_ct_values = [
+        d["ΔCt (Kontrol)"] for d in input_values_table if d["Hedef Gen"] == target_gen_name and d["Grup"] == "Kontrol"
+    ]
+    
     # Kontrol Grubu Ortalama Çizgisi
-    average_control_delta_ct = np.mean(last_control_delta_ct)
+    average_control_delta_ct = np.mean(control_delta_ct_values) if control_delta_ct_values else 0
     
     fig = go.Figure()
 
@@ -203,7 +208,7 @@ for gene_index, target_gen_name in enumerate(target_gen_names):
         name='Kontrol Grubu Ortalama'
     ))
 
-    # Hasta Gruplarının Ortalama Çizgileri
+    # Hasta Gruplarının Verilerini Al ve Ortalama Çizgilerini Ekle
     for j in range(num_patient_groups):
         # Hasta grubu için ΔCt değerlerini al
         sample_delta_ct_values = [
@@ -220,7 +225,7 @@ for gene_index, target_gen_name in enumerate(target_gen_names):
                 x=[j + 1.8, j + 2.2],  
                 y=[average_sample_delta_ct, average_sample_delta_ct],  
                 mode='lines',
-                line=dict(color='black', width=4),
+                line=dict(color='blue', width=4),
                 name=f"{patient_groups_names[j]} Ortalama"
             ))
 
@@ -249,6 +254,7 @@ for gene_index, target_gen_name in enumerate(target_gen_names):
     )
 
     st.plotly_chart(fig)
+
 
 else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
