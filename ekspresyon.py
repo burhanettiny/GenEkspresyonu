@@ -45,7 +45,7 @@ for i in range(num_target_genes):
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} için verilerinizi alt alta girin (Doğrudan excel dökümanından boş hücre olmayacak şekilde kopyalayabilirsiniz.")
+        st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
         continue
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
@@ -59,7 +59,7 @@ for i in range(num_target_genes):
         last_control_delta_ct = control_delta_ct  
         last_gene_index = i
     else:
-        st.warning("⚠️ Dikkat: Kontrol grubu için Ct verilerinizi alt alta girin (Doğrudan excel dökümanından boş hücre olmayacak şekilde kopyalayabilirsiniz.")
+        st.warning("⚠️ Hata: Kontrol grubu için Ct verileri eksik veya hatalı!")
         continue
     
     sample_counter = 1  # Kontrol grubu örnek sayacı
@@ -85,7 +85,7 @@ for i in range(num_target_genes):
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
         if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} için verilerinizi alt alta girin (Doğrudan excel dökümanından boş hücre olmayacak şekilde kopyalayabilirsiniz.")
+            st.error(f"⚠️ Hata: Hasta Grubu {j+1} için veriler eksik! Lütfen verileri doğru girin.")
             continue
         
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
@@ -342,19 +342,21 @@ def create_pdf(results, stats, input_df):
     # İstatistiksel Değerlendirme
     elements.append(Paragraph("istatistiksel Degerlendirme:", styles['Heading2']))
     elements.append(Spacer(1, 12))
-
-explanation = (
-    "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
-    "Normallik saglanirsa, gruplar arasindaki varyans esitligi Levene testi ile kontrol edilmistir. "
-    "Varyans esitligi varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
-    "Eger normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmistir. "
-    "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir. "
-    "--- "
-    "<b>Görus ve önerileriniz icin; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
-)
-for line in explanation.split(". "):
-    elements.append(Paragraph(line.strip() + '.', styles['Normal']))
-    elements.append(Spacer(1, 6))
+    
+    explanation = (
+        "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
+        "Normallik saglanirsa, gruplar arasindaki varyans esitligi Levene testi ile kontrol edilmistir. "
+        "Varyans esitligi varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
+        "Eger normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmistir. "
+        "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir."
+        "---"
+        "<b>Gorus ve önerileriniz icin; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
+        
+    )
+    
+    for line in explanation.split(". "):
+        elements.append(Paragraph(line.strip() + '.', styles['Normal']))
+        elements.append(Spacer(1, 6))
     
     doc.build(elements)
     buffer.seek(0)
