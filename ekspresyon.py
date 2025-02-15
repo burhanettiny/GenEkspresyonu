@@ -85,7 +85,7 @@ for i in range(num_target_genes):
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
         if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            st.error(f"⚠️ Hata: Hasta Grubu {j+1} için veriler eksik! Lütfen verileri doğru girin.")
+            st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} için verilerinizi alt alta girin (Doğrudan excel dökümanından boş hücre olmayacak şekilde kopyalayabilirsiniz.")
             continue
         
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
