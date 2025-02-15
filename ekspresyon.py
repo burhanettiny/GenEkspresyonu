@@ -281,7 +281,7 @@ for i in range(num_target_genes):
 else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
 
-def create_pdf(results, stats, input_df, plots):
+def create_pdf(results, stats, input_df, plots=None):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
