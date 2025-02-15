@@ -330,6 +330,8 @@ def create_pdf(results, stats, input_df):
         "Varyans esitligi varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
         "Eger normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmistir. "
         "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir."
+        "---"
+        "Gorus ve onerileriniz icin; mailtoburhanettin@gmail.com"
     )
     
     for line in explanation.split(". "):
