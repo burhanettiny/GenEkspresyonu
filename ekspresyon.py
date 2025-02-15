@@ -282,8 +282,8 @@ else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
 
 def create_pdf(results, stats, input_df, plots=None):
-    buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    buffer = BytesIO()  # Ensure the buffer is properly created
+    doc = SimpleDocTemplate(buffer, pagesize=letter)  # Create the document object
     elements = []
     
     styles = getSampleStyleSheet()
@@ -339,7 +339,6 @@ def create_pdf(results, stats, input_df, plots=None):
         # Add plots to the PDF. You can save plots as images and include them.
         for plot in plots:
             elements.append(Spacer(1, 12))
-            # Example: Assuming 'plot' is a plotly figure
             plot_image = plot.to_image(format="png")  # Convert plotly figure to PNG image
             img = Image(io.BytesIO(plot_image), width=4*inch, height=3*inch)  # Create image object from plot
             elements.append(img)
@@ -360,8 +359,8 @@ def create_pdf(results, stats, input_df, plots=None):
         elements.append(Paragraph(line.strip() + '.', styles['Normal']))
         elements.append(Spacer(1, 6))
     
-    doc.build(elements)
-    buffer.seek(0)
+    doc.build(elements)  # Build the PDF
+    buffer.seek(0)  # Reset the buffer pointer to the beginning
     return buffer
 
 if st.button("📥 PDF Raporu Hazırla"):
