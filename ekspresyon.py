@@ -335,20 +335,14 @@ def create_pdf(results, stats, input_df, plots=None):
     elements.append(PageBreak())
     
     # Grafik Ekleme
-    elements.append(Paragraph("Dağılım Grafikleri:", styles['Heading2']))
-    elements.append(Spacer(1, 12))
-    
-    for plot in plots:
-        image_data = BytesIO()
-        plot.write_image(image_data, format='png')
-        image_data.seek(0)
-        
-        elements.append(Spacer(1, 12))
-        elements.append(Paragraph(f"Gen Ekspresyon Dağılımı Grafiği - {plot['gen_title']}", styles['Heading3']))
-        elements.append(Spacer(1, 6))
-        elements.append(Spacer(1, 6))  # Adjust space between image and text
-        elements.append(Spacer(1, 6))  # Adjust space between image and text
-        elements.append(Spacer(1, 6))  # Adjust space between image and text
+    if plots:
+        # Add plots to the PDF. You can save plots as images and include them.
+        for plot in plots:
+            elements.append(Spacer(1, 12))
+            # Example: Assuming 'plot' is a plotly figure or image path
+            plot_image = plot.to_image(format="png")
+            img = Image(io.BytesIO(plot_image), width=4*inch, height=3*inch)
+            elements.append(img)
 
         img = Image(image_data)
         elements.append(img)
