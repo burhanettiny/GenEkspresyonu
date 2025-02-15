@@ -352,9 +352,9 @@ explanation = (
     "--- "
     "<b>Görus ve önerileriniz icin; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
 )
-        for line in explanation.split(". "):
-        elements.append(Paragraph(line.strip() + '.', styles['Normal']))
-        elements.append(Spacer(1, 6))
+for line in explanation.split(". "):
+    elements.append(Paragraph(line.strip() + '.', styles['Normal']))
+    elements.append(Spacer(1, 6))
     
     doc.build(elements)
     buffer.seek(0)
