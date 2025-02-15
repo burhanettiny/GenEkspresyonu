@@ -321,15 +321,15 @@ def create_pdf(results, stats, input_df):
     elements.append(PageBreak())
     
     # İstatistiksel Değerlendirme
-    elements.append(Paragraph("İstatistiksel Değerlendirme:", styles['Heading2']))
+    elements.append(Paragraph("istatistiksel Degerlendirme:", styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     explanation = (
         "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
         "Normallik saglanirsa, gruplar arasindaki varyans esitligi Levene testi ile kontrol edilmistir. "
-        "Varyans eşitliği varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
-        "Eger normal dağilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmistir. "
-        "Sonuçların anlamliligi p < 0.05 kriterine göre belirlenmistir."
+        "Varyans esitligi varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
+        "Eger normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmistir. "
+        "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir."
     )
     
     for line in explanation.split(". "):
