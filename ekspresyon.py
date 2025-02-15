@@ -29,20 +29,12 @@ stats_data = []
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
-    
-    # Ortalama hesaplama işlemi için veri olup olmadığını kontrol et
-if len(control_delta_ct) > 0:
-    average_control_delta_ct = np.mean(control_delta_ct)
-else:
-    st.warning(f"⚠️ Hata: Kontrol grubu için Ct verileri eksik veya hatalı!")
-    continue  # Eğer veri yoksa döngüyü atla
 
-# Hasta grubu verilerini kontrol et
-if len(sample_delta_ct) > 0:
-    average_sample_delta_ct = np.mean(sample_delta_ct)
-else:
-    st.warning(f"⚠️ Hata: Hasta grubu {j+1} için Ct verileri eksik veya hatalı!")
-    continue  # Eğer veri yoksa döngüyü atla
+st.title("Gen Ekspresyon Analizi")
+
+num_target_genes = st.number_input("🧬 Hedef Gen Sayısı", min_value=1, step=1)
+num_patient_groups = st.number_input("🩸 Hasta Grubu Sayısı", min_value=1, step=1)
+input_values_table = []
 
 for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
@@ -62,9 +54,13 @@ for i in range(num_target_genes):
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
     control_delta_ct = control_target_ct_values - control_reference_ct_values
-    average_control_delta_ct = np.mean(control_delta_ct)
-
-    # Kontrol Grubu Verilerini Tabloya Ekleyin
+    
+    if len(control_delta_ct) > 0:
+        average_control_delta_ct = np.mean(control_delta_ct)
+    else:
+        st.warning("⚠️ Hata: Kontrol grubu için Ct verileri eksik veya hatalı!")
+        continue
+    
     sample_counter = 1  # Reset sample_counter for Control group
     for idx in range(min_control_len):
         input_values_table.append({
@@ -95,9 +91,13 @@ for i in range(num_target_genes):
         sample_target_ct_values = sample_target_ct_values[:min_sample_len]
         sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
-        average_sample_delta_ct = np.mean(sample_delta_ct)
-
-        # Hasta Grubu Verilerini Tabloya Ekleyin
+        
+        if len(sample_delta_ct) > 0:
+            average_sample_delta_ct = np.mean(sample_delta_ct)
+        else:
+            st.warning(f"⚠️ Hata: Hasta grubu {j+1} için Ct verileri eksik veya hatalı!")
+            continue
+        
         sample_counter = 1  # Reset sample_counter for each Patient Group
         for idx in range(min_sample_len):
             input_values_table.append({
