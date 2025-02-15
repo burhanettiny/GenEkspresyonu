@@ -228,7 +228,7 @@ if data:
 
 # İstatistik Sonuçları
 if stats_data:
-    st.subheader("📈 İstatistik Sonuçları"if language == "Türkçe" else "📋 Statistics"))
+    st.subheader("📈 İstatistik Sonuçları"))
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
     
