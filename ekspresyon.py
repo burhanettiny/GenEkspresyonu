@@ -364,7 +364,6 @@ def create_pdf(results, stats, input_df, plots=None):
     buffer.seek(0)
     return buffer
 
-
 if st.button("📥 PDF Raporu Hazırla"):
     if input_values_table:
         pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
