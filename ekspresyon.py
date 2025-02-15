@@ -45,7 +45,7 @@ for i in range(num_target_genes):
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} için verilerinizi alt alta girin (doğrudan excel dökümanından kopyalayabilirsiniz.")
+        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} için verilerinizi alt alta girin (Doğrudan excel dökümanından boş hücre olmayacak şekilde kopyalayabilirsiniz.")
         continue
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
@@ -59,7 +59,7 @@ for i in range(num_target_genes):
         last_control_delta_ct = control_delta_ct  
         last_gene_index = i
     else:
-        st.warning("⚠️ Hata: Kontrol grubu için Ct verileri eksik veya hatalı!")
+        st.warning("⚠️ Dikkat: Kontrol grubu için Ct verilerinizi alt alta girin (Doğrudan excel dökümanından boş hücre olmayacak şekilde kopyalayabilirsiniz.")
         continue
     
     sample_counter = 1  # Kontrol grubu örnek sayacı
