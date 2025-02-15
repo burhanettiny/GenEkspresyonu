@@ -29,11 +29,10 @@ stats_data = []
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
-
+# Kontrol Grubu Verileri
 for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
     
-    # Kontrol Grubu Verileri
     control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
     
