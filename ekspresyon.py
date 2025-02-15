@@ -45,7 +45,7 @@ for i in range(num_target_genes):
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
+        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} için verilerinizi alt alta girin (doğrudan excel dökümanından kopyalayabilirsiniz.")
         continue
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
