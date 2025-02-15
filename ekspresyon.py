@@ -185,19 +185,6 @@ if stats_data:
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
     st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
-Paylaş
-
-
-Şunu dedin:
-paylaştığım kodda kullanıcı hedef gen adı, hasta grupları adı ve referans gen adı girebilsin.
-ChatGPT:
-Tabii, verdiğiniz kodu kullanıcının hedef gen adı, hasta grupları adı ve referans gen adı girmesine olanak tanıyacak şekilde düzenleyebilirim. Ancak, kodu paylaşmadığınız için genel bir örnek üzerinden nasıl yapılabileceğini anlatayım:
-
-Diyelim ki, aşağıdaki gibi bir analiz kodu var:
-
-python
-Kopyala
-Düzenle
 def analyze_expression(target_gene, reference_gene, patient_groups):
     # Örnek analiz işlemleri
     print(f"Target Gene: {target_gene}")
