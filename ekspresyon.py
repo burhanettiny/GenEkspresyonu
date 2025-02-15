@@ -322,7 +322,7 @@ def create_pdf(results, stats, input_df):
     
     # İstatistiksel Değerlendirme
     elements.append(Paragraph("istatistiksel Degerlendirme:", styles['Heading2']))
-    elements.append(Spacer(1, 18))
+    elements.append(Spacer(1, 12))
     
     explanation = (
         "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
