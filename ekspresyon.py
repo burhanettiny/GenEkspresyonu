@@ -281,12 +281,7 @@ for i in range(num_target_genes):
 else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
 
-# PDF rapor oluşturma kısmı
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from reportlab.lib.styles import getSampleStyleSheet
-
-def create_pdf(results, stats, input_df):
+def create_pdf(results, stats, input_df, plots):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
@@ -298,7 +293,7 @@ def create_pdf(results, stats, input_df):
     elements.append(Spacer(1, 12))
 
     # Giriş Verileri Tablosu Başlığı
-    elements.append(Paragraph("Giris Verileri Tablosu:", styles['Heading2']))
+    elements.append(Paragraph("Giriş Verileri Tablosu:", styles['Heading2']))
     
     # Tablo Verisi
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
@@ -329,7 +324,7 @@ def create_pdf(results, stats, input_df):
     elements.append(PageBreak())
     
     # İstatistiksel Sonuçlar
-    elements.append(Paragraph("istatistiksel Sonuçlar:", styles['Heading2']))
+    elements.append(Paragraph("İstatistiksel Sonuçlar:", styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for stat in stats:
@@ -339,18 +334,35 @@ def create_pdf(results, stats, input_df):
     
     elements.append(PageBreak())
     
+    # Grafik Ekleme
+    elements.append(Paragraph("Dağılım Grafikleri:", styles['Heading2']))
+    elements.append(Spacer(1, 12))
+    
+    for plot in plots:
+        image_data = BytesIO()
+        plot.write_image(image_data, format='png')
+        image_data.seek(0)
+        
+        elements.append(Spacer(1, 12))
+        elements.append(Paragraph(f"Gen Ekspresyon Dağılımı Grafiği - {plot['gen_title']}", styles['Heading3']))
+        elements.append(Spacer(1, 6))
+        elements.append(Spacer(1, 6))  # Adjust space between image and text
+        elements.append(Spacer(1, 6))  # Adjust space between image and text
+        elements.append(Spacer(1, 6))  # Adjust space between image and text
+
+        img = Image(image_data)
+        elements.append(img)
+    
     # İstatistiksel Değerlendirme
-    elements.append(Paragraph("istatistiksel Degerlendirme:", styles['Heading2']))
+    elements.append(Paragraph("İstatistiksel Değerlendirme:", styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     explanation = (
-        "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
-        "Normallik saglanirsa, gruplar arasindaki varyans esitligi Levene testi ile kontrol edilmistir. "
-        "Varyans esitligi varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
-        "Eger normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmistir. "
-        "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir."
-        "---"
-        "Gorus ve onerileriniz icin; mailtoburhanettin@gmail.com"
+        "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
+        "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
+        "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
+        "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+        "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir."
     )
     
     for line in explanation.split(". "):
@@ -361,9 +373,12 @@ def create_pdf(results, stats, input_df):
     buffer.seek(0)
     return buffer
 
+# Kodun devamı ve verilerin hazırlanması kısmı...
+
+# PDF oluşturulacaksa:
 if st.button("📥 PDF Raporu Hazırla"):
     if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table), plots)
         st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
