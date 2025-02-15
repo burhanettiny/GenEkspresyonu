@@ -18,12 +18,11 @@ st.markdown("### B. Yalçınkaya tarafından geliştirildi")
 st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
 
 # Kullanıcıdan Hedef Gen ve Hasta Grubu Adlarını Al
-target_gen_name = st.text_input("🔹 Hedef Gen Adını Girin", "Hedef Gen")
+target_gen_names = st.text_input("🔹 Hedef Gen Adlarını Girin (Virgülle ayırarak)", "Hedef Gen 1, Hedef Gen 2").split(',')
 reference_gen_name = st.text_input("🔹 Referans Gen Adını Girin", "Referans Gen")
 patient_groups_names = st.text_input("🔹 Hasta Grupları Adlarını Girin (Virgülle ayırarak)", "Hasta Grubu 1, Hasta Grubu 2").split(',')
 
 # Hedef Gen ve Hasta Grubu Sayısı
-num_target_genes = st.number_input("🔹 Hedef Gen Sayısını Girin", min_value=1, step=1, key="gene_count")
 num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_value=1, step=1, key="patient_count")
 
 # Veri listeleri
@@ -39,18 +38,19 @@ def parse_input_data(input_data):
 last_control_delta_ct = None
 last_gene_index = None
 
-for i in range(num_target_genes):
-    st.subheader(f"🧬 {target_gen_name} {i+1}")
+# Her bir hedef gen için veri al
+for gene_index, target_gen_name in enumerate(target_gen_names):
+    st.subheader(f"🧬 {target_gen_name}")
     
     # Kontrol Grubu Verileri
-    control_target_ct = st.text_area(f"🟦 Kontrol Grubu {target_gen_name} {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
-    control_reference_ct = st.text_area(f"🟦 Kontrol Grubu {reference_gen_name} {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
+    control_target_ct = st.text_area(f"🟦 Kontrol Grubu {target_gen_name} Ct Değerleri", key=f"control_target_ct_{gene_index}")
+    control_reference_ct = st.text_area(f"🟦 Kontrol Grubu {reference_gen_name} Ct Değerleri", key=f"control_reference_ct_{gene_index}")
     
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
+        st.error(f"⚠️ Hata: Kontrol Grubu için veriler eksik! Lütfen verileri doğru girin.")
         continue
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
@@ -62,7 +62,7 @@ for i in range(num_target_genes):
         average_control_delta_ct = np.mean(control_delta_ct)
         # Grafik kısmında kullanabilmek için bu genin kontrol verilerini saklıyoruz.
         last_control_delta_ct = control_delta_ct  
-        last_gene_index = i
+        last_gene_index = gene_index
     else:
         st.warning("⚠️ Hata: Kontrol grubu için Ct verileri eksik veya hatalı!")
         continue
@@ -71,7 +71,7 @@ for i in range(num_target_genes):
     for idx in range(min_control_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
-            "Hedef Gen": f"{target_gen_name} {i+1}",
+            "Hedef Gen": target_gen_name,
             "Grup": "Kontrol",
             "Hedef Gen Ct Değeri": control_target_ct_values[idx],
             "Referans Ct": control_reference_ct_values[idx],  
@@ -81,10 +81,10 @@ for i in range(num_target_genes):
     
     # Hasta Grubu Verileri
     for j in range(num_patient_groups):
-        st.subheader(f"🩸 {patient_groups_names[j]} - {target_gen_name} {i+1}")
+        st.subheader(f"🩸 {patient_groups_names[j]} - {target_gen_name}")
         
-        sample_target_ct = st.text_area(f"🟥 {patient_groups_names[j]} {target_gen_name} {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
-        sample_reference_ct = st.text_area(f"🟥 {patient_groups_names[j]} {reference_gen_name} {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
+        sample_target_ct = st.text_area(f"🟥 {patient_groups_names[j]} {target_gen_name} Ct Değerleri", key=f"sample_target_ct_{gene_index}_{j}")
+        sample_reference_ct = st.text_area(f"🟥 {patient_groups_names[j]} {reference_gen_name} Ct Değerleri", key=f"sample_reference_ct_{gene_index}_{j}")
         
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
@@ -108,7 +108,7 @@ for i in range(num_target_genes):
         for idx in range(min_sample_len):
             input_values_table.append({
                 "Örnek Numarası": sample_counter,
-                "Hedef Gen": f"{target_gen_name} {i+1}",
+                "Hedef Gen": target_gen_name,
                 "Grup": f"{patient_groups_names[j]}",
                 "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
                 "Referans Ct": sample_reference_ct_values[idx],
@@ -143,7 +143,7 @@ for i in range(num_target_genes):
         significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
         
         stats_data.append({
-            "Hedef Gen": f"{target_gen_name} {i+1}",
+            "Hedef Gen": target_gen_name,
             "Hasta Grubu": f"{patient_groups_names[j]}",
             "Test Türü": test_type,
             "Kullanılan Test": test_method,  
@@ -152,7 +152,7 @@ for i in range(num_target_genes):
         })
         
         data.append({
-            "Hedef Gen": f"{target_gen_name} {i+1}",
+            "Hedef Gen": target_gen_name,
             "Hasta Grubu": f"{patient_groups_names[j]}",
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
@@ -187,7 +187,7 @@ if stats_data:
 
 # Grafik oluşturma (sadece en az bir geçerli Hedef Gen için veri varsa)
 if last_control_delta_ct is not None:
-    st.subheader(f"{target_gen_name} {last_gene_index+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
+    st.subheader(f"{target_gen_names[last_gene_index]} - Hasta ve Kontrol Grubu Dağılım Grafiği")
     
     fig = go.Figure()
     
@@ -205,7 +205,7 @@ if last_control_delta_ct is not None:
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
             d["ΔCt (Hasta)"] for d in input_values_table 
-            if d["Grup"] == f"{patient_groups_names[j]}" and d["Hedef Gen"] == f"{target_gen_name} {last_gene_index+1}"
+            if d["Grup"] == f"{patient_groups_names[j]}" and d["Hedef Gen"] == target_gen_names[last_gene_index]
         ]
     
         if not sample_delta_ct_values:
@@ -221,7 +221,7 @@ if last_control_delta_ct is not None:
         ))
 
     fig.update_layout(
-        title=f"{target_gen_name} {last_gene_index+1} - Hasta ve Kontrol Grubu Dağılımı",
+        title=f"{target_gen_names[last_gene_index]} - Hasta ve Kontrol Grubu Dağılımı",
         xaxis=dict(title="Gruplar", tickmode="array", tickvals=[1, 2]),
         yaxis=dict(title="ΔCt"),
         showlegend=True,
