@@ -29,6 +29,20 @@ stats_data = []
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
+    
+    # Ortalama hesaplama işlemi için veri olup olmadığını kontrol et
+if len(control_delta_ct) > 0:
+    average_control_delta_ct = np.mean(control_delta_ct)
+else:
+    st.warning(f"⚠️ Hata: Kontrol grubu için Ct verileri eksik veya hatalı!")
+    continue  # Eğer veri yoksa döngüyü atla
+
+# Hasta grubu verilerini kontrol et
+if len(sample_delta_ct) > 0:
+    average_sample_delta_ct = np.mean(sample_delta_ct)
+else:
+    st.warning(f"⚠️ Hata: Hasta grubu {j+1} için Ct verileri eksik veya hatalı!")
+    continue  # Eğer veri yoksa döngüyü atla
 
 for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
