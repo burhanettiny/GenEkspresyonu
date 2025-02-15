@@ -279,7 +279,7 @@ def create_pdf(results, stats, input_df):
     elements.append(Spacer(1, 12))
 
     # Giriş Verileri Tablosu Başlığı
-    elements.append(Paragraph("Giriş Verileri Tablosu:", styles['Heading2']))
+    elements.append(Paragraph("Giris Verileri Tablosu:", styles['Heading2']))
     
     # Tablo Verisi
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
@@ -310,7 +310,7 @@ def create_pdf(results, stats, input_df):
     elements.append(PageBreak())
     
     # İstatistiksel Sonuçlar
-    elements.append(Paragraph("İstatistiksel Sonuçlar:", styles['Heading2']))
+    elements.append(Paragraph("istatistiksel Sonuçlar:", styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for stat in stats:
@@ -325,11 +325,11 @@ def create_pdf(results, stats, input_df):
     elements.append(Spacer(1, 12))
     
     explanation = (
-        "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
-        "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
-        "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
-        "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
-        "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir."
+        "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
+        "Normallik saglanirsa, gruplar arasindaki varyans esitligi Levene testi ile kontrol edilmistir. "
+        "Varyans eşitliği varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
+        "Eger normal dağilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmistir. "
+        "Sonuçların anlamliligi p < 0.05 kriterine göre belirlenmistir."
     )
     
     for line in explanation.split(". "):
