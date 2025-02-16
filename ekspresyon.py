@@ -245,8 +245,6 @@ if not control_target_ct_values or not control_reference_ct_values:
             if lang == "English" else
             f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!"
         )
-        continue
-
 # ΔCt hesaplama
 control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
 average_control_delta_ct = np.mean(control_delta_ct)
