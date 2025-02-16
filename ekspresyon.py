@@ -414,9 +414,9 @@ for stat in stats:
 
 elements.append(PageBreak())
 
-# Statistical Evaluation
-    elements.append(Paragraph("İstatistiksel Değerlendirme:" if language == "Türkçe" else "Statistical Evaluation:", styles['Heading2']))
-    elements.append(Spacer(1, 12))
+# Statistical Evaluation (Ensure this is not indented)
+elements.append(Paragraph("İstatistiksel Değerlendirme:" if language == "Türkçe" else "Statistical Evaluation:", styles['Heading2']))
+elements.append(Spacer(1, 12))
 
     explanation = (
         "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
