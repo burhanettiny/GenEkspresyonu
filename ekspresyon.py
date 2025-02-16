@@ -59,7 +59,7 @@ for i in range(num_target_genes):
         last_control_delta_ct = control_delta_ct  
         last_gene_index = i
     else:
-        st.warning("⚠️ Hata: Kontrol grubu için Ct verileri eksik veya hatalı!")
+        st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
         continue
     
     sample_counter = 1  # Kontrol grubu örnek sayacı
