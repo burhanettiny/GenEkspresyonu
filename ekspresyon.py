@@ -333,109 +333,83 @@ if input_values_table:  # Check for valid data
 else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir." if language == "Türkçe" else "At least one valid dataset is required to generate the graph.")
 
-# PDF report creation
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from reportlab.lib.styles import getSampleStyleSheet
-
 def create_pdf(results, stats, input_df):
-    buffer = BytesIO()
+    buffer = BytesIO()  # Creating a buffer to store the PDF
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
     
     styles = getSampleStyleSheet()
-    
-    # Title
-    elements.append(Paragraph("Gen Ekspresyon Analizi Raporu", styles['Title']) if language == "Türkçe" else Paragraph("Gene Expression Analysis Report", styles['Title']))
+
+    # Adding Title
+    elements.append(Paragraph("Gen Ekspresyon Analizi Raporu", styles['Title']))
     elements.append(Spacer(1, 12))
 
-    # Input Data Table Title
-    elements.append(Paragraph("Giris Verileri Tablosu:" if language == "Türkçe" else "Input Data Table:", styles['Heading2']))
+    # Adding Table
+    table_data = [input_df.columns.tolist()] + input_df.values.tolist()
+    col_width = (letter[0] - 80) / len(input_df.columns)
+    table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
+    
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+    ]))
+    
+    elements.append(table)
+    elements.append(Spacer(1, 12))
 
-    # Table Data
-table_data = [input_df.columns.tolist()] + input_df.values.tolist()
-col_width = (letter[0] - 80) / len(input_df.columns)
-table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
+    # Adding Results and Stats Sections
+    elements.append(Paragraph("Sonuçlar:", styles['Heading2']))
+    elements.append(Spacer(1, 12))
+    
+    for result in results:
+        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f} | {result['Regülasyon Durumu']}"
+        elements.append(Paragraph(text, styles['Normal']))
+        elements.append(Spacer(1, 6))
+    
+    elements.append(PageBreak())
+    
+    # Adding Statistical Results
+    elements.append(Paragraph("İstatistiksel Sonuçlar:", styles['Heading2']))
+    elements.append(Spacer(1, 12))
+    
+    for stat in stats:
+        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
+        elements.append(Paragraph(text, styles['Normal']))
+        elements.append(Spacer(1, 6))
 
-table.setStyle(TableStyle([
-    ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-    ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-    ('FONTSIZE', (0, 0), (-1, -1), 10),
-    ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-]))
+    elements.append(PageBreak())
 
-elements.append(table)
-elements.append(Spacer(1, 12))
-
-# Results Title
-elements.append(Paragraph("Sonuçlar:" if language == "Türkçe" else "Results:", styles['Heading2']))
-elements.append(Spacer(1, 12))
-
-for result in results:
-    text = (
-        f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | "
-        f"2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f} | {result['Regülasyon Durumu']}" 
-        if language == "Türkçe" 
-        else f"{result['Target Gene']} - {result['Patient Group']} | ΔΔCt: {result['ΔΔCt']:.2f} | "
-             f"2^(-ΔΔCt): {result['Gene Expression Change (2^(-ΔΔCt))']:.2f} | {result['Regulation Status']}"
+    # Statistical Explanation
+    elements.append(Paragraph("İstatistiksel Değerlendirme:", styles['Heading2']))
+    elements.append(Spacer(1, 12))
+    
+    explanation = (
+        "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
+        "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
+        "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
+        "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+        "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir. "
+        "<b>Görüş ve önerileriniz için; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
+        if language == "Türkçe"
+        else (
+            "In the statistical evaluation process, data distribution was analyzed using the Shapiro-Wilk test. "
+            "If normality is achieved, variance homogeneity between groups was checked with the Levene test. "
+            "If variance homogeneity holds, the independent samples t-test was applied, otherwise the Welch t-test was used. "
+            "If normal distribution is not met, the non-parametric Mann-Whitney U test was utilized. "
+            "The significance of the results was determined based on the criterion p < 0.05. "
+            "<b>For comments and suggestions; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
+        )
     )
-    elements.append(Paragraph(text, styles['Normal']))
-    elements.append(Spacer(1, 6))
 
-elements.append(PageBreak())
+    for line in explanation.split(". "):
+        elements.append(Paragraph(line.strip() + '.', styles['Normal']))
+        elements.append(Spacer(1, 6))
 
-# Statistical Results
-elements.append(Paragraph("İstatistiksel Sonuçlar:" if language == "Türkçe" else "Statistical Results:", styles['Heading2']))
-elements.append(Spacer(1, 12))
-
-for stat in stats:
-    text = (
-        f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | "
-        f"p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}" 
-        if language == "Türkçe" 
-        else f"{stat['Target Gene']} - {stat['Patient Group']} | Test: {stat['Test Used']} | "
-             f"p-value: {stat['Test P-value']:.4f} | {stat['Significance']}"
-    )
-    elements.append(Paragraph(text, styles['Normal']))
-    elements.append(Spacer(1, 6))
-
-elements.append(PageBreak())
-
-# Statistical Evaluation
-elements.append(Paragraph("İstatistiksel Değerlendirme:" if language == "Türkçe" else "Statistical Evaluation:", styles['Heading2']))
-elements.append(Spacer(1, 12))
-
-explanation = (
-    "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
-    "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
-    "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
-    "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
-    "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir. "
-    "<b>Görüş ve önerileriniz için; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
-    if language == "Türkçe"
-    else (
-        "In the statistical evaluation process, data distribution was analyzed using the Shapiro-Wilk test. "
-        "If normality is achieved, variance homogeneity between groups was checked with the Levene test. "
-        "If variance homogeneity holds, the independent samples t-test was applied, otherwise the Welch t-test was used. "
-        "If normal distribution is not met, the non-parametric Mann-Whitney U test was utilized. "
-        "The significance of the results was determined based on the criterion p < 0.05. "
-        "<b>For comments and suggestions; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
-    )
-)
-
-for line in explanation.split(". "):
-    elements.append(Paragraph(line.strip() + '.', styles['Normal']))
-    elements.append(Spacer(1, 6))
-
-doc.build(elements)
-buffer.seek(0)
-return buffer
-
-if st.button("📥 PDF Raporu Hazırla"):
-    if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
-        st.download_button(label="PDF Olarak İndir" if language == "Türkçe" else "Download PDF", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
-    else:
-        st.error("Veri bulunamadı, PDF oluşturulamadı." if language == "Türkçe" else "Data not found, PDF could not be generated.")
+    # Finish and return the buffer containing the PDF
+    doc.build(elements)
+    buffer.seek(0)
+    return buffer
