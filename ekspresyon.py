@@ -8,7 +8,8 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
 
 # Language selection
 language = st.selectbox("Select Language", ["Türkçe", "English"])
