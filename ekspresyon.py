@@ -72,7 +72,7 @@ for i in range(num_target_genes):
         })
         sample_counter += 1
     
-    # Hasta Grubu Verileri Girişi
+# Hasta Grubu Verileri Girişi
 for j in range(num_patient_groups):
     st.subheader(
         f"🩸 Patient Group {j+1} - Target Gene {i+1}" if lang == "English" else f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}"
@@ -93,7 +93,7 @@ for j in range(num_patient_groups):
 
     if not sample_target_ct_values or not sample_reference_ct_values:
         st.error("⚠️ Please enter valid patient group data!" if lang == "English" else "⚠️ Lütfen geçerli hasta grubu verilerini girin!")
-        continue  # Skip to the next iteration of the loop
+        continue
 
     # Eşit uzunlukta veri almak için
     min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
