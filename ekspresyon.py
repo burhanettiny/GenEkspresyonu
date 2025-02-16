@@ -111,28 +111,28 @@ for j in range(num_patient_groups):
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
-    if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-        if language == "Türkçe":
+if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
+    if language == "Türkçe":
             st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-        else:
+    else:
             st.error(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly without empty cells.")
-        continue
+    continue
         
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
         sample_target_ct_values = sample_target_ct_values[:min_sample_len]
         sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
         
-        if len(sample_delta_ct) > 0:
-            average_sample_delta_ct = np.mean(sample_delta_ct)
-        else:
-            if language == "Türkçe":
+if len(sample_delta_ct) > 0:
+        average_sample_delta_ct = np.mean(sample_delta_ct)
+    else:
+        if language == "Türkçe":
                 st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-            else:
+        else:
                 st.warning(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly.")
-            continue
+        continue
         sample_counter = 1  # Reset sample counter for each patient group
-for idx in range(min_sample_len):
+        for idx in range(min_sample_len):
     input_values_table.append({
         "Örnek Numarası": sample_counter,
         "Hedef Gen": f"Hedef Gen {i+1}",
@@ -142,8 +142,7 @@ for idx in range(min_sample_len):
         "ΔCt (Hasta)": sample_delta_ct[idx]
     })
     sample_counter += 1
-
-    # ΔΔCt and Gene Expression Change Calculation
+ # ΔΔCt and Gene Expression Change Calculation
     delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
     expression_change = 2 ** (-delta_delta_ct)
 
@@ -187,7 +186,7 @@ for idx in range(min_sample_len):
         "ΔCt (Kontrol)": average_control_delta_ct,
         "ΔCt (Hasta)": average_sample_delta_ct
     })
-
+   
 # Display Input Data Table
 if input_values_table:
     if language == "Türkçe":
