@@ -226,7 +226,7 @@ control_target_ct_values = [
     )
 ]
 
-control_reference_ct_values = [
+cControl_reference_ct_values = [
     d["Reference Ct"] if lang == "English" else d["Referans Ct"]
     for d in input_values_table
     if (
@@ -301,7 +301,7 @@ fig.add_trace(go.Scatter(
         for idx, value in enumerate(control_delta_ct)
     ],
     hoverinfo='text'
-))  # ***Eksik parantez tamamlandı!***
+)) 
 
 # PDF rapor oluşturma
 def create_pdf(results, stats, input_df, lang="Turkish"):
