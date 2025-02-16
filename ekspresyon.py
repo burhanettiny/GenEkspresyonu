@@ -175,7 +175,6 @@ for j in range(num_patient_groups):
         "ΔCt (Patient)" if lang == "English" else "ΔCt (Hasta)": avg_sample_delta_ct
     })
 
-
 # Giriş Verileri Tablosunu Göster
 if input_values_table: 
     st.subheader("📋 Input Data Table" if lang == "English" else "📋 Giriş Verileri Tablosu") 
@@ -213,25 +212,45 @@ if stats_data:
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
     st.subheader(f"Target Gene {i+1} - Patient and Control Group Distribution Graph" if lang == "English" else f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
-    
-    # Kontrol Grubu Verileri
-    control_target_ct_values = [
-        d["Target Gene Ct Value"] if lang == "English" else d["Hedef Gen Ct Değeri"] for d in input_values_table
-        if d["Group"] == "Control" if lang == "English" else d["Grup"] == "Kontrol" and d["Target Gene"] if lang == "English" else d["Hedef Gen"] == f"Target Gene {i+1}" if lang == "English" else f"Hedef Gen {i+1}"
-    ]
-    
-    control_reference_ct_values = [
-        d["Reference Ct"] if lang == "English" else d["Referans Ct"] for d in input_values_table
-        if d["Group"] == "Control" if lang == "English" else d["Grup"] == "Kontrol" and d["Target Gene"] if lang == "English" else d["Hedef Gen"] == f"Target Gene {i+1}" if lang == "English" else f"Hedef Gen {i+1}"
-    ]
-    
-    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Error: Missing data for Target Gene {i+1} in Control Group!" if lang == "English" else f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
-        continue
-    
-    control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
-    average_control_delta_ct = np.mean(control_delta_ct)
-    
+
+# Kontrol Grubu Verileri
+control_target_ct_values = [
+    d["Target Gene Ct Value"] if lang == "English" else d["Hedef Gen Ct Değeri"]
+    for d in input_values_table
+    if (
+        (d["Group"] == "Control" and lang == "English") or
+        (d["Grup"] == "Kontrol" and lang == "Türkçe")
+    ) and (
+        (d["Target Gene"] == f"Target Gene {i+1}" and lang == "English") or
+        (d["Hedef Gen"] == f"Hedef Gen {i+1}" and lang == "Türkçe")
+    )
+]
+
+control_reference_ct_values = [
+    d["Reference Ct"] if lang == "English" else d["Referans Ct"]
+    for d in input_values_table
+    if (
+        (d["Group"] == "Control" and lang == "English") or
+        (d["Grup"] == "Kontrol" and lang == "Türkçe")
+    ) and (
+        (d["Target Gene"] == f"Target Gene {i+1}" and lang == "English") or
+        (d["Hedef Gen"] == f"Hedef Gen {i+1}" and lang == "Türkçe")
+    )
+]
+
+# Eksik veri kontrolü
+if not control_target_ct_values or not control_reference_ct_values:
+    st.error(
+        f"⚠️ Error: Missing data for Target Gene {i+1} in Control Group!"
+        if lang == "English" else
+        f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!"
+    )
+    continue
+
+# ΔCt hesaplama
+control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
+average_control_delta_ct = np.mean(control_delta_ct)
+
     # Hasta Grubu Verileri
     fig = go.Figure()
 
