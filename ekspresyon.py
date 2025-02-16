@@ -11,6 +11,18 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 
+import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+import scipy.stats as stats
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle
+
 # Language selection
 language = st.selectbox("Select Language", ["Türkçe", "English"])
 
@@ -52,30 +64,29 @@ for i in range(num_target_genes):
     else:
         st.subheader(f"🧬 Target Gene {i+1}")
     
-# Control Group Data
-for i in range(num_genes):  # Assuming this is a loop for multiple genes
+    # Control Group Data
     if language == "Türkçe":
         control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
         control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
     else:
         control_target_ct = st.text_area(f"🟦 Control Group Target Gene {i+1} Ct Values", key=f"control_target_ct_{i}")
         control_reference_ct = st.text_area(f"🟦 Control Group Reference Gene {i+1} Ct Values", key=f"control_reference_ct_{i}")
-
+    
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
-
+    
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
         if language == "Türkçe":
             st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
         else:
             st.error(f"⚠️ Warning: Please enter the control group data for Gene {i+1} correctly without empty cells.")
         continue
-
+    
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
     control_delta_ct = control_target_ct_values - control_reference_ct_values
-
+    
     if len(control_delta_ct) > 0:
         average_control_delta_ct = np.mean(control_delta_ct)
         last_control_delta_ct = control_delta_ct  
@@ -86,66 +97,65 @@ for i in range(num_genes):  # Assuming this is a loop for multiple genes
         else:
             st.warning("⚠️ Warning: Please enter the control group Ct values correctly.")
         continue
-
-sample_counter = 1
-for idx in range(min_control_len):
-    input_values_table.append({
-        "Örnek Numarası": sample_counter,
-        "Hedef Gen": f"Hedef Gen {i+1}",
-        "Grup": "Kontrol",
-        "Hedef Gen Ct Değeri": control_target_ct_values[idx],
-        "Referans Ct": control_reference_ct_values[idx],  
-        "ΔCt (Kontrol)": control_delta_ct[idx]
-    })
-    sample_counter += 1
     
-# Patient Group Data
-for j in range(num_patient_groups):
-    if language == "Türkçe":
-        st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
-    else:
-        st.subheader(f"🩸 Patient Group {j+1} - Target Gene {i+1}")
-    
-    sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
-    sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
-    
-    sample_target_ct_values = parse_input_data(sample_target_ct)
-    sample_reference_ct_values = parse_input_data(sample_reference_ct)
-    
-    if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-        if language == "Türkçe":
-            st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-        else:
-            st.error(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly without empty cells.")
-        continue
-    
-    min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
-    sample_target_ct_values = sample_target_ct_values[:min_sample_len]
-    sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
-    sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
-    
-    if len(sample_delta_ct) > 0:
-        average_sample_delta_ct = np.mean(sample_delta_ct)
-    else:
-        if language == "Türkçe":
-            st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-        else:
-            st.warning(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly.")
-        continue
-    
-    sample_counter = 1  # Reset sample counter for each patient group
-    for idx in range(min_sample_len):
+    sample_counter = 1
+    for idx in range(min_control_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
             "Hedef Gen": f"Hedef Gen {i+1}",
-            "Grup": f"Hasta Grubu {j+1}",
-            "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
-            "Referans Ct": sample_reference_ct_values[idx],
-            "ΔCt (Hasta)": sample_delta_ct[idx]
+            "Grup": "Kontrol",
+            "Hedef Gen Ct Değeri": control_target_ct_values[idx],
+            "Referans Ct": control_reference_ct_values[idx],  
+            "ΔCt (Kontrol)": control_delta_ct[idx]
         })
         sample_counter += 1
+    
+    # Patient Group Data
+    for j in range(num_patient_groups):
+        if language == "Türkçe":
+            st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
+        else:
+            st.subheader(f"🩸 Patient Group {j+1} - Target Gene {i+1}")
+        
+        sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
+        sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
+        
+        sample_target_ct_values = parse_input_data(sample_target_ct)
+        sample_reference_ct_values = parse_input_data(sample_reference_ct)
+        
+        if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
+            if language == "Türkçe":
+                st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+            else:
+                st.error(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly without empty cells.")
+            continue
+        
+        min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
+        sample_target_ct_values = sample_target_ct_values[:min_sample_len]
+        sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
+        sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
+        
+        if len(sample_delta_ct) > 0:
+            average_sample_delta_ct = np.mean(sample_delta_ct)
+        else:
+            if language == "Türkçe":
+                st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+            else:
+                st.warning(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly.")
+            continue
+    sample_counter = 1  # Reset sample counter for each patient group
+for idx in range(min_sample_len):
+    input_values_table.append({
+        "Örnek Numarası": sample_counter,
+        "Hedef Gen": f"Hedef Gen {i+1}",
+        "Grup": f"Hasta Grubu {j+1}",
+        "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
+        "Referans Ct": sample_reference_ct_values[idx],
+        "ΔCt (Hasta)": sample_delta_ct[idx]
+    })
+    sample_counter += 1
 
- # ΔΔCt and Gene Expression Change Calculation
+    # ΔΔCt and Gene Expression Change Calculation
     delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
     expression_change = 2 ** (-delta_delta_ct)
 
@@ -189,7 +199,7 @@ for j in range(num_patient_groups):
         "ΔCt (Kontrol)": average_control_delta_ct,
         "ΔCt (Hasta)": average_sample_delta_ct
     })
-   
+
 # Display Input Data Table
 if input_values_table:
     if language == "Türkçe":
@@ -253,7 +263,6 @@ for i in range(num_target_genes):
         else:
             st.error(f"⚠️ Error: Missing data for Control Group Target Gene {i+1}!")
         continue
- 
 control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
 average_control_delta_ct = np.mean(control_delta_ct)
 
@@ -320,106 +329,125 @@ for j in range(num_patient_groups):
     ))
 
 # Graph settings
-if input_values_table:  # Check for valid data
-    fig.update_layout(
-        title=f"Hedef Gen {i+1} - ΔCt Dağılımı" if language == "Türkçe" else f"Target Gene {i+1} - ΔCt Distribution",
-        xaxis=dict(
-            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' if language == "Türkçe" else f'Patient Group {i+1}' for i in range(num_patient_groups)],
-            title='Grup' if language == "Türkçe" else 'Group'
-        ),
-        yaxis=dict(title='ΔCt Değeri' if language == "Türkçe" else 'ΔCt Value'),
-        showlegend=True
-    )
+fig.update_layout(
+    title=f"Hedef Gen {i+1} - ΔCt Dağılımı" if language == "Türkçe" else f"Target Gene {i+1} - ΔCt Distribution",
+    xaxis=dict(
+        tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
+        ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' if language == "Türkçe" else f'Patient Group {i+1}' for i in range(num_patient_groups)],
+        title='Grup' if language == "Türkçe" else 'Group'
+    ),
+    yaxis=dict(title='ΔCt Değeri' if language == "Türkçe" else 'ΔCt Value'),
+    showlegend=True
+)
 
-    st.plotly_chart(fig)
+st.plotly_chart(fig)
+
 else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir." if language == "Türkçe" else "At least one valid dataset is required to generate the graph.")
 
+# PDF report creation
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+
 def create_pdf(results, stats, input_df):
-    buffer = BytesIO()  # Creating a buffer to store the PDF
+    buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
     
     styles = getSampleStyleSheet()
-
-    # Adding Title
-    elements.append(Paragraph("Gen Ekspresyon Analizi Raporu", styles['Title']))
+    
+    # Title
+    elements.append(Paragraph("Gen Ekspresyon Analizi Raporu", styles['Title']) if language == "Türkçe" else Paragraph("Gene Expression Analysis Report", styles['Title']))
     elements.append(Spacer(1, 12))
 
-    # Adding Table
-    table_data = [input_df.columns.tolist()] + input_df.values.tolist()
-    col_width = (letter[0] - 80) / len(input_df.columns)
-    table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
-    
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-    ]))
-    
-    elements.append(table)
-    elements.append(Spacer(1, 12))
+    # Input Data Table Title
+    elements.append(Paragraph("Giris Verileri Tablosu:" if language == "Türkçe" else "Input Data Table:", styles['Heading2']))
+# Table Data
+table_data = [input_df.columns.tolist()] + input_df.values.tolist()
+col_width = (letter[0] - 80) / len(input_df.columns)
+table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
 
-    # Adding Results and Stats Sections
-    elements.append(Paragraph("Sonuçlar:", styles['Heading2']))
-    elements.append(Spacer(1, 12))
-    
-    for result in results:
-        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f} | {result['Regülasyon Durumu']}"
-        elements.append(Paragraph(text, styles['Normal']))
-        elements.append(Spacer(1, 6))
-    
-    elements.append(PageBreak())
-    
-    # Adding Statistical Results
-    elements.append(Paragraph("İstatistiksel Sonuçlar:", styles['Heading2']))
-    elements.append(Spacer(1, 12))
-    
-    for stat in stats:
-        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
-        elements.append(Paragraph(text, styles['Normal']))
-        elements.append(Spacer(1, 6))
+table.setStyle(TableStyle([
+    ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+    ('FONTSIZE', (0, 0), (-1, -1), 10),
+    ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+]))
 
-    elements.append(PageBreak())
+elements.append(table)
+elements.append(Spacer(1, 12))
 
-    # Statistical Explanation
-    elements.append(Paragraph("İstatistiksel Değerlendirme:", styles['Heading2']))
-    elements.append(Spacer(1, 12))
-    
-    explanation = (
-        "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
-        "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
-        "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
-        "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
-        "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir. "
-        "<b>Görüş ve önerileriniz için; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
-        if language == "Türkçe"
-        else (
-            "In the statistical evaluation process, data distribution was analyzed using the Shapiro-Wilk test. "
-            "If normality is achieved, variance homogeneity between groups was checked with the Levene test. "
-            "If variance homogeneity holds, the independent samples t-test was applied, otherwise the Welch t-test was used. "
-            "If normal distribution is not met, the non-parametric Mann-Whitney U test was utilized. "
-            "The significance of the results was determined based on the criterion p < 0.05. "
-            "<b>For comments and suggestions; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
-        )
+# Results Title
+elements.append(Paragraph("Sonuçlar:" if language == "Türkçe" else "Results:", styles['Heading2']))
+elements.append(Spacer(1, 12))
+
+for result in results:
+    text = (
+        f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | "
+        f"2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f} | {result['Regülasyon Durumu']}" 
+        if language == "Türkçe" 
+        else f"{result['Target Gene']} - {result['Patient Group']} | ΔΔCt: {result['ΔΔCt']:.2f} | "
+             f"2^(-ΔΔCt): {result['Gene Expression Change (2^(-ΔΔCt))']:.2f} | {result['Regulation Status']}"
     )
+    elements.append(Paragraph(text, styles['Normal']))
+    elements.append(Spacer(1, 6))
 
-    for line in explanation.split(". "):
-        elements.append(Paragraph(line.strip() + '.', styles['Normal']))
-        elements.append(Spacer(1, 6))
+elements.append(PageBreak())
 
-    # Finish and return the buffer containing the PDF
-    doc.build(elements)
-    buffer.seek(0)
-    return buffer
+# Statistical Results
+elements.append(Paragraph("İstatistiksel Sonuçlar:" if language == "Türkçe" else "Statistical Results:", styles['Heading2']))
+elements.append(Spacer(1, 12))
+
+for stat in stats:
+    text = (
+        f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | "
+        f"p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}" 
+        if language == "Türkçe" 
+        else f"{stat['Target Gene']} - {stat['Patient Group']} | Test: {stat['Test Used']} | "
+             f"p-value: {stat['Test P-value']:.4f} | {stat['Significance']}"
+    )
+    elements.append(Paragraph(text, styles['Normal']))
+    elements.append(Spacer(1, 6))
+
+elements.append(PageBreak())
+
+# Statistical Evaluation
+elements.append(Paragraph("İstatistiksel Değerlendirme:" if language == "Türkçe" else "Statistical Evaluation:", styles['Heading2']))
+elements.append(Spacer(1, 12))
+
+explanation = (
+    "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
+    "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
+    "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
+    "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+    "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir. "
+    "<b>Görüş ve önerileriniz için; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
+    if language == "Türkçe"
+    else (
+        "In the statistical evaluation process, data distribution was analyzed using the Shapiro-Wilk test. "
+        "If normality is achieved, variance homogeneity between groups was checked with the Levene test. "
+        "If variance homogeneity holds, the independent samples t-test was applied, otherwise the Welch t-test was used. "
+        "If normal distribution is not met, the non-parametric Mann-Whitney U test was utilized. "
+        "The significance of the results was determined based on the criterion p < 0.05. "
+        "<b>For comments and suggestions; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
+    )
+)
+
+for line in explanation.split(". "):
+    elements.append(Paragraph(line.strip() + '.', styles['Normal']))
+    elements.append(Spacer(1, 6))
+
+doc.build(elements)
+buffer.seek(0)
+return buffer
 
 if st.button("📥 PDF Raporu Hazırla"):
     if input_values_table:
         pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
-        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
+        st.download_button(label="PDF Olarak İndir" if language == "Türkçe" else "Download PDF", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
-        st.error("Veri bulunamadı, PDF oluşturulamadı.")
+        st.error("Veri bulunamadı, PDF oluşturulamadı." if language == "Türkçe" else "Data not found, PDF could not be generated.")
+
