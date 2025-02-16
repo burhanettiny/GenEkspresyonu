@@ -291,7 +291,17 @@ for j in range(num_patient_groups):
 
 # Veri Noktaları (Kontrol Grubu)
 fig.add_trace(go.Scatter(
-    x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.)
+    x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
+    y=control_delta_ct,
+    mode='markers',
+    name="Control Group" if lang == "English" else "Kontrol Grubu",
+    marker=dict(color='blue'),
+    text=[
+        f"Control {value:.2f}, Sample {idx+1}" if lang == "English" else f"Kontrol {value:.2f}, Örnek {idx+1}"
+        for idx, value in enumerate(control_delta_ct)
+    ],
+    hoverinfo='text'
+))  # ***Eksik parantez tamamlandı!***
 
 # PDF rapor oluşturma
 def create_pdf(results, stats, input_df, lang="Turkish"):
