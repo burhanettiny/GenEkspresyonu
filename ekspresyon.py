@@ -104,44 +104,46 @@ for j in range(num_patient_groups):
         st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
     else:
         st.subheader(f"🩸 Patient Group {j+1} - Target Gene {i+1}")
-        
-        sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
-        sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
-        
-        sample_target_ct_values = parse_input_data(sample_target_ct)
-        sample_reference_ct_values = parse_input_data(sample_reference_ct)
-        
-if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-    if language == "Türkçe":
+    
+    sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
+    sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
+    
+    sample_target_ct_values = parse_input_data(sample_target_ct)
+    sample_reference_ct_values = parse_input_data(sample_reference_ct)
+    
+    if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
+        if language == "Türkçe":
             st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-    else:
+        else:
             st.error(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly without empty cells.")
-    continue
-        
-        min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
-        sample_target_ct_values = sample_target_ct_values[:min_sample_len]
-        sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
-        sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
-        
-if len(sample_delta_ct) > 0:
+        continue
+    
+    min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
+    sample_target_ct_values = sample_target_ct_values[:min_sample_len]
+    sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
+    sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
+    
+    if len(sample_delta_ct) > 0:
         average_sample_delta_ct = np.mean(sample_delta_ct)
     else:
         if language == "Türkçe":
-                st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+            st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
         else:
-                st.warning(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly.")
+            st.warning(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly.")
         continue
-        sample_counter = 1  # Reset sample counter for each patient group
-        for idx in range(min_sample_len):
-    input_values_table.append({
-        "Örnek Numarası": sample_counter,
-        "Hedef Gen": f"Hedef Gen {i+1}",
-        "Grup": f"Hasta Grubu {j+1}",
-        "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
-        "Referans Ct": sample_reference_ct_values[idx],
-        "ΔCt (Hasta)": sample_delta_ct[idx]
-    })
-    sample_counter += 1
+    
+    sample_counter = 1  # Reset sample counter for each patient group
+    for idx in range(min_sample_len):
+        input_values_table.append({
+            "Örnek Numarası": sample_counter,
+            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Grup": f"Hasta Grubu {j+1}",
+            "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
+            "Referans Ct": sample_reference_ct_values[idx],
+            "ΔCt (Hasta)": sample_delta_ct[idx]
+        })
+        sample_counter += 1
+
  # ΔΔCt and Gene Expression Change Calculation
     delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
     expression_change = 2 ** (-delta_delta_ct)
