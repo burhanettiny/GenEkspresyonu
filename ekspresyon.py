@@ -317,19 +317,19 @@ for j in range(num_patient_groups):
     ))
 
 # Graph settings
-fig.update_layout(
-    title=f"Hedef Gen {i+1} - ΔCt Dağılımı" if language == "Türkçe" else f"Target Gene {i+1} - ΔCt Distribution",
-    xaxis=dict(
-        tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-        ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' if language == "Türkçe" else f'Patient Group {i+1}' for i in range(num_patient_groups)],
-        title='Grup' if language == "Türkçe" else 'Group'
-    ),
-    yaxis=dict(title='ΔCt Değeri' if language == "Türkçe" else 'ΔCt Value'),
-    showlegend=True
-)
+if input_values_table:  # Check for valid data
+    fig.update_layout(
+        title=f"Hedef Gen {i+1} - ΔCt Dağılımı" if language == "Türkçe" else f"Target Gene {i+1} - ΔCt Distribution",
+        xaxis=dict(
+            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
+            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' if language == "Türkçe" else f'Patient Group {i+1}' for i in range(num_patient_groups)],
+            title='Grup' if language == "Türkçe" else 'Group'
+        ),
+        yaxis=dict(title='ΔCt Değeri' if language == "Türkçe" else 'ΔCt Value'),
+        showlegend=True
+    )
 
-st.plotly_chart(fig)
-
+    st.plotly_chart(fig)
 else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir." if language == "Türkçe" else "At least one valid dataset is required to generate the graph.")
 
