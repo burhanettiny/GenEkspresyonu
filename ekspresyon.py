@@ -45,7 +45,7 @@ for i in range(num_target_genes):
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Hata: Kontrol Grubu {i+1} için veriler eksik! Lütfen verileri doğru girin.")
+        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
         continue
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
@@ -85,7 +85,7 @@ for i in range(num_target_genes):
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
         if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            st.error(f"⚠️ Hata: Hasta Grubu {j+1} için veriler eksik! Lütfen verileri doğru girin.")
+            st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
             continue
         
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
@@ -96,7 +96,7 @@ for i in range(num_target_genes):
         if len(sample_delta_ct) > 0:
             average_sample_delta_ct = np.mean(sample_delta_ct)
         else:
-            st.warning(f"⚠️ Hata: Hasta grubu {j+1} için Ct verileri eksik veya hatalı!")
+            st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
             continue
         
         sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
