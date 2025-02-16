@@ -52,30 +52,30 @@ for i in range(num_target_genes):
     else:
         st.subheader(f"🧬 Target Gene {i+1}")
     
-    # Control Group Data
-    if language == "Türkçe":
-        control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
-        control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
-    else:
-        control_target_ct = st.text_area(f"🟦 Control Group Target Gene {i+1} Ct Values", key=f"control_target_ct_{i}")
-        control_reference_ct = st.text_area(f"🟦 Control Group Reference Gene {i+1} Ct Values", key=f"control_reference_ct_{i}")
+# Control Group Data
+if language == "Türkçe":
+    control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
+    control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
+ else:
+    control_target_ct = st.text_area(f"🟦 Control Group Target Gene {i+1} Ct Values", key=f"control_target_ct_{i}")
+    control_reference_ct = st.text_area(f"🟦 Control Group Reference Gene {i+1} Ct Values", key=f"control_reference_ct_{i}")
     
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
-    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        if language == "Türkçe":
+if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
+     if language == "Türkçe":
             st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
-        else:
+    else:
             st.error(f"⚠️ Warning: Please enter the control group data for Gene {i+1} correctly without empty cells.")
-        continue
+    continue
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
     control_delta_ct = control_target_ct_values - control_reference_ct_values
     
-    if len(control_delta_ct) > 0:
+if len(control_delta_ct) > 0:
         average_control_delta_ct = np.mean(control_delta_ct)
         last_control_delta_ct = control_delta_ct  
         last_gene_index = i
@@ -98,12 +98,12 @@ for i in range(num_target_genes):
         })
         sample_counter += 1
     
-    # Patient Group Data
-    for j in range(num_patient_groups):
-        if language == "Türkçe":
-            st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
-        else:
-            st.subheader(f"🩸 Patient Group {j+1} - Target Gene {i+1}")
+# Patient Group Data
+for j in range(num_patient_groups):
+    if language == "Türkçe":
+        st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
+    else:
+        st.subheader(f"🩸 Patient Group {j+1} - Target Gene {i+1}")
         
         sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
         sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
@@ -111,12 +111,12 @@ for i in range(num_target_genes):
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
-        if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            if language == "Türkçe":
-                st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-            else:
-                st.error(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly without empty cells.")
-            continue
+    if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
+        if language == "Türkçe":
+            st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+        else:
+            st.error(f"⚠️ Warning: Please enter the patient group data for Group {j+1} correctly without empty cells.")
+        continue
         
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
         sample_target_ct_values = sample_target_ct_values[:min_sample_len]
