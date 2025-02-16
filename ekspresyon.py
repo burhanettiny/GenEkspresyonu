@@ -261,6 +261,23 @@ average_control_delta_ct = np.mean(control_delta_ct)
 fig = go.Figure()
 
 # Kontrol Grubu Ortalama Çizgisi
+for j in range(num_patient_groups):
+    sample_delta_ct_values = [
+        d["ΔCt (Patient)"] if lang == "English" else d["ΔCt (Hasta)"]
+        for d in input_values_table
+        if (
+            (d["Group"] == f"Patient Group {j+1}" and lang == "English") or
+            (d["Grup"] == f"Hasta Grubu {j+1}" and lang == "Türkçe")
+        ) and (
+            (d["Target Gene"] == f"Target Gene {i+1}" and lang == "English") or
+            (d["Hedef Gen"] == f"Hedef Gen {i+1}" and lang == "Türkçe")
+        )
+    ]
+
+    if not sample_delta_ct_values:
+        continue  # Eğer hasta grubuna ait veri yoksa, bu grubu atla
+
+    average_sample_delta_ct = np.mean(sample_delta_ct_values)
 fig.add_trace(go.Scatter(
     x=[0.8, 1.2],
     y=[average_control_delta_ct, average_control_delta_ct],
