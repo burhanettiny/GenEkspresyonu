@@ -413,14 +413,29 @@ explanation = (
     "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
     "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
     "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir. "
-    "<b>Görüş ve önerileriniz için; <a href='mailto:mailtoburhan
+    "<b>Görüş ve önerileriniz için; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
+    if language == "Türkçe"
+    else (
+        "In the statistical evaluation process, data distribution was analyzed using the Shapiro-Wilk test. "
+        "If normality is achieved, variance homogeneity between groups was checked with the Levene test. "
+        "If variance homogeneity holds, the independent samples t-test was applied, otherwise the Welch t-test was used. "
+        "If normal distribution is not met, the non-parametric Mann-Whitney U test was utilized. "
+        "The significance of the results was determined based on the criterion p < 0.05. "
+        "<b>For comments and suggestions; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
+    )
+)
 
+for line in explanation.split(". "):
+    elements.append(Paragraph(line.strip() + '.', styles['Normal']))
+    elements.append(Spacer(1, 6))
 
+doc.build(elements)
+buffer.seek(0)
+return buffer
 
-
-
-
-
-    
-    
-    
+if st.button("📥 PDF Raporu Hazırla"):
+    if input_values_table:
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
+        st.download_button(label="PDF Olarak İndir" if language == "Türkçe" else "Download PDF", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
+    else:
+        st.error("Veri bulunamadı, PDF oluşturulamadı." if language == "Türkçe" else "Data not found, PDF could not be generated.")
