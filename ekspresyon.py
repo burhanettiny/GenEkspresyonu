@@ -56,47 +56,47 @@ for i in range(num_target_genes):
 if language == "Türkçe":
     control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
- else:
+else:
     control_target_ct = st.text_area(f"🟦 Control Group Target Gene {i+1} Ct Values", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"🟦 Control Group Reference Gene {i+1} Ct Values", key=f"control_reference_ct_{i}")
-    
-    control_target_ct_values = parse_input_data(control_target_ct)
-    control_reference_ct_values = parse_input_data(control_reference_ct)
-    
+
+control_target_ct_values = parse_input_data(control_target_ct)
+control_reference_ct_values = parse_input_data(control_reference_ct)
+
 if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-     if language == "Türkçe":
-            st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
+    if language == "Türkçe":
+        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
     else:
-            st.error(f"⚠️ Warning: Please enter the control group data for Gene {i+1} correctly without empty cells.")
+        st.error(f"⚠️ Warning: Please enter the control group data for Gene {i+1} correctly without empty cells.")
     continue
-    
-    min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
-    control_target_ct_values = control_target_ct_values[:min_control_len]
-    control_reference_ct_values = control_reference_ct_values[:min_control_len]
-    control_delta_ct = control_target_ct_values - control_reference_ct_values
-    
+
+min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
+control_target_ct_values = control_target_ct_values[:min_control_len]
+control_reference_ct_values = control_reference_ct_values[:min_control_len]
+control_delta_ct = control_target_ct_values - control_reference_ct_values
+
 if len(control_delta_ct) > 0:
-        average_control_delta_ct = np.mean(control_delta_ct)
-        last_control_delta_ct = control_delta_ct  
-        last_gene_index = i
+    average_control_delta_ct = np.mean(control_delta_ct)
+    last_control_delta_ct = control_delta_ct  
+    last_gene_index = i
+else:
+    if language == "Türkçe":
+        st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
     else:
-        if language == "Türkçe":
-            st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
-        else:
-            st.warning("⚠️ Warning: Please enter the control group Ct values correctly.")
-        continue
-    
-    sample_counter = 1
-    for idx in range(min_control_len):
-        input_values_table.append({
-            "Örnek Numarası": sample_counter,
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Grup": "Kontrol",
-            "Hedef Gen Ct Değeri": control_target_ct_values[idx],
-            "Referans Ct": control_reference_ct_values[idx],  
-            "ΔCt (Kontrol)": control_delta_ct[idx]
-        })
-        sample_counter += 1
+        st.warning("⚠️ Warning: Please enter the control group Ct values correctly.")
+    continue
+
+sample_counter = 1
+for idx in range(min_control_len):
+    input_values_table.append({
+        "Örnek Numarası": sample_counter,
+        "Hedef Gen": f"Hedef Gen {i+1}",
+        "Grup": "Kontrol",
+        "Hedef Gen Ct Değeri": control_target_ct_values[idx],
+        "Referans Ct": control_reference_ct_values[idx],  
+        "ΔCt (Kontrol)": control_delta_ct[idx]
+    })
+    sample_counter += 1
     
 # Patient Group Data
 for j in range(num_patient_groups):
