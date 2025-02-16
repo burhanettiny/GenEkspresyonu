@@ -60,8 +60,13 @@ for i in range(num_target_genes):
         st.error("⚠️ Please enter valid control group data!" if lang == "English" else "⚠️ Lütfen geçerli kontrol grubu verilerini girin!")
         continue
     
-        sample_counter = 1  # Kontrol grubu örnek sayacı
-    for idx in range(min_control_len):
+    # Ortalama ΔCt Hesaplama (Kontrol Grubu için)
+    control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
+    avg_control_delta_ct = np.mean(control_delta_ct)
+
+    # Giriş tablosunu oluşturmak için kontrol verilerini ekle
+    sample_counter = 1  # Kontrol grubu örnek sayacı
+    for idx in range(len(control_delta_ct)):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
             "Hedef Gen": f"Hedef Gen {i+1}",
@@ -109,7 +114,7 @@ for j in range(num_patient_groups):
         )
         continue
 
-    # Ortalama ΔCt hesaplama
+    # Ortalama ΔCt hesaplama (Hasta Grubu için)
     avg_sample_delta_ct = np.mean(sample_delta_ct)
 
     # Örnek numarası ve giriş tablosu
