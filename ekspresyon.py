@@ -291,7 +291,7 @@ for j in range(num_patient_groups):
 
 # Veri Noktaları (Kontrol Grubu)
 fig.add_trace(go.Scatter(
-    x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.
+    x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.)
 
 # PDF rapor oluşturma
 def create_pdf(results, stats, input_df, lang="Turkish"):
