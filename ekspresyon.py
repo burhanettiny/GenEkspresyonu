@@ -223,18 +223,18 @@ for i in range(num_target_genes):
 
 # Kontrol Grubu Verileri
 control_target_ct_values = [
-    d["Target Gene Ct Value"] if lang == "English" else d["Hedef Gen Ct Değeri"]
+    d.get("Target Gene Ct Value") if lang == "English" else d.get("Hedef Gen Ct Değeri")
     for d in input_values_table
     if (
-        (d["Group"] == "Control" and lang == "English") or
-        (d["Grup"] == "Kontrol" and lang == "Türkçe")
+        (d.get("Group") == "Control" and lang == "English") or
+        (d.get("Grup") == "Kontrol" and lang == "Türkçe")
     ) and (
-        (d["Target Gene"] == f"Target Gene {i+1}" and lang == "English") or
-        (d["Hedef Gen"] == f"Hedef Gen {i+1}" and lang == "Türkçe")
+        (d.get("Target Gene") == f"Target Gene {i+1}" and lang == "English") or
+        (d.get("Hedef Gen") == f"Hedef Gen {i+1}" and lang == "Türkçe")
     )
 ]
 
-cControl_reference_ct_values = [
+Control_reference_ct_values = [
     d["Reference Ct"] if lang == "English" else d["Referans Ct"]
     for d in input_values_table
     if (
