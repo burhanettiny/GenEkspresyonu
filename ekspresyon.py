@@ -166,8 +166,8 @@ for i in range(num_target_genes):
         shapiro_sample = stats.shapiro(sample_delta_ct)
         levene_test = stats.levene(control_delta_ct, sample_delta_ct)
         
-        control_normal = shapiro_control.pvalue > 0.05 and
-        sample_normal = shapiro_sample.pvalue > 0.05 and
+        control_normal = shapiro_control.pvalue > 0.05 
+        sample_normal = shapiro_sample.pvalue > 0.05 
         equal_variance = levene_test.pvalue > 0.05 else translate("nonparametric")
         
         test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
