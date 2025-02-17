@@ -10,16 +10,54 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
+# Dil Seçenekleri için Sözlük
+language_dict = {
+    "tr": {
+        "control_group": "Kontrol Grubu",
+        "patient_group": "Hasta Grubu",
+        "mean_line": "Ortalama",
+        "target_gene": "Hedef Gen",
+        "no_data": "Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.",
+        "group": "Grup",
+        "delta_ct_value": "ΔCt Değeri",
+        "input_data_table": "📋 Girdi Verisi Tablosu",
+        "results": "📊 Sonuçlar",
+        "statistical_results": "📈 İstatistiksel Sonuçlar",
+        "download_csv": "📥 CSV Olarak İndir",
+        "download_stats_csv": "📥 İstatistiksel Sonuçları CSV Olarak İndir"
+    },
+    "en": {
+        "control_group": "Control Group",
+        "patient_group": "Patient Group",
+        "mean_line": "Average",
+        "target_gene": "Target Gene",
+        "no_data": "At least one valid dataset is required to create the graph.",
+        "group": "Group",
+        "delta_ct_value": "ΔCt Value",
+        "input_data_table": "📋 Input Data Table",
+        "results": "📊 Results",
+        "statistical_results": "📈 Statistical Results",
+        "download_csv": "📥 Download CSV",
+        "download_stats_csv": "📥 Download Statistical Results as CSV"
+    }
+}
+
+# Kullanıcının dil tercihini al
+selected_language = st.selectbox("🔄 Choose Language", options=["tr", "en"])
+
+# Kullanıcı diline göre etiketleri al
+language = language_dict[selected_language]
+
 # Title
-st.title("🧬 Gene Expression Analysis Application")
+st.title(f"🧬 Gene Expression Analysis Application - {language['target_gene']} Analysis")
 st.markdown("### Developed by B. Yalçınkaya")
 
 # User Input
-st.header("📊 Enter Patient and Control Group Data")
+st.header(f"📊 {language['input_data_table']}")
 
 # Target Gene and Patient Group Count
-num_target_genes = st.number_input("🔹 Enter the Number of Target Genes", min_value=1, step=1, key="gene_count")
-num_patient_groups = st.number_input("🔹 Enter the Number of Patient Groups", min_value=1, step=1, key="patient_count")
+num_target_genes = st.number_input(f"🔹 Enter the Number of {language['target_gene']}s", min_value=1, step=1, key="gene_count")
+num_patient_groups = st.number_input(f"🔹 Enter the Number of {language['patient_group']}s", min_value=1, step=1, key="patient_count")
 
 # Data Lists
 input_values_table = []
@@ -35,17 +73,17 @@ last_control_delta_ct = None
 last_gene_index = None
 
 for i in range(num_target_genes):
-    st.subheader(f"🧬 Target Gene {i+1}")
+    st.subheader(f"🧬 {language['target_gene']} {i+1}")
     
     # Control Group Data
-    control_target_ct = st.text_area(f"🟦 Control Group Target Gene {i+1} Ct Values", key=f"control_target_ct_{i}")
-    control_reference_ct = st.text_area(f"🟦 Control Group Reference Gene {i+1} Ct Values", key=f"control_reference_ct_{i}")
+    control_target_ct = st.text_area(f"🟦 {language['control_group']} {language['target_gene']} {i+1} Ct Values", key=f"control_target_ct_{i}")
+    control_reference_ct = st.text_area(f"🟦 {language['control_group']} Reference Gene {i+1} Ct Values", key=f"control_reference_ct_{i}")
     
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Warning: Enter Control Group {i+1} data in separate lines or paste from Excel without empty cells.")
+        st.error(f"⚠️ Warning: Enter {language['control_group']} {i+1} data in separate lines or paste from Excel without empty cells.")
         continue
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
@@ -58,15 +96,15 @@ for i in range(num_target_genes):
         last_control_delta_ct = control_delta_ct  # Store for graphing
         last_gene_index = i
     else:
-        st.warning("⚠️ Warning: Enter Control Group Ct data in separate lines or paste from Excel without empty cells.")
+        st.warning(f"⚠️ Warning: Enter {language['control_group']} Ct data in separate lines or paste from Excel without empty cells.")
         continue
     
     sample_counter = 1  # Control group sample counter
     for idx in range(min_control_len):
         input_values_table.append({
             "Sample Number": sample_counter,
-            "Target Gene": f"Target Gene {i+1}",
-            "Group": "Control",
+            "Target Gene": f"{language['target_gene']} {i+1}",
+            "Group": language['control_group'],
             "Target Gene Ct Value": control_target_ct_values[idx],
             "Reference Ct": control_reference_ct_values[idx],  
             "ΔCt (Control)": control_delta_ct[idx]
@@ -75,16 +113,16 @@ for i in range(num_target_genes):
     
     # Patient Group Data
     for j in range(num_patient_groups):
-        st.subheader(f"🩸 Patient Group {j+1} - Target Gene {i+1}")
+        st.subheader(f"🩸 {language['patient_group']} {j+1} - {language['target_gene']} {i+1}")
         
-        sample_target_ct = st.text_area(f"🟥 Patient Group {j+1} Target Gene {i+1} Ct Values", key=f"sample_target_ct_{i}_{j}")
-        sample_reference_ct = st.text_area(f"🟥 Patient Group {j+1} Reference Gene {i+1} Ct Values", key=f"sample_reference_ct_{i}_{j}")
+        sample_target_ct = st.text_area(f"🟥 {language['patient_group']} {j+1} {language['target_gene']} {i+1} Ct Values", key=f"sample_target_ct_{i}_{j}")
+        sample_reference_ct = st.text_area(f"🟥 {language['patient_group']} {j+1} Reference Gene {i+1} Ct Values", key=f"sample_reference_ct_{i}_{j}")
         
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
         if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            st.error(f"⚠️ Warning: Enter Patient Group {j+1} data in separate lines or paste from Excel without empty cells.")
+            st.error(f"⚠️ Warning: Enter {language['patient_group']} {j+1} data in separate lines or paste from Excel without empty cells.")
             continue
         
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
@@ -95,15 +133,15 @@ for i in range(num_target_genes):
         if len(sample_delta_ct) > 0:
             average_sample_delta_ct = np.mean(sample_delta_ct)
         else:
-            st.warning(f"⚠️ Warning: Enter Patient Group {j+1} data in separate lines or paste from Excel without empty cells.")
+            st.warning(f"⚠️ Warning: Enter {language['patient_group']} {j+1} data in separate lines or paste from Excel without empty cells.")
             continue
         
         sample_counter = 1  # Reset sample counter for each patient group
         for idx in range(min_sample_len):
             input_values_table.append({
                 "Sample Number": sample_counter,
-                "Target Gene": f"Target Gene {i+1}",
-                "Group": f"Patient Group {j+1}",
+                "Target Gene": f"{language['target_gene']} {i+1}",
+                "Group": f"{language['patient_group']} {j+1}",
                 "Target Gene Ct Value": sample_target_ct_values[idx],
                 "Reference Ct": sample_reference_ct_values[idx],
                 "ΔCt (Patient)": sample_delta_ct[idx]
@@ -117,162 +155,96 @@ for i in range(num_target_genes):
         regulation_status = "No Change" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
        
         # Statistical Tests
-shapiro_control = stats.shapiro(control_delta_ct)
-shapiro_sample = stats.shapiro(sample_delta_ct)
-levene_test = stats.levene(control_delta_ct, sample_delta_ct)
+        shapiro_control = stats.shapiro(control_delta_ct)
+        shapiro_sample = stats.shapiro(sample_delta_ct)
+        levene_test = stats.levene(control_delta_ct, sample_delta_ct)
 
-control_normal = shapiro_control.pvalue > 0.05
-sample_normal = shapiro_sample.pvalue > 0.05
-equal_variance = levene_test.pvalue > 0.05
+        control_normal = shapiro_control.pvalue > 0.05
+        sample_normal = shapiro_sample.pvalue > 0.05
+        equal_variance = levene_test.pvalue > 0.05
 
-test_type = "Parametric" if control_normal and sample_normal and equal_variance else "Nonparametric"
+        test_type = "Parametric" if control_normal and sample_normal and equal_variance else "Nonparametric"
 
-if test_type == "Parametric":
-    test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
-    test_method = "t-test"
-else:
-    test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
-    test_method = "Mann-Whitney U test"
+        if test_type == "Parametric":
+            test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
+            test_method = "t-test"
+        else:
+            test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
+            test_method = "Mann-Whitney U test"
 
-significance = "Significant" if test_pvalue < 0.05 else "Not Significant"
+        significance = "Significant" if test_pvalue < 0.05 else "Not Significant"
 
-stats_data.append({
-    "Target Gene": f"Target Gene {i+1}",
-    "Patient Group": f"Patient Group {j+1}",
-    "Test Type": test_type,
-    "Test Used": test_method,  
-    "Test P-value": test_pvalue,
-    "Significance": significance
-})
+        stats_data.append({
+            "Target Gene": f"{language['target_gene']} {i+1}",
+            "Patient Group": f"{language['patient_group']} {j+1}",
+            "Test Type": test_type,
+            "Test Used": test_method,  
+            "Test P-value": test_pvalue,
+            "Significance": significance
+        })
 
-data.append({
-    "Target Gene": f"Target Gene {i+1}",
-    "Patient Group": f"Patient Group {j+1}",
-    "ΔΔCt": delta_delta_ct,
-    "Gene Expression Change (2^(-ΔΔCt))": expression_change,
-    "Regulation Status": regulation_status,
-    "ΔCt (Control)": average_control_delta_ct,
-    "ΔCt (Patient)": average_sample_delta_ct
-})
+        data.append({
+            "Target Gene": f"{language['target_gene']} {i+1}",
+            "Patient Group": f"{language['patient_group']} {j+1}",
+            "ΔΔCt": delta_delta_ct,
+            "Gene Expression Change (2^(-ΔΔCt))": expression_change,
+            "Regulation Status": regulation_status,
+            "ΔCt (Control)": average_control_delta_ct,
+            "ΔCt (Patient)": average_sample_delta_ct
+        })
 
 # Display Input Data Table
 if input_values_table: 
-    st.subheader("📋 Input Data Table") 
+    st.subheader(language['input_data_table']) 
     input_df = pd.DataFrame(input_values_table) 
     st.write(input_df) 
 
     csv = input_df.to_csv(index=False).encode("utf-8") 
-    st.download_button(label="📥 Download CSV", data=csv, file_name="input_data.csv", mime="text/csv") 
+    st.download_button(label=language['download_csv'], data=csv, file_name="input_data.csv", mime="text/csv") 
 
 # Display Results Table
 if data:
-    st.subheader("📊 Results")
+    st.subheader(language['results'])
     df = pd.DataFrame(data)
     st.write(df)
 
 # Display Statistical Results
 if stats_data:
-    st.subheader("📈 Statistical Results")
+    st.subheader(language['statistical_results'])
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
     
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
-    st.download_button(label="📥 Download Statistical Results as CSV", data=csv_stats, file_name="statistical_results.csv", mime="text/csv")
+    st.download_button(label=language['download_stats_csv'], data=csv_stats, file_name="statistical_results.csv", mime="text/csv")
 
 # Generate Graphs (one per target gene)
 for i in range(num_target_genes):
-    st.subheader(f"Target Gene {i+1} - Patient and Control Group Distribution Graph")
+    st.subheader(f"{language['target_gene']} {i+1} - ΔCt Distribution")
     
-    # Control Group Data
-    control_target_ct_values = [
-        d["Target Gene Ct Value"] for d in input_values_table
-        if d["Group"] == "Control" and d["Target Gene"] == f"Target Gene {i+1}"
-    ]
-    
-    control_reference_ct_values = [
-        d["Reference Ct"] for d in input_values_table
-        if d["Group"] == "Control" and d["Target Gene"] == f"Target Gene {i+1}"
-    ]
-    
-    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Error: Missing data for Target Gene {i+1} in Control Group!")
-        continue
-    
-    control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
-    average_control_delta_ct = np.mean(control_delta_ct)
-    
-    # Patient Group Data
+    # Graph Control and Patient Groups ΔCt distribution
     fig = go.Figure()
-
-    # Control Group Mean Line
-    fig.add_trace(go.Scatter(
-        x=[0.8, 1.2],  
-        y=[average_control_delta_ct, average_control_delta_ct],  
-        mode='lines',
-        line=dict(color='black', width=4),
-        name='Control Group Mean'
+    
+    fig.add_trace(go.Box(
+        y=last_control_delta_ct,
+        name=language['control_group'],
+        marker_color='blue'
     ))
 
-    # Hasta Gruplarının Ortalama Çizgileri
     for j in range(num_patient_groups):
-        sample_delta_ct_values = [
-            d["ΔCt (Hasta)"] for d in input_values_table 
-            if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
-        ]
-    
-        if not sample_delta_ct_values:
-            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
-        
-        average_sample_delta_ct = np.mean(sample_delta_ct_values)
-        fig.add_trace(go.Scatter(
-            x=[(j + 1.8), (j + 2.2)],  
-            y=[average_sample_delta_ct, average_sample_delta_ct],  
-            mode='lines',
-            line=dict(color='black', width=4),
-            name=f'Hasta Grubu {j+1} Ortalama'
+        fig.add_trace(go.Box(
+            y=data[i]['ΔCt (Patient)'],
+            name=f"{language['patient_group']} {j+1}",
+            marker_color='red'
         ))
-
-    # Veri Noktaları (Kontrol Grubu)
-    fig.add_trace(go.Scatter(
-        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
-        y=control_delta_ct,
-        mode='markers',  
-        name='Kontrol Grubu',
-        marker=dict(color='blue'),
-        text=[f'Kontrol {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(control_delta_ct)],
-        hoverinfo='text'
-    ))
-
-    # Veri Noktaları (Hasta Grupları)
-    for j in range(num_patient_groups):
-        sample_delta_ct_values = [
-            d["ΔCt (Hasta)"] for d in input_values_table 
-            if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
-        ]
-    
-        if not sample_delta_ct_values:
-            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
         
-        fig.add_trace(go.Scatter(
-            x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
-            y=sample_delta_ct_values,
-            mode='markers',  
-            name=f'Hasta Grubu {j+1}',
-            marker=dict(color='red'),
-            text=[f'Hasta {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(sample_delta_ct_values)],
-            hoverinfo='text'
-        ))
-
-    # Grafik ayarları
     fig.update_layout(
-        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+        title=f"{language['target_gene']} {i+1} - ΔCt Distribution",
         xaxis=dict(
-            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
-            title='Grup'
+            title=language['group'],
+            tickvals=[1] + [i+2 for i in range(num_patient_groups)],
+            ticktext=[language['control_group']] + [f"{language['patient_group']} {i+1}" for i in range(num_patient_groups)]
         ),
-        yaxis=dict(title='ΔCt Değeri'),
-        showlegend=True
+        yaxis=dict(title=language['delta_ct_value'])
     )
 
     st.plotly_chart(fig)
