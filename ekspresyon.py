@@ -10,16 +10,62 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
+# Dil seçeneği
+lang = st.selectbox("🌍 Dil / Language", ["Türkçe", "English"])
+
+# Çeviri sözlüğü
+def translate(text):
+    translations = {
+        "Türkçe": {
+            "title": "🧬 Gen Ekspresyon Analizi Uygulaması",
+            "developer": "### B. Yalçınkaya tarafından geliştirildi",
+            "header": "📊 Hasta ve Kontrol Grubu Verisi Girin",
+            "gene_count": "🔹 Hedef Gen Sayısını Girin",
+            "patient_count": "🔹 Hasta Grubu Sayısını Girin",
+            "error_control": "⚠️ Dikkat: Kontrol Grubu verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
+            "error_patient": "⚠️ Dikkat: Hasta Grubu verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
+            "upregulated": "Artmış (Upregulated)",
+            "downregulated": "Azalmış (Downregulated)",
+            "no_change": "Değişim Yok",
+            "significant": "Anlamlı",
+            "not_significant": "Anlamsız",
+            "parametric": "Parametrik",
+            "nonparametric": "Nonparametrik",
+            "t_test": "t-test",
+            "mann_whitney": "Mann-Whitney U testi",
+        },
+        "English": {
+            "title": "🧬 Gene Expression Analysis Application",
+            "developer": "### Developed by B. Yalçınkaya",
+            "header": "📊 Enter Patient and Control Group Data",
+            "gene_count": "🔹 Enter the Number of Target Genes",
+            "patient_count": "🔹 Enter the Number of Patient Groups",
+            "error_control": "⚠️ Warning: Enter control group data line by line or paste from Excel without empty cells.",
+            "error_patient": "⚠️ Warning: Enter patient group data line by line or paste from Excel without empty cells.",
+            "upregulated": "Upregulated",
+            "downregulated": "Downregulated",
+            "no_change": "No Change",
+            "significant": "Significant",
+            "not_significant": "Not Significant",
+            "parametric": "Parametric",
+            "nonparametric": "Nonparametric",
+            "t_test": "t-test",
+            "mann_whitney": "Mann-Whitney U test",
+        }
+    }
+    return translations[lang].get(text, text)
+
 # Başlık
-st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
-st.markdown("### B. Yalçınkaya tarafından geliştirildi")
+st.title(translate("title"))
+st.markdown(translate("developer"))
+st.header(translate("header"))
 
 # Kullanıcıdan giriş al
 st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
 
 # Hedef Gen ve Hasta Grubu Sayısı
-num_target_genes = st.number_input("🔹 Hedef Gen Sayısını Girin", min_value=1, step=1, key="gene_count")
-num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_value=1, step=1, key="patient_count")
+num_target_genes = st.number_input(translate("gene_count"), min_value=1, step=1, key="gene_count")
+num_patient_groups = st.number_input(translate("patient_count"), min_value=1, step=1, key="patient_count")
 
 # Veri listeleri
 input_values_table = []
@@ -30,17 +76,13 @@ def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
 
-# Grafik için son işlenen Hedef Genın kontrol verilerini saklamak amacıyla değişkenler
-last_control_delta_ct = None
-last_gene_index = None
-
 for i in range(num_target_genes):
-    st.subheader(f"🧬 Hedef Gen {i+1}")
+    st.subheader(f"🧬 Target Gene {i+1}")
     
     # Kontrol Grubu Verileri
-    control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
-    control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
-    
+    control_target_ct = st.text_area(f"🟦 Control Group Target Gene {i+1} Ct Values", key=f"control_target_ct_{i}")
+    control_reference_ct = st.text_area(f"🟦 Control Group Reference Gene {i+1} Ct Values", key=f"control_reference_ct_{i}")
+ 
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
@@ -76,10 +118,10 @@ for i in range(num_target_genes):
     
     # Hasta Grubu Verileri
     for j in range(num_patient_groups):
-        st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
+        st.subheader(f"🩸 Patient Group {j+1} - Target Gene {i+1}")
         
-        sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
-        sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
+        sample_target_ct = st.text_area(f"🟥 Patient Group {j+1} Target Gene {i+1} Ct Values", key=f"sample_target_ct_{i}_{j}")
+        sample_reference_ct = st.text_area(f"🟥 Patient Group {j+1} Reference Gene {i+1} Ct Values", key=f"sample_reference_ct_{i}_{j}")
         
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
@@ -115,16 +157,18 @@ for i in range(num_target_genes):
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
         expression_change = 2 ** (-delta_delta_ct)
         
-        regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
+        regulation_status = (translate("no_change") if expression_change == 1 else
+                             translate("upregulated") if expression_change > 1 else
+                             translate("downregulated"))
         
         # İstatistiksel Testler
         shapiro_control = stats.shapiro(control_delta_ct)
         shapiro_sample = stats.shapiro(sample_delta_ct)
         levene_test = stats.levene(control_delta_ct, sample_delta_ct)
         
-        control_normal = shapiro_control.pvalue > 0.05
-        sample_normal = shapiro_sample.pvalue > 0.05
-        equal_variance = levene_test.pvalue > 0.05
+        control_normal = shapiro_control.pvalue > 0.05 and
+        sample_normal = shapiro_sample.pvalue > 0.05 and
+        equal_variance = levene_test.pvalue > 0.05 else translate("nonparametric")
         
         test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
         
@@ -135,27 +179,24 @@ for i in range(num_target_genes):
             test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
             test_method = "Mann-Whitney U testi"
         
-        significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
+        significance = translate("significant") if test_pvalue < 0.05 else translate("not_significant")
         
         stats_data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta Grubu": f"Hasta Grubu {j+1}",
-            "Test Türü": test_type,
-            "Kullanılan Test": test_method,  
-            "Test P-değeri": test_pvalue,
-            "Anlamlılık": significance
+            "Target Gene": f"Target Gene {i+1}",
+            "Patient Group": f"Patient Group {j+1}",
+            "Test Type": test_type,
+            "Test Used": test_method,
+            "P-Value": test_pvalue,
+            "Significance": significance
         })
         
         data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta Grubu": f"Hasta Grubu {j+1}",
+            "Hedef Gen": f"{translations['target_gene']} {i+1}",
+            "Hasta Grubu": f"{translations['patient_group']} {j+1}",
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
             "Regülasyon Durumu": regulation_status,
-          
-
-
-  "ΔCt (Kontrol)": average_control_delta_ct,
+            "ΔCt (Kontrol)": average_control_delta_ct,
             "ΔCt (Hasta)": average_sample_delta_ct
         })
 
