@@ -50,7 +50,7 @@ last_control_delta_ct = None
 last_gene_index = None
 
 for i in range(num_target_genes):
-    st.subheader(f"🧬 Hedef Gen {i+1}")
+    st.subheader(_("target_gene").format(gene_number=i+1))
     
     # Kontrol Grubu Verileri
     control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
@@ -185,7 +185,7 @@ if input_values_table:
 
 # Sonuçlar Tablosunu Göster
 if data:
-    st.subheader("📊 Sonuçlar")
+    st.subheader("📊 _("results"))
     df = pd.DataFrame(data)
     st.write(df)
 
