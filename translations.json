@@ -1,0 +1,16 @@
+{
+    "tr": {
+        "input_table": "📋 Giriş Verileri Tablosu",
+        "results": "📊 Sonuçlar",
+        "stats": "📈 İstatistik Sonuçları",
+        "download_csv": "📥 CSV İndir",
+        "pdf_report": "📥 PDF Raporu Hazırla"
+    },
+    "en": {
+        "input_table": "📋 Input Data Table",
+        "results": "📊 Results",
+        "stats": "📈 Statistical Results",
+        "download_csv": "📥 Download CSV",
+        "pdf_report": "📥 Generate PDF Report"
+    }
+}
