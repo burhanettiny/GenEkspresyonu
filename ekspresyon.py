@@ -10,55 +10,6 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
-# Dil seçenekleri
-def get_translation(language):
-    translations = {
-        "tr": {
-            "title": "🧬 Gen Ekspresyon Analizi Uygulaması",
-            "developer": "### B. Yalçınkaya tarafından geliştirildi",
-            "enter_data": "📊 Hasta ve Kontrol Grubu Verisi Girin",
-            "num_genes": "🔹 Hedef Gen Sayısını Girin",
-            "num_groups": "🔹 Hasta Grubu Sayısını Girin",
-            "control_group": "🟦 Kontrol Grubu",
-            "target_ct": "Hedef Gen Ct Değerleri",
-            "reference_ct": "Referans Gen Ct Değerleri",
-            "error_message": "⚠️ Dikkat: Verileri alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
-            "patient_group": "🩸 Hasta Grubu",
-            "expression_change": "Gen Ekspresyon Değişimi",
-        },
-        "en": {
-            "title": "🧬 Gene Expression Analysis Application",
-            "developer": "### Developed by B. Yalçınkaya",
-            "enter_data": "📊 Enter Patient and Control Group Data",
-            "num_genes": "🔹 Enter Number of Target Genes",
-            "num_groups": "🔹 Enter Number of Patient Groups",
-            "control_group": "🟦 Control Group",
-            "target_ct": "Target Gene Ct Values",
-            "reference_ct": "Reference Gene Ct Values",
-            "error_message": "⚠️ Warning: Enter the data in separate lines or paste from Excel without empty spaces.",
-            "patient_group": "🩸 Patient Group",
-            "expression_change": "Gene Expression Change",
-        },
-        "de": {
-            "title": "🧬 Genexpressionsanalyse Anwendung",
-            "developer": "### Entwickelt von B. Yalçınkaya",
-            "enter_data": "📊 Patienten- und Kontrollgruppendaten eingeben",
-            "num_genes": "🔹 Anzahl der Zielgene eingeben",
-            "num_groups": "🔹 Anzahl der Patientengruppen eingeben",
-            "control_group": "🟦 Kontrollgruppe",
-            "target_ct": "Zielgen Ct-Werte",
-            "reference_ct": "Referenzgen Ct-Werte",
-            "error_message": "⚠️ Achtung: Geben Sie die Daten in separaten Zeilen ein oder fügen Sie sie aus Excel ohne Leerzeichen ein.",
-            "patient_group": "🩸 Patientengruppe",
-            "expression_change": "Genexpressionsänderung",
-        }
-    }
-    return translations.get(language, translations["tr"])
-
-# Kullanıcıdan dil seçimi al
-language = st.sidebar.selectbox("🌍 Dil Seçin / Choose Language / Sprache wählen", ["tr", "en", "de"], format_func=lambda x: {"tr": "Türkçe", "en": "English", "de": "Deutsch"}[x])
-text = get_translation(language)
-
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
 st.markdown("### B. Yalçınkaya tarafından geliştirildi")
