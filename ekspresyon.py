@@ -10,6 +10,10 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
+LANGUAGES = {"Türkçe": "tr", "English": "en"}
+selected_lang = st.sidebar.selectbox("🌍 Dil Seçiniz / Select Language", LANGUAGES.keys())
+lang_code = LANGUAGES[selected_lang]
+
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
 st.markdown("### B. Yalçınkaya tarafından geliştirildi")
