@@ -14,6 +14,17 @@ LANGUAGES = {"Türkçe": "tr", "English": "en"}
 selected_lang = st.sidebar.selectbox("🌍 Dil Seçiniz / Select Language", LANGUAGES.keys())
 lang_code = LANGUAGES[selected_lang]
 
+import json
+
+def load_translations():
+    with open("translations.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+translations = load_translations()
+
+def _(text):
+    return translations.get(lang_code, {}).get(text, text)
+
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
 st.markdown("### B. Yalçınkaya tarafından geliştirildi")
