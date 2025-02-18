@@ -185,7 +185,7 @@ if input_values_table:
 
 # Sonuçlar Tablosunu Göster
 if data:
-    st.subheader("_("results"))
+    st.subheader(_("results"))
     df = pd.DataFrame(data)
     st.write(df)
 
