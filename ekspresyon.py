@@ -174,17 +174,17 @@ for i in range(num_target_genes):
             _("used_test"): test_method,  
             _("test_p_value"): test_pvalue,
             _("significance"): significance
-        })
+
         data.append({
             _("target_gene"): f"{_('target_gene')} {i+1}",
             _("patient_group"): f"{_('patient_group')} {j+1}",
             _("delta_delta_ct"): delta_delta_ct,
             _("expression_change"): expression_change,
-            _("regulation_status"): regulation_status
-            "ΔCt (Kontrol)": average_control_delta_ct,
-            "ΔCt (Hasta)": average_sample_delta_ct
+            _("regulation_status"): regulation_status,
+            "ΔCt (Kontrol)": average_control_delta_ct,  
+            "ΔCt (Hasta)": average_sample_delta_ct  
         })
-        
+   
 # Giriş Verileri Tablosunu Göster
 if input_values_table: 
     st.subheader(_("input_table")) 
