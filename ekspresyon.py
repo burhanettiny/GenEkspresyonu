@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 from scipy import stats
 
 # Language selection
-lang = st.selectbox("Select Language / Dil Seçin", ["English", "Türkçe"])
+language = st.selectbox("Select Language", ("English", "Türkçe"))
 
 # Translations
 translations = {
@@ -41,7 +41,6 @@ translations = {
 def translate(key, *args):
     translation = translations[language][key]
     return translation.format(*args)
-
 
 # Kullanıcıdan hedef gen sayısı ve hasta grubu sayısını alıyoruz
 num_target_genes = st.number_input("Hedef Gen Sayısı", min_value=1, value=3, step=1)
