@@ -61,7 +61,7 @@ last_gene_index = None
 
 for i in range(num_target_genes):
     st.subheader(translate("header_target_gen").format(i+1))
-    
+
     # Kontrol Grubu Verileri
     control_target_ct = st.text_area(translate("header_control_group").format(i+1), key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(translate("header_control_group").format(i+1), key=f"control_reference_ct_{i}")
