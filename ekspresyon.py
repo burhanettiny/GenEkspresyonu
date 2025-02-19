@@ -18,9 +18,11 @@ languages = {
         "input_header": "Enter Patient and Control Group Data",
         "target_gen_count": "Enter Number of Target Genes",
         "patient_group_count": "Enter Number of Patient Groups",
-        "control_group": "Control Group Target Gene Ct Values",
-        "reference_group": "Control Group Reference Gene Ct Values",
-        "error": "Warning: Enter data for Control Group {0} line by line or paste from Excel without empty cells.",
+        'control_group_ct': "🟦 Control Group {i+1} Ct Values",
+        'control_group_reference_ct': "🟦 Control Group Reference Gene {i+1} Ct Values",
+        'error_empty_data': "⚠️ Attention: Please write Control Group {i+1} data line by line or copy and paste without empty cells.",
+        'warning_empty_control': "⚠️ Attention: Please write Control group Ct data line by line or copy and paste without empty cells.",
+        'sample_counter_label': "Sample Number",
         "no_data": "No data found, PDF could not be generated.",
         "download_csv": "Download CSV",
         "create_pdf": "Prepare PDF Report",
@@ -34,9 +36,11 @@ languages = {
         "input_header": "📊 Hasta ve Kontrol Grubu Verisi Girin",
         "target_gen_count": "🔹 Hedef Gen Sayısını Girin",
         "patient_group_count": "🔹 Hasta Grubu Sayısını Girin",
-        "control_group": "🟦 Kontrol Grubu Hedef Gen Ct Değerleri",
-        "reference_group": "🟦 Kontrol Grubu Referans Gen Ct Değerleri",
-        "error": "⚠️ Dikkat: Kontrol Grubu {0} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
+        'control_group_ct': "🟦 Kontrol Grubu {i+1} Ct Değerleri",
+        'control_group_reference_ct': "🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri",
+        'error_empty_data': "⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
+        'warning_empty_control': "⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın",
+        'sample_counter_label': "Örnek Numarası",
         "no_data": "Veri bulunamadı, PDF oluşturulamadı.",
         "download_csv": "📥 CSV İndir",
         "create_pdf": "📥 PDF Raporu Hazırla",
@@ -78,14 +82,14 @@ for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
     
     # Kontrol Grubu Verileri
-    control_target_ct = st.text_area(f"🟦 control_group {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
-    control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
+    control_target_ct = st.text_area(texts['control_group_ct'].format(i=i), key=f"control_target_ct_{i}")
+    control_reference_ct = st.text_area(texts['control_group_reference_ct'].format(i=i), key=f"control_reference_ct_{i}")
     
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+        st.error(texts['error_empty_data'].format(i=i))
         continue
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
@@ -95,17 +99,16 @@ for i in range(num_target_genes):
     
     if len(control_delta_ct) > 0:
         average_control_delta_ct = np.mean(control_delta_ct)
-        # Grafik kısmında kullanabilmek için bu genin kontrol verilerini saklıyoruz.
         last_control_delta_ct = control_delta_ct  
         last_gene_index = i
     else:
-        st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
+        st.warning(texts['warning_empty_control'])
         continue
     
     sample_counter = 1  # Kontrol grubu örnek sayacı
     for idx in range(min_control_len):
         input_values_table.append({
-            "Örnek Numarası": sample_counter,
+            texts['sample_counter_label']: sample_counter,
             "Hedef Gen": f"Hedef Gen {i+1}",
             "Grup": "Kontrol",
             "Hedef Gen Ct Değeri": control_target_ct_values[idx],
