@@ -183,141 +183,103 @@ if stats_data:
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
     st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
-# Grafik türünü seçmek için bir selectbox ekliyoruz
-graph_type = st.selectbox("Grafik Türü Seçin", ["Boxplot", "Heatmap", "Histogram", "Scatter Plot", "ΔCt Dağılım Grafiği"])
+# Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
+for i in range(num_target_genes):
+    st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
+    
+    # Kontrol Grubu Verileri
+    control_target_ct_values = [
+        d["Hedef Gen Ct Değeri"] for d in input_values_table
+        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+    ]
+    
+    control_reference_ct_values = [
+        d["Referans Ct"] for d in input_values_table
+        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+    ]
+    
+    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
+        st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
+        continue
+    
+    control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
+    average_control_delta_ct = np.mean(control_delta_ct)
+    
+    # Hasta Grubu Verileri
+    fig = go.Figure()
 
-# Örnek veri (kendi verinizle değiştirebilirsiniz)
-# Örneğin, df adında bir DataFrame oluşturalım
-df = pd.DataFrame({
-    'Kontrol': np.random.normal(0, 1, 100),
-    'Hasta 1': np.random.normal(1, 2, 100),
-    'Hasta 2': np.random.normal(2, 3, 100)
-})
+    # Kontrol Grubu Ortalama Çizgisi
+    fig.add_trace(go.Scatter(
+        x=[0.8, 1.2],  
+        y=[average_control_delta_ct, average_control_delta_ct],  
+        mode='lines',
+        line=dict(color='black', width=4),
+        name='Kontrol Grubu Ortalama'
+    ))
 
-if graph_type == "Boxplot":
-    st.write("Boxplot oluşturuluyor...")
-    # Boxplot için Seaborn kullanıyoruz
-    sns.boxplot(data=df)
-    st.pyplot()
-
-elif graph_type == "Heatmap":
-    st.write("Heatmap oluşturuluyor...")
-    # Heatmap için df'nin korelasyon matrisini kullanabiliriz
-    sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
-    st.pyplot()
-
-elif graph_type == "Histogram":
-    st.write("Histogram oluşturuluyor...")
-    # Histogram için df'deki her bir sütunun dağılımını çiziyoruz
-    df.plot.hist(alpha=0.7, bins=20)
-    st.pyplot()
-
-elif graph_type == "Scatter Plot":
-    st.write("Scatter Plot oluşturuluyor...")
-    # Scatter plot için df'nin ilk iki sütununu kullanıyoruz
-    plt.scatter(df.iloc[:, 0], df.iloc[:, 1])
-    plt.xlabel(df.columns[0])
-    plt.ylabel(df.columns[1])
-    st.pyplot()
-
-elif graph_type == "ΔCt Dağılım Grafiği":
-    st.write("ΔCt Dağılım Grafiği oluşturuluyor...")
-    for i in range(num_target_genes):
-        st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
-        
-        # Kontrol Grubu Verileri
-        control_target_ct_values = [
-            d["Hedef Gen Ct Değeri"] for d in input_values_table
-            if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+    # Hasta Gruplarının Ortalama Çizgileri
+    for j in range(num_patient_groups):
+        sample_delta_ct_values = [
+            d["ΔCt (Hasta)"] for d in input_values_table 
+            if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
         ]
+    
+        if not sample_delta_ct_values:
+            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
         
-        control_reference_ct_values = [
-            d["Referans Ct"] for d in input_values_table
-            if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
-        ]
-        
-        if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-            st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
-            continue
-        
-        control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
-        average_control_delta_ct = np.mean(control_delta_ct)
-        
-        # Hasta Grubu Verileri
-        fig = go.Figure()
-
-        # Kontrol Grubu Ortalama Çizgisi
+        average_sample_delta_ct = np.mean(sample_delta_ct_values)
         fig.add_trace(go.Scatter(
-            x=[0.8, 1.2],  
-            y=[average_control_delta_ct, average_control_delta_ct],  
+            x=[(j + 1.8), (j + 2.2)],  
+            y=[average_sample_delta_ct, average_sample_delta_ct],  
             mode='lines',
             line=dict(color='black', width=4),
-            name='Kontrol Grubu Ortalama'
+            name=f'Hasta Grubu {j+1} Ortalama'
         ))
 
-        # Hasta Gruplarının Ortalama Çizgileri
-        for j in range(num_patient_groups):
-            sample_delta_ct_values = [
-                d["ΔCt (Hasta)"] for d in input_values_table 
-                if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
-            ]
-        
-            if not sample_delta_ct_values:
-                continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
-            
-            average_sample_delta_ct = np.mean(sample_delta_ct_values)
-            fig.add_trace(go.Scatter(
-                x=[(j + 1.8), (j + 2.2)],  
-                y=[average_sample_delta_ct, average_sample_delta_ct],  
-                mode='lines',
-                line=dict(color='black', width=4),
-                name=f'Hasta Grubu {j+1} Ortalama'
-            ))
+    # Veri Noktaları (Kontrol Grubu)
+    fig.add_trace(go.Scatter(
+        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
+        y=control_delta_ct,
+        mode='markers',  
+        name='Kontrol Grubu',
+        marker=dict(color='blue'),
+        text=[f'Kontrol {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(control_delta_ct)],
+        hoverinfo='text'
+    ))
 
-        # Veri Noktaları (Kontrol Grubu)
+    # Veri Noktaları (Hasta Grupları)
+    for j in range(num_patient_groups):
+        sample_delta_ct_values = [
+            d["ΔCt (Hasta)"] for d in input_values_table 
+            if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+        ]
+    
+        if not sample_delta_ct_values:
+            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
+        
         fig.add_trace(go.Scatter(
-            x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
-            y=control_delta_ct,
+            x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
+            y=sample_delta_ct_values,
             mode='markers',  
-            name='Kontrol Grubu',
-            marker=dict(color='blue'),
-            text=[f'Kontrol {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(control_delta_ct)],
+            name=f'Hasta Grubu {j+1}',
+            marker=dict(color='red'),
+            text=[f'Hasta {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(sample_delta_ct_values)],
             hoverinfo='text'
         ))
 
-        # Veri Noktaları (Hasta Grupları)
-        for j in range(num_patient_groups):
-            sample_delta_ct_values = [
-                d["ΔCt (Hasta)"] for d in input_values_table 
-                if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
-            ]
-        
-            if not sample_delta_ct_values:
-                continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
-            
-            fig.add_trace(go.Scatter(
-                x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
-                y=sample_delta_ct_values,
-                mode='markers',  
-                name=f'Hasta Grubu {j+1}',
-                marker=dict(color='red'),
-                text=[f'Hasta {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(sample_delta_ct_values)],
-                hoverinfo='text'
-            ))
+    # Grafik ayarları
+    fig.update_layout(
+        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+        xaxis=dict(
+            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
+            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
+            title='Grup'
+        ),
+        yaxis=dict(title='ΔCt Değeri'),
+        showlegend=True
+    )
 
-        # Grafik ayarları
-        fig.update_layout(
-            title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
-            xaxis=dict(
-                tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-                ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
-                title='Grup'
-            ),
-            yaxis=dict(title='ΔCt Değeri'),
-            showlegend=True
-        )
-
-        st.plotly_chart(fig)
+    st.plotly_chart(fig)
 
 else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
@@ -408,9 +370,3 @@ if st.button("📥 PDF Raporu Hazırla"):
         st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
-
-
-
-
-
-
