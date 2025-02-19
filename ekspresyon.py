@@ -82,8 +82,8 @@ for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
     
     # Kontrol Grubu Verileri
-    control_target_ct = st.text_area(texts['control_group_ct'].format(i=i), key=f"control_target_ct_{i}")
-    control_reference_ct = st.text_area(texts['control_group_reference_ct'].format(i=i), key=f"control_reference_ct_{i}")
+    control_target_ct = st.text_area(languages[current_language]['control_group_ct'].format(i=i), key=f"control_target_ct_{i}")
+    control_reference_ct = st.text_area(languages[current_language]['control_group_reference_ct'].format(i=i), key=f"control_reference_ct_{i}")
     
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
