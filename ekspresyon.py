@@ -51,8 +51,8 @@ languages = {
 }
 
 # Kullanıcıdan dil seçimi al
-selected_language = st.selectbox("Select Language", options=list(languages.keys()))
-texts = languages[selected_language]
+# Kullanıcıdan dil seçimi almak için
+current_language = st.selectbox("Select Language", options=["English", "Türkçe"], index=0)
 
 # Başlık ve yazar
 st.title(texts["title"])
