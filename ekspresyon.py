@@ -9,11 +9,6 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
-
-LANGUAGES = {"Türkçe": "tr", "English": "en"}
-selected_lang = st.sidebar.selectbox("🌍 Dil Seçiniz / Select Language", LANGUAGES.keys())
-lang_code = LANGUAGES[selected_lang]
-
 import json
 
 def load_translations():
@@ -25,6 +20,9 @@ translations = load_translations()
 def _(text):
     return translations.get(lang_code, {}).get(text, text)
 
+LANGUAGES = {"Türkçe": "tr", "English": "en"}
+selected_lang = st.sidebar.selectbox("🌍 Dil Seçiniz / Select Language", LANGUAGES.keys())
+lang_code = LANGUAGES[selected_lang]
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
 st.markdown("### B. Yalçınkaya tarafından geliştirildi")
@@ -181,7 +179,7 @@ if input_values_table:
     st.write(input_df) 
 
     csv = input_df.to_csv(index=False).encode("utf-8") 
-    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
+    st.download_button(_("download_csv"), data=csv, file_name="data.csv", mime="text/csv") 
 
 # Sonuçlar Tablosunu Göster
 if data:
