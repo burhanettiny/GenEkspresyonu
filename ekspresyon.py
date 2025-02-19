@@ -183,41 +183,41 @@ if stats_data:
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
     st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
-import seaborn as sns
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-import numpy as np
-import pandas as pd
-import streamlit as st
-
-# Örnek veri (kendi verilerinizle değiştirebilirsiniz)
-# input_values_table = ...
-
 # Grafik türünü seçmek için bir selectbox ekliyoruz
 graph_type = st.selectbox("Grafik Türü Seçin", ["Boxplot", "Heatmap", "Histogram", "Scatter Plot", "ΔCt Dağılım Grafiği"])
 
+# Örnek veri (kendi verinizle değiştirebilirsiniz)
+# Örneğin, df adında bir DataFrame oluşturalım
+df = pd.DataFrame({
+    'Kontrol': np.random.normal(0, 1, 100),
+    'Hasta 1': np.random.normal(1, 2, 100),
+    'Hasta 2': np.random.normal(2, 3, 100)
+})
+
 if graph_type == "Boxplot":
     st.write("Boxplot oluşturuluyor...")
-    # Boxplot için uygun bir DataFrame ile sns.boxplot kullanılıyor
+    # Boxplot için Seaborn kullanıyoruz
     sns.boxplot(data=df)
     st.pyplot()
 
 elif graph_type == "Heatmap":
     st.write("Heatmap oluşturuluyor...")
-    # Heatmap için uygun bir DataFrame ile sns.heatmap kullanılıyor
-    sns.heatmap(df)
+    # Heatmap için df'nin korelasyon matrisini kullanabiliriz
+    sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
     st.pyplot()
 
 elif graph_type == "Histogram":
     st.write("Histogram oluşturuluyor...")
-    # Histogram için uygun bir DataFrame ile plt.hist kullanılıyor
-    plt.hist(df.values.flatten(), bins=20)
+    # Histogram için df'deki her bir sütunun dağılımını çiziyoruz
+    df.plot.hist(alpha=0.7, bins=20)
     st.pyplot()
 
 elif graph_type == "Scatter Plot":
     st.write("Scatter Plot oluşturuluyor...")
-    # Scatter Plot için iki sütunlu bir DataFrame kullanılıyor
+    # Scatter plot için df'nin ilk iki sütununu kullanıyoruz
     plt.scatter(df.iloc[:, 0], df.iloc[:, 1])
+    plt.xlabel(df.columns[0])
+    plt.ylabel(df.columns[1])
     st.pyplot()
 
 elif graph_type == "ΔCt Dağılım Grafiği":
