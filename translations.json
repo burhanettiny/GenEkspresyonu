@@ -77,21 +77,22 @@
                 "expression_change": "Gene Expression Change (2^(-ΔΔCt))",
                 "regulation_status": "Regulation Status"
             }
+        },
+        "app_info": {
+            "tr": {
+                "gene_expression_analysis": "Gen Ekspresyon Analizi Uygulaması",
+                "developed_by": "B. Yalçınkaya tarafından geliştirildi",
+                "input_data": "📊 Hasta ve Kontrol Grubu Verisi Girin",
+                "number_of_target_genes": "🔹 Hedef Gen Sayısını Girin",
+                "number_of_patient_groups": "🔹 Hasta Grubu Sayısını Girin"
+            },
+            "en": {
+                "gene_expression_analysis": "Gene Expression Analysis Application",
+                "developed_by": "Developed by B. Yalçınkaya",
+                "input_data": "📊 Enter Patient and Control Group Data",
+                "number_of_target_genes": "🔹 Enter Number of Target Genes",
+                "number_of_patient_groups": "🔹 Enter Number of Patient Groups"
+            }
         }
-    }
-{
-    "tr": {
-        "gene_expression_analysis": "Gen Ekspresyon Analizi Uygulaması",
-        "developed_by": "B. Yalçınkaya tarafından geliştirildi",
-        "input_data": "📊 Hasta ve Kontrol Grubu Verisi Girin",
-        "number_of_target_genes": "🔹 Hedef Gen Sayısını Girin",
-        "number_of_patient_groups": "🔹 Hasta Grubu Sayısını Girin"
-    },
-    "en": {
-        "gene_expression_analysis": "Gene Expression Analysis Application",
-        "developed_by": "Developed by B. Yalçınkaya",
-        "input_data": "📊 Enter Patient and Control Group Data",
-        "number_of_target_genes": "🔹 Enter Number of Target Genes",
-        "number_of_patient_groups": "🔹 Enter Number of Patient Groups"
     }
 }
