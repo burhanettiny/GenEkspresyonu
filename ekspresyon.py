@@ -9,28 +9,6 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
-import json
-
-# JSON dosyasından çevirileri yükleme
-def load_translations():
-    with open("translations.json", "r", encoding="utf-8") as f:
-        return json.load(f)
-
-# Çevirileri yükle
-translations = load_translations()
-
-# Kullanıcının dilini seçmesi için bir selectbox oluştur
-LANGUAGES = {"Türkçe": "tr", "English": "en"}
-selected_lang = st.sidebar.selectbox("🌍 Dil Seçiniz / Select Language", LANGUAGES.keys())
-lang_code = LANGUAGES[selected_lang]
-
-# Çeviri fonksiyonu
-def _(text):
-    return translations.get(lang_code, {}).get(text, text)
-
-# Başlık ve açıklama
-st.title(_("gene_expression_analysis"))
-st.markdown("### " + _("developed_by"))
 
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
@@ -57,7 +35,7 @@ last_control_delta_ct = None
 last_gene_index = None
 
 for i in range(num_target_genes):
-    st.subheader(_("target_gene").format(gene_number=i+1))
+    st.subheader(f"🧬 Hedef Gen {i+1}")
     
     # Kontrol Grubu Verileri
     control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
@@ -98,44 +76,27 @@ for i in range(num_target_genes):
     
     # Hasta Grubu Verileri
     for j in range(num_patient_groups):
-        st.subheader(_(
-            "patient_group"
-        ).format(group_num=j+1, gene_num=i+1))
+        st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
         
-        sample_target_ct = st.text_area(
-            _(
-                "target_ct_values"
-            ).format(group_num=j+1, gene_num=i+1),
-            key=f"sample_target_ct_{i}_{j}"
-        )
+        sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
+        sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
         
-        sample_reference_ct = st.text_area(
-            _(
-                "reference_ct_values"
-            ).format(group_num=j+1, gene_num=i+1),
-            key=f"sample_reference_ct_{i}_{j}"
-        )
-       
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
-       
+        
         if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            st.error(_(
-                "input_warning"
-            ).format(group_num=j+1))
+            st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
             continue
-            
+        
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
         sample_target_ct_values = sample_target_ct_values[:min_sample_len]
         sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
-      
+        
         if len(sample_delta_ct) > 0:
             average_sample_delta_ct = np.mean(sample_delta_ct)
         else:
-            st.warning(_(
-                "input_warning"
-            ).format(group_num=j+1))
+            st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
             continue
         
         sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
@@ -177,51 +138,54 @@ for i in range(num_target_genes):
         significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
         
         stats_data.append({
-            _("target_gene"): f"{_('target_gene')} {i+1}",
-            _("patient_group"): f"{_('patient_group')} {j+1}",
-            _("test_type"): test_type,
-            _("used_test"): test_method,  
-            _("test_p_value"): test_pvalue,
-            _("significance"): significance
+            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Hasta Grubu": f"Hasta Grubu {j+1}",
+            "Test Türü": test_type,
+            "Kullanılan Test": test_method,  
+            "Test P-değeri": test_pvalue,
+            "Anlamlılık": significance
+        })
+        
+        data.append({
+            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Hasta Grubu": f"Hasta Grubu {j+1}",
+            "ΔΔCt": delta_delta_ct,
+            "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
+            "Regülasyon Durumu": regulation_status,
+          
+
+
+  "ΔCt (Kontrol)": average_control_delta_ct,
+            "ΔCt (Hasta)": average_sample_delta_ct
         })
 
-        data.append({
-            _("target_gene"): f"{_('target_gene')} {i+1}",
-            _("patient_group"): f"{_('patient_group')} {j+1}",
-            _("delta_delta_ct"): delta_delta_ct,
-            _("expression_change"): expression_change,
-            _("regulation_status"): regulation_status,
-            "ΔCt (Kontrol)": average_control_delta_ct,  
-            "ΔCt (Hasta)": average_sample_delta_ct  
-        })
-   
 # Giriş Verileri Tablosunu Göster
 if input_values_table: 
-    st.subheader(_("input_table")) 
+    st.subheader("📋 Giriş Verileri Tablosu") 
     input_df = pd.DataFrame(input_values_table) 
     st.write(input_df) 
 
     csv = input_df.to_csv(index=False).encode("utf-8") 
-    st.download_button(_("download_csv"), data=csv, file_name="data.csv", mime="text/csv") 
+    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
 
 # Sonuçlar Tablosunu Göster
 if data:
-    st.subheader(_("results"))
+    st.subheader("📊 Sonuçlar")
     df = pd.DataFrame(data)
     st.write(df)
 
 # İstatistik Sonuçları
 if stats_data:
-    st.subheader(_("stats"))
+    st.subheader("📈 İstatistik Sonuçları")
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
     
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
-    st.download_button(label=_("download_stats_csv"), data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
+    st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
-    st.subheader(_("gene_distribution").format(gene_number=i+1))
+    st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
     
     # Kontrol Grubu Verileri
     control_target_ct_values = [
