@@ -11,26 +11,26 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 import json
 
+# JSON dosyasından çevirileri yükleme
 def load_translations():
     with open("translations.json", "r", encoding="utf-8") as f:
         return json.load(f)
 
+# Çevirileri yükle
 translations = load_translations()
 
+# Kullanıcının dilini seçmesi için bir selectbox oluştur
+LANGUAGES = {"Türkçe": "tr", "English": "en"}
+selected_lang = st.sidebar.selectbox("🌍 Dil Seçiniz / Select Language", LANGUAGES.keys())
+lang_code = LANGUAGES[selected_lang]
+
+# Çeviri fonksiyonu
 def _(text):
     return translations.get(lang_code, {}).get(text, text)
 
-LANGUAGES = {"Türkçe": "tr", "English": "en"}
-
-# Varsayılan dil
-default_lang = "Türkçe"
-selected_lang = st.sidebar.selectbox("🌍 Dil Seçiniz / Select Language", LANGUAGES.keys(), index=list(LANGUAGES.keys()).index(default_lang))
-
-# Dil kodunu al
-lang_code = LANGUAGES[selected_lang]
-
-# Dilin kullanıldığı yer
-st.write(f"Seçilen dil: {selected_lang} ({lang_code})")
+# Başlık ve açıklama
+st.title(_("gene_expression_analysis"))
+st.markdown("### " + _("developed_by"))
 
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
