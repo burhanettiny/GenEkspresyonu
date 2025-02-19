@@ -78,7 +78,7 @@ for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
     
     # Kontrol Grubu Verileri
-    control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
+    control_target_ct = st.text_area(f"🟦 control_group {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
     
     control_target_ct_values = parse_input_data(control_target_ct)
