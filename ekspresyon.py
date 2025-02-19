@@ -182,8 +182,8 @@ for i in range(num_target_genes):
             _("expression_change"): expression_change,
             _("regulation_status"): regulation_status
         })
-
-  "ΔCt (Kontrol)": average_control_delta_ct,
+        
+        "ΔCt (Kontrol)": average_control_delta_ct,
             "ΔCt (Hasta)": average_sample_delta_ct
         })
 
