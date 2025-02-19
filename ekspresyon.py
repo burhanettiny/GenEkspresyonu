@@ -4,9 +4,6 @@ import streamlit as st
 import plotly.graph_objects as go
 from scipy import stats
 
-# Language selection
-language = st.selectbox("Select Language", ("English", "Türkçe"))
-
 # Translations
 translations = {
     "English": {
@@ -37,9 +34,11 @@ translations = {
     }
 }
 
-# Function to translate based on selected language
+# Language selection
+language = st.selectbox("Select Language", ("English", "Türkçe"))
+
 def translate(key, *args):
-    translation = translations[language][key]
+    translation = translations[language][key]  # language değişkenini burada kullanıyoruz
     return translation.format(*args)
 
 # Kullanıcıdan hedef gen sayısı ve hasta grubu sayısını alıyoruz
