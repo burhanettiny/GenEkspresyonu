@@ -203,7 +203,7 @@ if data:
 
 # İstatistik Sonuçları
 if stats_data:
-    st.subheader("_("stats")")
+    st.subheader(_("stats"))
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
     
