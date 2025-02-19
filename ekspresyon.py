@@ -174,6 +174,7 @@ for i in range(num_target_genes):
             _("used_test"): test_method,  
             _("test_p_value"): test_pvalue,
             _("significance"): significance
+        })
 
         data.append({
             _("target_gene"): f"{_('target_gene')} {i+1}",
