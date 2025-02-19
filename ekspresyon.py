@@ -70,8 +70,8 @@ num_patient_groups = st.number_input(texts["patient_group_count"], min_value=1, 
 st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
 
 # Hedef Gen ve Hasta Grubu Sayısı
-num_target_genes = st.number_input("🔹 target_gen_count", min_value=1, step=1, key="gene_count")
-num_patient_groups = st.number_input("🔹 patient_group_count", min_value=1, step=1, key="patient_count")
+num_target_genes = st.number_input("target_gen_count", min_value=1, step=1, key="gene_count")
+num_patient_groups = st.number_input("patient_group_count", min_value=1, step=1, key="patient_count")
 
 # Veri listeleri
 input_values_table = []
