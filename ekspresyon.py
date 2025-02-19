@@ -20,11 +20,17 @@ translations = load_translations()
 def _(text):
     return translations.get(lang_code, {}).get(text, text)
 
-if 'lang_code' not in st.session_state:
-    st.session_state.lang_code = 'tr'  # Varsayılan dil
+LANGUAGES = {"Türkçe": "tr", "English": "en"}
 
-selected_lang = st.sidebar.selectbox("🌍 Dil Seçiniz / Select Language", LANGUAGES.keys(), index=list(LANGUAGES.keys()).index(selected_lang))
-st.session_state.lang_code = LANGUAGES[selected_lang]
+# Varsayılan dil
+default_lang = "Türkçe"
+selected_lang = st.sidebar.selectbox("🌍 Dil Seçiniz / Select Language", LANGUAGES.keys(), index=list(LANGUAGES.keys()).index(default_lang))
+
+# Dil kodunu al
+lang_code = LANGUAGES[selected_lang]
+
+# Dilin kullanıldığı yer
+st.write(f"Seçilen dil: {selected_lang} ({lang_code})")
 
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
