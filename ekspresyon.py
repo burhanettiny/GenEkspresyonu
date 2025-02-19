@@ -10,16 +10,56 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
-# Başlık
-st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
-st.markdown("### B. Yalçınkaya tarafından geliştirildi")
+# Dil seçenekleri
+languages = {
+    "English": {
+        "title": "Gene Expression Analysis Application",
+        "author": "Developed by B. Yalçınkaya",
+        "input_header": "Enter Patient and Control Group Data",
+        "target_gen_count": "Enter Number of Target Genes",
+        "patient_group_count": "Enter Number of Patient Groups",
+        "control_group": "Control Group Target Gene Ct Values",
+        "reference_group": "Control Group Reference Gene Ct Values",
+        "error": "Warning: Enter data for Control Group {0} line by line or paste from Excel without empty cells.",
+        "no_data": "No data found, PDF could not be generated.",
+        "download_csv": "Download CSV",
+        "create_pdf": "Prepare PDF Report",
+        "pdf_report": "Gene Expression Analysis Report",
+        "results": "Results",
+        "statistics": "Statistical Results",
+    },
+    "Türkçe": {
+        "title": "🧬 Gen Ekspresyon Analizi Uygulaması",
+        "author": "B. Yalçınkaya tarafından geliştirildi",
+        "input_header": "📊 Hasta ve Kontrol Grubu Verisi Girin",
+        "target_gen_count": "🔹 Hedef Gen Sayısını Girin",
+        "patient_group_count": "🔹 Hasta Grubu Sayısını Girin",
+        "control_group": "🟦 Kontrol Grubu Hedef Gen Ct Değerleri",
+        "reference_group": "🟦 Kontrol Grubu Referans Gen Ct Değerleri",
+        "error": "⚠️ Dikkat: Kontrol Grubu {0} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
+        "no_data": "Veri bulunamadı, PDF oluşturulamadı.",
+        "download_csv": "📥 CSV İndir",
+        "create_pdf": "📥 PDF Raporu Hazırla",
+        "pdf_report": "Gen Ekspresyon Analizi Raporu",
+        "results": "📊 Sonuçlar",
+        "statistics": "📈 İstatistik Sonuçları",
+    },
+}
 
-# Kullanıcıdan giriş al
-st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
+# Kullanıcıdan dil seçimi al
+selected_language = st.selectbox("Select Language", options=list(languages.keys()))
+texts = languages[selected_language]
 
-# Hedef Gen ve Hasta Grubu Sayısı
-num_target_genes = st.number_input("🔹 Hedef Gen Sayısını Girin", min_value=1, step=1, key="gene_count")
-num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_value=1, step=1, key="patient_count")
+# Başlık ve yazar
+st.title(texts["title"])
+st.markdown("### " + texts["author"])
+
+# Giriş alanları
+st.header(texts["input_header"])
+num_target_genes = st.number_input(texts["target_gen_count"], min_value=1, step=1, key="gene_count")
+num_patient_groups = st.number_input(texts["patient_group_count"], min_value=1, step=1, key="patient_count")
+
+# Geri kalan kod 
 
 # Veri listeleri
 input_values_table = []
