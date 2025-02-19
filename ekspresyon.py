@@ -10,68 +10,16 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
-import streamlit as st
-
-# Dil seçenekleri
-languages = {
-    "English": {
-        "title": "Gene Expression Analysis Application",
-        "author": "Developed by B. Yalçınkaya",
-        "input_header": "Enter Patient and Control Group Data",
-        "target_gen_count": "Enter Number of Target Genes",
-        "patient_group_count": "Enter Number of Patient Groups",
-        "control_group": "Control Group Target Gene Ct Values",
-        "reference_group": "Control Group Reference Gene Ct Values",
-        "error": "Warning: Enter data for Control Group {0} line by line or paste from Excel without empty cells.",
-        "no_data": "No data found, PDF could not be generated.",
-        "download_csv": "Download CSV",
-        "create_pdf": "Prepare PDF Report",
-        "pdf_report": "Gene Expression Analysis Report",
-        "results": "Results",
-        "statistics": "Statistical Results",
-    },
-    "Türkçe": {
-        "title": "🧬 Gen Ekspresyon Analizi Uygulaması",
-        "author": "B. Yalçınkaya tarafından geliştirildi",
-        "input_header": "📊 Hasta ve Kontrol Grubu Verisi Girin",
-        "target_gen_count": "🔹 Hedef Gen Sayısını Girin",
-        "patient_group_count": "🔹 Hasta Grubu Sayısını Girin",
-        "control_group": "🟦 Kontrol Grubu Hedef Gen Ct Değerleri",
-        "reference_group": "🟦 Kontrol Grubu Referans Gen Ct Değerleri",
-        "error": "⚠️ Dikkat: Kontrol Grubu {0} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
-        "no_data": "Veri bulunamadı, PDF oluşturulamadı.",
-        "download_csv": "📥 CSV İndir",
-        "create_pdf": "📥 PDF Raporu Hazırla",
-        "pdf_report": "Gen Ekspresyon Analizi Raporu",
-        "results": "📊 results",
-        "statistics": "📈 İstatistik Sonuçları",
-    },
-}
-
-# Kullanıcıdan dil seçimi al
-selected_language = st.selectbox("Select Language", options=list(languages.keys()))
-texts = languages[selected_language]
-
-# Başlık ve yazar
-st.title(texts["title"])
-st.markdown("### " + texts["author"])
-
-# Giriş alanları
-st.header(texts["input_header"])
-num_target_genes = st.number_input(texts["target_gen_count"], min_value=1, step=1, key="gene_count")
-num_patient_groups = st.number_input(texts["patient_group_count"], min_value=1, step=1, key="patient_count")
-
-# Geri kalan kod kısmını burada güncelleyebilirsiniz, metinleri 'texts' sözlüğü üzerinden alarak.
-
-
-
+# Başlık
+st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
+st.markdown("### B. Yalçınkaya tarafından geliştirildi")
 
 # Kullanıcıdan giriş al
 st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
 
 # Hedef Gen ve Hasta Grubu Sayısı
-num_target_genes = st.number_input("target_gen_count", min_value=1, step=1, key="gene_count")
-num_patient_groups = st.number_input("patient_group_count", min_value=1, step=1, key="patient_count")
+num_target_genes = st.number_input("🔹 Hedef Gen Sayısını Girin", min_value=1, step=1, key="gene_count")
+num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_value=1, step=1, key="patient_count")
 
 # Veri listeleri
 input_values_table = []
@@ -218,22 +166,22 @@ if input_values_table:
     st.write(input_df) 
 
     csv = input_df.to_csv(index=False).encode("utf-8") 
-    st.download_button(label="📥 download_csv", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
+    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
 
-# results Tablosunu Göster
+# Sonuçlar Tablosunu Göster
 if data:
-    st.subheader("📊 results")
+    st.subheader("📊 Sonuçlar")
     df = pd.DataFrame(data)
     st.write(df)
 
-# statistics
+# İstatistik Sonuçları
 if stats_data:
-    st.subheader("📈 statistics")
+    st.subheader("📈 İstatistik Sonuçları")
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
     
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
-    st.download_button(label="📥 statisticsnı CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
+    st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
@@ -349,7 +297,7 @@ def create_pdf(results, stats, input_df):
     styles = getSampleStyleSheet()
     
     # Başlık
-    elements.append(Paragraph("pdf_report", styles['Title']))
+    elements.append(Paragraph("Gen Ekspresyon Analizi Raporu", styles['Title']))
     elements.append(Spacer(1, 12))
 
     # Giriş Verileri Tablosu Başlığı
@@ -372,8 +320,8 @@ def create_pdf(results, stats, input_df):
     elements.append(table)
     elements.append(Spacer(1, 12))
     
-    # results Başlığı
-    elements.append(Paragraph("results:", styles['Heading2']))
+    # Sonuçlar Başlığı
+    elements.append(Paragraph("Sonuçlar:", styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for result in results:
@@ -383,8 +331,8 @@ def create_pdf(results, stats, input_df):
     
     elements.append(PageBreak())
     
-    # İstatistiksel results
-    elements.append(Paragraph("istatistiksel results:", styles['Heading2']))
+    # İstatistiksel Sonuçlar
+    elements.append(Paragraph("istatistiksel Sonuçlar:", styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for stat in stats:
@@ -416,9 +364,9 @@ def create_pdf(results, stats, input_df):
     buffer.seek(0)
     return buffer
 
-if st.button("📥 create_pdf"):
+if st.button("📥 PDF Raporu Hazırla"):
     if input_values_table:
         pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
         st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
-        st.error("no_data")
+        st.error("Veri bulunamadı, PDF oluşturulamadı.")
