@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Dillerin tanımlandığı sözlük
+# Dil seçenekleri ve çeviri fonksiyonu
 translations = {
     "English": {
         "header_target_gen": "Target Gene {i+1}",
@@ -32,58 +34,76 @@ translations = {
     }
 }
 
-# Dil seçimi (İngilizce veya Türkçe)
-language = st.selectbox("Select Language", ("English", "Türkçe"))
+# Dil seçimini Streamlit ile alıyoruz
+language = st.selectbox("Choose Language", ["English", "Türkçe"])
 
-# Çeviri fonksiyonu
-def translate(key):
-    return translations[language][key]
+def translate(key, *args):
+    """Verilen anahtarı dil çevirisiyle döndürür"""
+    translation = translations[language][key]
+    return translation.format(*args)
 
-# Sayfa başlığı
-st.title(translate("results"))
+# Kullanıcıdan hedef gen sayısı ve hasta grubu sayısını alma
+num_target_genes = st.number_input(translate("header_target_gen", 1), min_value=1, value=3, step=1)
+num_patient_groups = st.number_input(translate("header_patient_group", 1), min_value=1, value=2, step=1)
 
-# Hedef gen sayısı ve hasta grubu sayısı
-num_target_genes = st.number_input(translate("header_target_gen").format(i=0), min_value=1, value=3, step=1)
-num_patient_groups = st.number_input(translate("header_patient_group").format(j=0), min_value=1, value=2, step=1)
+# Kullanıcıdan verileri alma (örnek olarak basit bir veri çerçevesi kullanıyoruz)
+data_input = st.text_area(translate("no_data_warning"))
+if data_input:
+    try:
+        # Veriyi işleme
+        data_lines = data_input.split("\n")
+        data = [list(map(float, line.split())) for line in data_lines]
+        df = pd.DataFrame(data, columns=[f"Gene_{i+1}" for i in range(num_target_genes)])
+        
+        st.write(df)
 
-# Hedef genler ve gruplar için veri girişi
-data = {}
-for i in range(num_target_genes):
-    # Kontrol grubu için değerler
-    control_group_values = st.text_area(translate("header_control_group").format(i=i), "")
-    if control_group_values:
-        data[f"control_group_gene_{i+1}"] = np.array([float(x) for x in control_group_values.split() if x])
+        # Gen ekspresyonu değişimini hesaplama (2^(-ΔΔCt))
+        expression_changes = {}
+        for i in range(num_target_genes):
+            control_group = df.iloc[:, i]  # Kontrollü veri olarak alıyoruz
+            patient_group = df.iloc[:, i]  # Hasta verisi alıyoruz (gerçek veriye göre uyarlanmalı)
+            
+            # ΔΔCt hesaplama (örnek için basitleştirilmiş)
+            delta_delta_ct = np.mean(patient_group) - np.mean(control_group)
+            expression_change = 2 ** (-delta_delta_ct)
+            expression_changes[f"Gene_{i+1}"] = expression_change
+        
+        # Sonuçları ekrana yazdırma
+        st.subheader(translate("results"))
+        st.write(expression_changes)
 
-    # Hasta gruplarına ait değerler
-    for j in range(num_patient_groups):
-        patient_group_values = st.text_area(translate("header_patient_group").format(i=i, j=j), "")
-        if patient_group_values:
-            data[f"patient_group_{j+1}_gene_{i+1}"] = np.array([float(x) for x in patient_group_values.split() if x])
+        # Grafik seçme ve çizme
+        graph_type = st.selectbox("Select Graph Type", ["Boxplot", "Heatmap", "Histogram", "Scatter Plot"])
+        if graph_type == "Boxplot":
+            st.write("Generating Boxplot...")
+            sns.boxplot(data=df)
+            st.pyplot()
 
-# Veriler eğer sağlanmışsa, hesaplama ve görselleştirme işlemleri
-if data:
-    st.write(translate("expression_change"))
+        elif graph_type == "Heatmap":
+            st.write("Generating Heatmap...")
+            sns.heatmap(df)
+            st.pyplot()
 
-    # Örnek hesaplama: 2^(-ΔΔCt)
-    expression_changes = {}
-    for i in range(num_target_genes):
-        control_values = data[f"control_group_gene_{i+1}"]
-        for j in range(num_patient_groups):
-            patient_values = data[f"patient_group_{j+1}_gene_{i+1}"]
-            delta_delta_ct = np.mean(patient_values) - np.mean(control_values)
-            expression_changes[f"Gene_{i+1}_Group_{j+1}"] = 2 ** (-delta_delta_ct)
+        elif graph_type == "Histogram":
+            st.write("Generating Histogram...")
+            plt.hist(df.values.flatten(), bins=20)
+            st.pyplot()
 
-    # Hesaplanan gen ekspresyon değişimlerini göster
-    st.write(expression_changes)
+        elif graph_type == "Scatter Plot":
+            st.write("Generating Scatter Plot...")
+            plt.scatter(df.iloc[:, 0], df.iloc[:, 1])
+            st.pyplot()
 
-    # CSV indirme linki
-    df = pd.DataFrame(expression_changes.items(), columns=["Gene_Group", "Expression_Change"])
-    st.download_button(
-        label=translate("download_csv"),
-        data=df.to_csv(index=False),
-        file_name="gene_expression_changes.csv",
-        mime="text/csv",
-    )
+        # CSV olarak indirme
+        results_df = pd.DataFrame(expression_changes.items(), columns=["Gene", "Expression Change"])
+        st.download_button(
+            label=translate("download_csv"),
+            data=results_df.to_csv(index=False),
+            file_name="gene_expression_results.csv",
+            mime="text/csv"
+        )
 
+    except Exception as e:
+        st.error(translate("error_message"))
 else:
-    st.warning(translate("no_graph_data"))
+    st.warning(translate("no_data_warning"))
