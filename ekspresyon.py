@@ -39,7 +39,7 @@ translations = {
 
 # Function to translate based on selected language
 def translate(key):
-    return translations[lang].get(key, key)
+    return translations[language][key]
 
 # Kullanıcıdan hedef gen sayısı ve hasta grubu sayısını alıyoruz
 num_target_genes = st.number_input("Hedef Gen Sayısı", min_value=1, value=3, step=1)
