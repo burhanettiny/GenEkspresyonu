@@ -41,6 +41,10 @@ translations = {
 def translate(key):
     return translations[lang].get(key, key)
 
+# Kullanıcıdan hedef gen sayısı ve hasta grubu sayısını alıyoruz
+num_target_genes = st.number_input("Hedef Gen Sayısı", min_value=1, value=3, step=1)
+num_patient_groups = st.number_input("Hasta Grubu Sayısı", min_value=1, value=2, step=1)
+
 # Veri listeleri
 input_values_table = []
 data = []
