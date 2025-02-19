@@ -10,6 +10,52 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Dil seçenekleri
+def get_translations():
+    return {
+        "English": {
+            "title": "Data Analysis Application",
+            "upload": "Upload CSV file",
+            "select_column": "Select a column",
+            "plot": "Show Plot",
+            "histogram": "Histogram of {}"
+        },
+        "Türkçe": {
+            "title": "Veri Analizi Uygulaması",
+            "upload": "CSV dosyası yükle",
+            "select_column": "Bir sütun seçin",
+            "plot": "Grafiği Göster",
+            "histogram": "{} Histogramı"
+        }
+    }
+
+# Dil seçimi
+translations = get_translations()
+language = st.sidebar.selectbox("Select Language / Dil Seçin", list(translations.keys()))
+text = translations[language]
+
+st.title(text["title"])
+
+# CSV dosyası yükleme
+uploaded_file = st.file_uploader(text["upload"], type=["csv"])
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.write(df.head())
+
+    # Sütun seçimi
+    column = st.selectbox(text["select_column"], df.columns)
+    
+    # Grafik çizme
+    if st.button(text["plot"]):
+        fig, ax = plt.subplots()
+        df[column].hist(ax=ax, bins=20)
+        ax.set_title(text["histogram"].format(column))
+        st.pyplot(fig)
+
 # Başlık
 st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
 st.markdown("### B. Yalçınkaya tarafından geliştirildi")
