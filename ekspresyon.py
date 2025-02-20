@@ -173,7 +173,7 @@ for i in range(num_target_genes):
         significance = "significant" if test_pvalue < 0.05 else "not_significant"
         
         stats_data.append({
-            t["target_gene"]: f"{t['target_gene']} {i+1}",
+            t["target_gene_count"]: f"{t['target_gene_count']} {i+1}",
             t["patient_group"]: f"{t['patient_group']} {j+1}",
             "test_type": test_type,
             "test_method": test_method,  
@@ -182,7 +182,7 @@ for i in range(num_target_genes):
         })
         
         data.append({
-            t["target_gene"]: f"{t['target_gene']} {i+1}",
+            t["target_gene_count"]: f"{t['target_gene_count']} {i+1}",
             t["patient_group"]: f"{t['patient_group']} {j+1}",
             "ΔΔCt": delta_delta_ct,
             t["expression_change"]: expression_change,
@@ -216,17 +216,17 @@ if stats_data:
 
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
-    st.subheader(f"{t['target_gene']} {i+1} - {t['distribution_chart']}")
+    st.subheader(f"{t['target_gene_count']} {i+1} - {t['distribution_chart']}")
 
     # Kontrol Grubu Verileri
     control_target_ct_values = [
         d[t["target_gene_ct"]] for d in input_values_table
-        if d[t["group"]] == t["control_group"] and d[t["target_gene"]] == f"{t['target_gene']} {i+1}"
+        if d[t["group"]] == t["control_group"] and d[t["target_gene_count"]] == f"{t['target_gene_count']} {i+1}"
     ]
 
     control_reference_ct_values = [
         d[t["reference_ct"]] for d in input_values_table
-        if d[t["group"]] == t["control_group"] and d[t["target_gene"]] == f"{t['target_gene']} {i+1}"
+        if d[t["group"]] == t["control_group"] and d[t["target_gene_count"]] == f"{t['target_gene_count']} {i+1}"
     ]
 
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
@@ -252,7 +252,7 @@ for i in range(num_target_genes):
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
             d[t["delta_ct_patient"]] for d in input_values_table 
-            if d[t["group"]] == f"{t['patient_group']} {j+1}" and d[t["target_gene"]] == f"{t['target_gene']} {i+1}"
+            if d[t["group"]] == f"{t['patient_group']} {j+1}" and d[t["target_gene_count"]] == f"{t['target_gene_count']} {i+1}"
         ]
 
         if not sample_delta_ct_values:
@@ -282,7 +282,7 @@ for i in range(num_target_genes):
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
             d[t["delta_ct_patient"]] for d in input_values_table 
-            if d[t["group"]] == f"{t['patient_group']} {j+1}" and d[t["target_gene"]] == f"{t['target_gene']} {i+1}"
+            if d[t["group"]] == f"{t['patient_group']} {j+1}" and d[t["target_gene_count"]] == f"{t['target_gene_count']} {i+1}"
         ]
 
         if not sample_delta_ct_values:
@@ -300,7 +300,7 @@ for i in range(num_target_genes):
 
     # Grafik ayarları
     fig.update_layout(
-        title=f"{t['target_gene']} {i+1} - {t['delta_ct_distribution']}",
+        title=f"{t['target_gene_count']} {i+1} - {t['delta_ct_distribution']}",
         xaxis=dict(
             tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
             ticktext=[t["control_group"]] + [f"{t['patient_group']} {i+1}" for i in range(num_patient_groups)],
