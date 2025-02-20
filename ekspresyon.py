@@ -32,7 +32,7 @@ translations = {
         "download_csv": "📥 CSV İndir",
         "input_header": "📋 Giriş Verileri Tablosu",
         "Target_Gene": "🧬 Hedef Gen",
-        "error_input_patient_group": "⚠️ Dikkat: Hasta Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
+        "error_input_patient_group": "⚠️ Dikkat: Hasta Grubu verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -66,7 +66,7 @@ translations = {
         "download_csv": "📥 CSV herunterladen",
         "input_header": "📋 Eingabedaten-Tabelle",
         "Target_Gene": "🧬 Zielgen",
-        "error_input_patient_group": "⚠️ Achtung: Geben Sie die Daten für Patientengruppe {i+1} zeilenweise ein oder fügen Sie sie ohne Leerzeichen aus Excel ein.",
+        "error_input_patient_group": "⚠️ Achtung: Geben Sie die Daten für Patientengruppe {i} zeilenweise ein oder fügen Sie sie ohne Leerzeichen aus Excel ein.",
     }
 }
 
