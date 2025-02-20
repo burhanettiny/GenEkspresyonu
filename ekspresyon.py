@@ -169,51 +169,48 @@ for i in range(num_target_genes):
         sample_normal = shapiro_sample.pvalue > 0.05
         equal_variance = levene_test.pvalue > 0.05
         
-        test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
+        test_type = t["parametric"] if control_normal and sample_normal and equal_variance else t["nonparametric"]
         
-        if test_type == "Parametrik":
+        if test_type == t["parametric"]:
             test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
             test_method = "t-test"
         else:
             test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
-            test_method = "Mann-Whitney U testi"
+            test_method = "Mann-Whitney U test"
         
-        significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
+        significance = "significant" if test_pvalue < 0.05 else "Anlamsız"
         
         stats_data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta Grubu": f"Hasta Grubu {j+1}",
-            "Test Türü": test_type,
-            "Kullanılan Test": test_method,  
-            "Test P-değeri": test_pvalue,
-            "Anlamlılık": significance
+            t["target_gene"]: f"{t['target_gene']} {i+1}",
+            t["patient_group"]: f"{t['patient_group']} {j+1}",
+            "test_type": test_type,
+            "test_method": test_method,  
+            "test_pvalue": test_pvalue,
+            "significance": significance
         })
         
         data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta Grubu": f"Hasta Grubu {j+1}",
+            t["target_gene"]: f"{t['target_gene']} {i+1}",
+            t["patient_group"]: f"{t['patient_group']} {j+1}",
             "ΔΔCt": delta_delta_ct,
-            "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
-            "Regülasyon Durumu": regulation_status,
-          
-
-
-  "ΔCt (Kontrol)": average_control_delta_ct,
-            "ΔCt (Hasta)": average_sample_delta_ct
-        })
+            t["expression_change"]: expression_change,
+            t["regulation_status"]: regulation_status,
+            t["delta_ct_control"]: average_control_delta_ct,
+            t["delta_ct_patient"]: average_sample_delta_ct
+        })       
 
 # Giriş Verileri Tablosunu Göster
-if input_values_table: 
-    st.subheader("📋 Giriş Verileri Tablosu") 
-    input_df = pd.DataFrame(input_values_table) 
-    st.write(input_df) 
+if input_values_table:
+    st.subheader(t["input_data_table"])
+    input_df = pd.DataFrame(input_values_table)
+    st.write(input_df)
 
-    csv = input_df.to_csv(index=False).encode("utf-8") 
-    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
+    csv = input_df.to_csv(index=False).encode("utf-8")
+    st.download_button(label=t["download_csv"], data=csv, file_name="input_data.csv", mime="text/csv")
 
 # Sonuçlar Tablosunu Göster
 if data:
-    st.subheader("📊 Sonuçlar")
+    st.subheader(t["results"])
     df = pd.DataFrame(data)
     st.write(df)
 
