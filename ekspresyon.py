@@ -174,7 +174,7 @@ for i in range(num_target_genes):
         
         stats_data.append({
             t["target_gene_count"]: f"{t['target_gene_count']} {i+1}",
-            t["patient_group"]: f"{t['patient_group']} {j+1}",
+            t["patient_group_count"]: f"{t['patient_group_count']} {j+1}",
             "test_type": test_type,
             "test_method": test_method,  
             "test_pvalue": test_pvalue,
@@ -183,7 +183,7 @@ for i in range(num_target_genes):
         
         data.append({
             t["target_gene_count"]: f"{t['target_gene_count']} {i+1}",
-            t["patient_group"]: f"{t['patient_group']} {j+1}",
+            t["patient_group_count"]: f"{t['patient_group_count']} {j+1}",
             "ΔΔCt": delta_delta_ct,
             t["expression_change"]: expression_change,
             t["regulation_status"]: regulation_status,
@@ -252,7 +252,7 @@ for i in range(num_target_genes):
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
             d[t["delta_ct_patient"]] for d in input_values_table 
-            if d[t["group"]] == f"{t['patient_group']} {j+1}" and d[t["target_gene_count"]] == f"{t['target_gene_count']} {i+1}"
+            if d[t["group"]] == f"{t['patient_group_count']} {j+1}" and d[t["target_gene_count"]] == f"{t['target_gene_count']} {i+1}"
         ]
 
         if not sample_delta_ct_values:
@@ -264,7 +264,7 @@ for i in range(num_target_genes):
             y=[average_sample_delta_ct, average_sample_delta_ct],
             mode='lines',
             line=dict(color='black', width=4),
-            name=f"{t['patient_group']} {j+1} {t['average']}"
+            name=f"{t['patient_group_count']} {j+1} {t['average']}"
         ))
 
     # Veri Noktaları (Kontrol Grubu)
@@ -282,7 +282,7 @@ for i in range(num_target_genes):
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
             d[t["delta_ct_patient"]] for d in input_values_table 
-            if d[t["group"]] == f"{t['patient_group']} {j+1}" and d[t["target_gene_count"]] == f"{t['target_gene_count']} {i+1}"
+            if d[t["group"]] == f"{t['patient_group_count']} {j+1}" and d[t["target_gene_count"]] == f"{t['target_gene_count']} {i+1}"
         ]
 
         if not sample_delta_ct_values:
@@ -292,7 +292,7 @@ for i in range(num_target_genes):
             x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.normal(0, 0.02, len(sample_delta_ct_values)),
             y=sample_delta_ct_values,
             mode='markers',
-            name=f"{t['patient_group']} {j+1}",
+            name=f"{t['patient_group_count']} {j+1}",
             marker=dict(color='red'),
             text=[f"{t['patient_sample']} {value:.2f}, {t['sample']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
             hoverinfo='text'
@@ -303,7 +303,7 @@ for i in range(num_target_genes):
         title=f"{t['target_gene_count']} {i+1} - {t['delta_ct_distribution']}",
         xaxis=dict(
             tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-            ticktext=[t["control_group"]] + [f"{t['patient_group']} {i+1}" for i in range(num_patient_groups)],
+            ticktext=[t["control_group"]] + [f"{t['patient_group_count']} {i+1}" for i in range(num_patient_groups)],
             title=t["group"]
         ),
         yaxis=dict(title=t["delta_ct_value"]),
