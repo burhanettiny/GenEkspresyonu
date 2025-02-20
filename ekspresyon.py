@@ -348,12 +348,12 @@ def create_pdf(results, stats, input_df, lang_key):
     elements.append(Paragraph(input_table_header, styles['Heading2']))
     
     # Table Data
-if input_df.empty:
-    elements.append(Paragraph("No input data available", styles['Normal']))
-else:
-    table_data = [input_df.columns.tolist()] + input_df.values.tolist()
-    col_width = (letter[0] - 80) / len(input_df.columns)
-    table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
+    if input_df.empty:
+        elements.append(Paragraph("No input data available", styles['Normal']))
+    else:
+        table_data = [input_df.columns.tolist()] + input_df.values.tolist()
+        col_width = (letter[0] - 80) / len(input_df.columns)
+        table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
     
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -422,7 +422,7 @@ else:
     
     doc.build(elements)
     buffer.seek(0)
-        return buffer
+    return buffer
 
 if st.button("📥 Generate PDF Report" if lang_key == "en" else "📥 PDF Raporu Hazırla"):
     if input_values_table:
