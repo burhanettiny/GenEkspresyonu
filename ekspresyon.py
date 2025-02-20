@@ -32,6 +32,7 @@ translations = {
         "download_csv": "📥 CSV İndir",
         "input_header": "📋 Giriş Verileri Tablosu",
         "Target_Gene": "🧬 Hedef Gen",
+        "error_input_patient_group": "⚠️ Dikkat: Hasta Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -48,6 +49,7 @@ translations = {
         "download_csv": "📥 Download CSV",
         "input_header": "📋 Input Data Table",
         "Target_Gene": "🧬 Target Gene",
+        "error_input_patient_group": "⚠️ Attention: Enter data for Patient Group {i+1} in separate lines or paste without spaces from Excel.",
     },
     "de": {
         "title": "🧬 Genexpressionsanalyse-Anwendung",
@@ -64,6 +66,7 @@ translations = {
         "download_csv": "📥 CSV herunterladen",
         "input_header": "📋 Eingabedaten-Tabelle",
         "Target_Gene": "🧬 Zielgen",
+        "error_input_patient_group": "⚠️ Achtung: Geben Sie die Daten für Patientengruppe {i+1} zeilenweise ein oder fügen Sie sie ohne Leerzeichen aus Excel ein.",
     }
 }
 
@@ -140,9 +143,9 @@ for i in range(num_target_genes):
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
         if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            st.error(f"⚠️ Dikkat: Patient Group {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+            st.error(translations[lang]["error_input_patient_group"].format(i=i+1))
             continue
-        
+
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
         sample_target_ct_values = sample_target_ct_values[:min_sample_len]
         sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
