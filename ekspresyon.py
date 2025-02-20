@@ -157,8 +157,8 @@ for i in range(num_target_genes):
         })
         
         data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}" if language == "Türkçe"
-            "Hasta Grubu": f"Hasta Grubu {j+1}"if language == "Türkçe"
+            "Hedef Gen": f"Hedef Gen {i+1}" if language == "Türkçe",
+            "Hasta Grubu": f"Hasta Grubu {j+1}"if language == "Türkçe",
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
             "Regülasyon Durumu": regulation_status,
