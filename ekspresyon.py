@@ -128,7 +128,7 @@ for i in range(num_target_genes):
         input_values_table.append({
             "Sample Number": sample_counter,
             "Target Gene": f"Target Gene {i+1}",
-            "Grup": "Kontrol",
+            "Group": "Kontrol",
             "Target Gene Ct Value": control_target_ct_values[idx],
             "Reference Ct": control_reference_ct_values[idx],  
             "ΔCt (Kontrol)": control_delta_ct[idx]
