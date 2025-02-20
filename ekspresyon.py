@@ -124,6 +124,10 @@ for i in range(num_target_genes):
         continue
     
     sample_counter = 1  # Kontrol grubu örnek sayacı
+    input_values_table = []  # Boş liste
+    min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values), len(control_delta_ct))
+    min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values), len(sample_delta_ct))
+
     for idx in range(min_control_len):
         input_values_table.append({
             "Sample Number": sample_counter,
