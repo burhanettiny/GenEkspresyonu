@@ -89,7 +89,7 @@ last_control_delta_ct = None
 last_gene_index = None
 
 for i in range(num_target_genes):
-    st.subheader(f"{translations[lang]['target_gene']} {i+1}")
+    st.subheader(f"{translations[lang]['Target_Gene']} {i+1}")
        
     # Kontrol Grubu Verileri
     control_target_ct = st.text_area(f"🟦 Kontrol Grubu Target Gene {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
