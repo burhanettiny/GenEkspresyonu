@@ -248,7 +248,7 @@ for i in range(num_target_genes):
     # Kontrol Grubu Verileri
     control_target_ct_values = [
         d["Target Gene Ct Value"] for d in input_values_table
-        target_gene = translations[lang]["Target_Gene"]  # "Hedef Gen" veya "Target Gene" olabilir
+        target_gene = translations[lang]["Target_Gene"]
         group = translations[lang]["group_control"]  # "Kontrol" veya "Control"
         
         if d["Grup"] == group and d["Target Gene"] == f"{target_gene} {i+1}":
