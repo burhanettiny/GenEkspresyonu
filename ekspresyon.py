@@ -80,14 +80,6 @@ st.header(t["enter_data"])
 num_target_genes = st.number_input(t["target_gene_count"], min_value=1, step=1, key="gene_count")
 num_patient_groups = st.number_input(t["patient_group_count"], min_value=1, step=1, key="patient_count")
 
-# Başlık
-st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
-st.markdown("### B. Yalçınkaya tarafından geliştirildi")
-
-# Kullanıcı girişleri
-num_target_genes = st.number_input(t["target_gene_count"], min_value=1, step=1, key="gene_count")
-num_patient_groups = st.number_input(t["patient_group_count"], min_value=1, step=1, key="patient_count")
-
 # Veri listeleri
 input_values_table = []
 data = []
