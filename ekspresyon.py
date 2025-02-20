@@ -33,6 +33,7 @@ translations = {
         "input_header": "📋 Giriş Verileri Tablosu",
         "Target_Gene": "🧬 Hedef Gen",
         "error_input_patient_group": "⚠️ Dikkat: Hasta Grubu verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
+        "group_control": "Kontrol",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -50,6 +51,7 @@ translations = {
         "input_header": "📋 Input Data Table",
         "Target_Gene": "🧬 Target Gene",
         "error_input_patient_group": "⚠️ Attention: Enter data for Patient Group in separate lines or paste without spaces from Excel.",
+        "group_control": "Control",
     },
     "de": {
         "title": "🧬 Genexpressionsanalyse-Anwendung",
@@ -67,6 +69,7 @@ translations = {
         "input_header": "📋 Eingabedaten-Tabelle",
         "Target_Gene": "🧬 Zielgen",
         "error_input_patient_group": "⚠️ Achtung: Geben Sie die Daten für Patientengruppe {i} zeilenweise ein oder fügen Sie sie ohne Leerzeichen aus Excel ein.",
+        "group_control": "Kontrolle",
     }
 }
 
