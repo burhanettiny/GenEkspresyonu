@@ -422,7 +422,7 @@ else:
     
     doc.build(elements)
     buffer.seek(0)
-    return buffer
+        return buffer
 
 if st.button("📥 Generate PDF Report" if lang_key == "en" else "📥 PDF Raporu Hazırla"):
     if input_values_table:
