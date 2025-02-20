@@ -450,3 +450,5 @@ if st.button("📥 PDF Raporu Hazırla"):
         st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
+
+st.write(input_values_table)
