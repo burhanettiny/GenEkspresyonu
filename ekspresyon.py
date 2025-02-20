@@ -159,7 +159,9 @@ for i in range(num_target_genes):
                 "ΔCt (Patient)": sample_delta_ct[idx]
             })
             sample_counter += 1
-        
+            
+ df = pd.DataFrame(input_values_table)
+
         # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
         expression_change = 2 ** (-delta_delta_ct)
