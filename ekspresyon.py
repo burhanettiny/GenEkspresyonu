@@ -49,7 +49,7 @@ translations = {
         "download_csv": "📥 Download CSV",
         "input_header": "📋 Input Data Table",
         "Target_Gene": "🧬 Target Gene",
-        "error_input_patient_group": "⚠️ Attention: Enter data for Patient Group {i+1} in separate lines or paste without spaces from Excel.",
+        "error_input_patient_group": "⚠️ Attention: Enter data for Patient Group in separate lines or paste without spaces from Excel.",
     },
     "de": {
         "title": "🧬 Genexpressionsanalyse-Anwendung",
@@ -141,11 +141,6 @@ for i in range(num_target_genes):
         
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
-
-        try:
-            st.error(translations[lang]["error_input_patient_group"].format(i=i+1))
-        except KeyError as e:
-            st.error(f"Hata: {e} anahtarı {lang} dilinde eksik.")
 
         if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
             st.error(translations[lang]["error_input_patient_group"].format(i=i+1))
