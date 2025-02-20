@@ -35,8 +35,9 @@ translations = {
         "t_test": "t-test",
         "mann_whitney": "Mann-Whitney U testi",
         "significant": "Anlamlı",
-        "not_significant": "Anlamsız"
+        "not_significant": "Anlamsız",
         "expression_change": "Ekspresyon Farkı"
+        
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
