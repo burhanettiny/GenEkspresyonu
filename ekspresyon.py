@@ -37,7 +37,9 @@ translations = {
         "significant": "Anlamlı",
         "not_significant": "Anlamsız",
         "expression_change": "Ekspresyon Farkı",
-        "regulation_status": "Regülasyon Durumu"
+        "regulation_status": "Regülasyon Durumu",
+        "delta_ct_control": "Delta Ct Kontrol",
+        "delta_ct_patient": "Delta Ct Hasta"
         
     },
     "en": {
@@ -65,7 +67,9 @@ translations = {
         "significant": "Significant",
         "not_significant": "Not Significant",
         "expression_change": "Expression Change",
-        "regulation_status": "Regulation Status"
+        "regulation_status": "Regulation Status",
+        "delta_ct_control": "Delta Ct Control",
+        "delta_ct_patient": "Delta Ct Patient"
     }
 }
 
