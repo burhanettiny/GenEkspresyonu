@@ -325,24 +325,29 @@ else:
 
 # PDF rapor oluşturma kısmı
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
+from io import BytesIO
 
-def create_pdf(results, stats, input_df):
+def create_pdf(results, stats, input_df, lang_key):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
     
     styles = getSampleStyleSheet()
     
-    # Başlık
-    elements.append(Paragraph("Gen Ekspresyon Analizi Raporu", styles['Title']))
+    # Title
+    title_text = "Gene Expression Analysis Report" if lang_key == "en" else "Gen Ekspresyon Analizi Raporu"
+    elements.append(Paragraph(title_text, styles['Title']))
     elements.append(Spacer(1, 12))
 
-    # Giriş Verileri Tablosu Başlığı
-    elements.append(Paragraph("Giris Verileri Tablosu:", styles['Heading2']))
+    # Input Data Table Header
+    input_table_header = "Input Data Table:" if lang_key == "en" else "Giriş Verileri Tablosu:"
+    elements.append(Paragraph(input_table_header, styles['Heading2']))
     
-    # Tablo Verisi
+    # Table Data
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
     col_width = (letter[0] - 80) / len(input_df.columns)
     table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
@@ -359,41 +364,54 @@ def create_pdf(results, stats, input_df):
     elements.append(table)
     elements.append(Spacer(1, 12))
     
-    # Sonuçlar Başlığı
-    elements.append(Paragraph("Sonuçlar:", styles['Heading2']))
+    # Results Header
+    results_header = "Results:" if lang_key == "en" else "Sonuçlar:"
+    elements.append(Paragraph(results_header, styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for result in results:
-        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f} | {result['Regülasyon Durumu']}"
+        text = f"{result['Target Gene']} - {result['Patient Group']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gene Expression Change (2^(-ΔΔCt))']:.2f} | {result['Regulation Status']}"
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
     
     elements.append(PageBreak())
     
-    # İstatistiksel Sonuçlar
-    elements.append(Paragraph("istatistiksel Sonuçlar:", styles['Heading2']))
+    # Statistical Results
+    stats_header = "Statistical Results:" if lang_key == "en" else "İstatistiksel Sonuçlar:"
+    elements.append(Paragraph(stats_header, styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for stat in stats:
-        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
+        text = f"{stat['Target Gene']} - {stat['Patient Group']} | Test: {stat['Used Test']} | p-value: {stat['Test P-value']:.4f} | {stat['Significance']}"
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
     
     elements.append(PageBreak())
     
-    # İstatistiksel Değerlendirme
-    elements.append(Paragraph("istatistiksel Degerlendirme:", styles['Heading2']))
+    # Statistical Evaluation
+    eval_header = "Statistical Evaluation:" if lang_key == "en" else "İstatistiksel Değerlendirme:"
+    elements.append(Paragraph(eval_header, styles['Heading2']))
     elements.append(Spacer(1, 12))
     
-    explanation = (
-        "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
-        "Normallik saglanirsa, gruplar arasindaki varyans esitligi Levene testi ile kontrol edilmistir. "
-        "Varyans esitligi varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
-        "Eger normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmistir. "
-        "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir. "
-        "<b>Görüs ve önerileriniz icin; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
-        
+    explanation_tr = (
+        "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
+        "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
+        "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
+        "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+        "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir. "
+        "<b>Görüş ve önerileriniz için; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
     )
+    
+    explanation_en = (
+        "During the statistical evaluation process, data distribution was analyzed using the Shapiro-Wilk test. "
+        "If normality was met, variance equality between groups was checked using Levene's test. "
+        "If variance equality was met, an independent sample t-test was applied; otherwise, Welch's t-test was used. "
+        "If normal distribution was not met, the non-parametric Mann-Whitney U test was applied. "
+        "Significance was determined based on the p < 0.05 criterion. "
+        "<b>For feedback and suggestions; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
+    )
+    
+    explanation = explanation_en if lang_key == "en" else explanation_tr
     
     for line in explanation.split(". "):
         elements.append(Paragraph(line.strip() + '.', styles['Normal']))
@@ -403,9 +421,15 @@ def create_pdf(results, stats, input_df):
     buffer.seek(0)
     return buffer
 
-if st.button("📥 PDF Raporu Hazırla"):
+if st.button("📥 Generate PDF Report" if lang_key == "en" else "📥 PDF Raporu Hazırla"):
     if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
-        st.download_button(label="PDF Olarak İndir", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table), lang_key)
+        st.download_button(
+            label="Download as PDF" if lang_key == "en" else "PDF Olarak İndir",
+            data=pdf_buffer,
+            file_name="gene_expression_report.pdf" if lang_key == "en" else "gen_ekspresyon_raporu.pdf",
+            mime="application/pdf"
+        )
     else:
-        st.error("Veri bulunamadı, PDF oluşturulamadı.")
+        st.error("No data found, PDF could not be generated." if lang_key == "en" else "Veri bulunamadı, PDF oluşturulamadı.")
+        
