@@ -36,7 +36,8 @@ translations = {
         "mann_whitney": "Mann-Whitney U testi",
         "significant": "Anlamlı",
         "not_significant": "Anlamsız",
-        "expression_change": "Ekspresyon Farkı"
+        "expression_change": "Ekspresyon Farkı",
+        "regulation_status": "Regülasyon Durumu"
         
     },
     "en": {
@@ -63,7 +64,8 @@ translations = {
         "mann_whitney": "Mann-Whitney U test",
         "significant": "Significant",
         "not_significant": "Not Significant",
-        "expression_change": "Expression Change"
+        "expression_change": "Expression Change",
+        "regulation_status": "Regulation Status"
     }
 }
 
