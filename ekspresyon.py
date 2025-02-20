@@ -247,16 +247,17 @@ for i in range(num_target_genes):
     
     # Kontrol Grubu Verileri
     control_target_ct_values = [
-        d["Target Gene Ct Value"] for d in input_values_table
-        target_gene = translations[lang]["Target_Gene"]
-        group = translations[lang]["group_control"]  # "Kontrol" veya "Control"
-        
-        if d["Grup"] == group and d["Target Gene"] == f"{target_gene} {i+1}":
+        d["Target Gene Ct Value"]
+        for d in input_values_table
+        if d["Grup"] == translations[lang]["group_control"]  # "Kontrol" veya "Control"
+        and d["Target Gene"] == f"{translations[lang]['Target_Gene']} {i+1}"
     ]
     
     control_reference_ct_values = [
-        d["Reference Ct"] for d in input_values_table
-        if d["Grup"] == "Kontrol" and d["Target Gene"] == f"Target Gene {i+1}"
+        d["Reference Ct"]
+        for d in input_values_table
+        if d["Grup"] == translations[lang]["group_control"]  # "Kontrol" veya "Control"
+        and d["Target Gene"] == f"{translations[lang]['Target_Gene']} {i+1}"
     ]
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
