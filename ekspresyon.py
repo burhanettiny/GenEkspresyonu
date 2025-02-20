@@ -10,16 +10,65 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
-# Başlık
-st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
-st.markdown("### B. Yalçınkaya tarafından geliştirildi")
+# Dil seçimi
+language_options = {"Türkçe": "tr", "English": "en", "Deutsch": "de"}
+selected_language = st.selectbox("🌍 Dil / Language / Sprache", list(language_options.keys()))
+lang = language_options[selected_language]
 
-# Kullanıcıdan giriş al
-st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
+# Metinleri çeviri sözlüğü ile belirleme
+translations = {
+    "tr": {
+        "title": "🧬 Gen Ekspresyon Analizi Uygulaması",
+        "developer": "### B. Yalçınkaya tarafından geliştirildi",
+        "input_header": "📊 Hasta ve Kontrol Grubu Verisi Girin",
+        "num_target_genes": "🔹 Hedef Gen Sayısını Girin",
+        "num_patient_groups": "🔹 Hasta Grubu Sayısını Girin",
+        "control_ct_values": "🟦 Kontrol Grubu Hedef Gen {i} Ct Değerleri",
+        "control_ref_values": "🟦 Kontrol Grubu Referans Gen {i} Ct Değerleri",
+        "error_input": "⚠️ Dikkat: Verileri alt alta yazın veya boşluk içermeyen şekilde yapıştırın.",
+        "graph_title": "Hedef Gen {i} - Hasta ve Kontrol Grubu Dağılım Grafiği",
+        "results": "📊 Sonuçlar",
+        "stats_results": "📈 İstatistik Sonuçları",
+        "download_csv": "📥 CSV İndir",
+    },
+    "en": {
+        "title": "🧬 Gene Expression Analysis Application",
+        "developer": "### Developed by B. Yalçınkaya",
+        "input_header": "📊 Enter Patient and Control Group Data",
+        "num_target_genes": "🔹 Enter the Number of Target Genes",
+        "num_patient_groups": "🔹 Enter the Number of Patient Groups",
+        "control_ct_values": "🟦 Control Group Target Gene {i} Ct Values",
+        "control_ref_values": "🟦 Control Group Reference Gene {i} Ct Values",
+        "error_input": "⚠️ Attention: Enter data in separate lines or paste without empty spaces.",
+        "graph_title": "Target Gene {i} - Patient and Control Group Distribution Graph",
+        "results": "📊 Results",
+        "stats_results": "📈 Statistical Results",
+        "download_csv": "📥 Download CSV",
+    },
+    "de": {
+        "title": "🧬 Genexpressionsanalyse-Anwendung",
+        "developer": "### Entwickelt von B. Yalçınkaya",
+        "input_header": "📊 Eingabe von Patienten- und Kontrollgruppendaten",
+        "num_target_genes": "🔹 Anzahl der Zielgene eingeben",
+        "num_patient_groups": "🔹 Anzahl der Patientengruppen eingeben",
+        "control_ct_values": "🟦 Kontrollgruppe Zielgen {i} Ct-Werte",
+        "control_ref_values": "🟦 Kontrollgruppe Referenzgen {i} Ct-Werte",
+        "error_input": "⚠️ Achtung: Geben Sie die Daten zeilenweise ein oder fügen Sie sie ohne Leerzeichen ein.",
+        "graph_title": "Zielgen {i} - Verteilungsgrafik für Patienten- und Kontrollgruppen",
+        "results": "📊 Ergebnisse",
+        "stats_results": "📈 Statistische Ergebnisse",
+        "download_csv": "📥 CSV herunterladen",
+    }
+}
 
-# Hedef Gen ve Hasta Grubu Sayısı
-num_target_genes = st.number_input("🔹 Hedef Gen Sayısını Girin", min_value=1, step=1, key="gene_count")
-num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_value=1, step=1, key="patient_count")
+# Seçili dile göre metinleri belirleme
+st.title(translations[lang]["title"])
+st.markdown(translations[lang]["developer"])
+st.header(translations[lang]["input_header"])
+
+# Kullanıcı girişleri
+num_target_genes = st.number_input(translations[lang]["num_target_genes"], min_value=1, step=1, key="gene_count")
+num_patient_groups = st.number_input(translations[lang]["num_patient_groups"], min_value=1, step=1, key="patient_count")
 
 # Veri listeleri
 input_values_table = []
