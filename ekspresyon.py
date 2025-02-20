@@ -222,111 +222,106 @@ if stats_data:
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
     st.download_button(label=t["download_stats_csv"], data=csv_stats, file_name="statistical_results.csv", mime="text/csv")
 
-
-
-
-
-
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
-    st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
-    
+    st.subheader(f"{t['target_gene']} {i+1} - {t['distribution_chart']}")
+
     # Kontrol Grubu Verileri
     control_target_ct_values = [
-        d["Hedef Gen Ct Değeri"] for d in input_values_table
-        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+        d[t["target_gene_ct"]] for d in input_values_table
+        if d[t["group"]] == t["control_group"] and d[t["target_gene"]] == f"{t['target_gene']} {i+1}"
     ]
-    
+
     control_reference_ct_values = [
-        d["Referans Ct"] for d in input_values_table
-        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+        d[t["reference_ct"]] for d in input_values_table
+        if d[t["group"]] == t["control_group"] and d[t["target_gene"]] == f"{t['target_gene']} {i+1}"
     ]
-    
+
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
+        st.error(f"⚠️ {t['error_missing_data']} {i+1}!")
         continue
-    
+
     control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
     average_control_delta_ct = np.mean(control_delta_ct)
-    
+
     # Hasta Grubu Verileri
     fig = go.Figure()
 
     # Kontrol Grubu Ortalama Çizgisi
     fig.add_trace(go.Scatter(
-        x=[0.8, 1.2],  
-        y=[average_control_delta_ct, average_control_delta_ct],  
+        x=[0.8, 1.2],
+        y=[average_control_delta_ct, average_control_delta_ct],
         mode='lines',
         line=dict(color='black', width=4),
-        name='Kontrol Grubu Ortalama'
+        name=t["control_group_avg"]
     ))
 
     # Hasta Gruplarının Ortalama Çizgileri
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
-            d["ΔCt (Hasta)"] for d in input_values_table 
-            if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+            d[t["delta_ct_patient"]] for d in input_values_table 
+            if d[t["group"]] == f"{t['patient_group']} {j+1}" and d[t["target_gene"]] == f"{t['target_gene']} {i+1}"
         ]
-    
+
         if not sample_delta_ct_values:
             continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
         
         average_sample_delta_ct = np.mean(sample_delta_ct_values)
         fig.add_trace(go.Scatter(
-            x=[(j + 1.8), (j + 2.2)],  
-            y=[average_sample_delta_ct, average_sample_delta_ct],  
+            x=[(j + 1.8), (j + 2.2)],
+            y=[average_sample_delta_ct, average_sample_delta_ct],
             mode='lines',
             line=dict(color='black', width=4),
-            name=f'Hasta Grubu {j+1} Ortalama'
+            name=f"{t['patient_group']} {j+1} {t['average']}"
         ))
 
     # Veri Noktaları (Kontrol Grubu)
     fig.add_trace(go.Scatter(
         x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
         y=control_delta_ct,
-        mode='markers',  
-        name='Kontrol Grubu',
+        mode='markers',
+        name=t["control_group"],
         marker=dict(color='blue'),
-        text=[f'Kontrol {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(control_delta_ct)],
+        text=[f"{t['control_sample']} {value:.2f}, {t['sample']} {idx+1}" for idx, value in enumerate(control_delta_ct)],
         hoverinfo='text'
     ))
 
     # Veri Noktaları (Hasta Grupları)
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
-            d["ΔCt (Hasta)"] for d in input_values_table 
-            if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+            d[t["delta_ct_patient"]] for d in input_values_table 
+            if d[t["group"]] == f"{t['patient_group']} {j+1}" and d[t["target_gene"]] == f"{t['target_gene']} {i+1}"
         ]
-    
+
         if not sample_delta_ct_values:
             continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
-        
+
         fig.add_trace(go.Scatter(
             x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
             y=sample_delta_ct_values,
-            mode='markers',  
-            name=f'Hasta Grubu {j+1}',
+            mode='markers',
+            name=f"{t['patient_group']} {j+1}",
             marker=dict(color='red'),
-            text=[f'Hasta {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(sample_delta_ct_values)],
+            text=[f"{t['patient_sample']} {value:.2f}, {t['sample']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
             hoverinfo='text'
         ))
 
     # Grafik ayarları
     fig.update_layout(
-        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+        title=f"{t['target_gene']} {i+1} - {t['delta_ct_distribution']}",
         xaxis=dict(
             tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
-            title='Grup'
+            ticktext=[t["control_group"]] + [f"{t['patient_group']} {i+1}" for i in range(num_patient_groups)],
+            title=t["group"]
         ),
-        yaxis=dict(title='ΔCt Değeri'),
+        yaxis=dict(title=t["delta_ct_value"]),
         showlegend=True
     )
 
     st.plotly_chart(fig)
 
 else:
-    st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
+    st.info(t["graph_info"])
 
 # PDF rapor oluşturma kısmı
 from reportlab.lib.units import inch
