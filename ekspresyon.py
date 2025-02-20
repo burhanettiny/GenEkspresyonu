@@ -30,6 +30,7 @@ translations = {
         "results": "📊 Sonuçlar",
         "stats_results": "📈 İstatistik Sonuçları",
         "download_csv": "📥 CSV İndir",
+        "input_header": "📋 Giriş Verileri Tablosu",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -44,6 +45,7 @@ translations = {
         "results": "📊 Results",
         "stats_results": "📈 Statistical Results",
         "download_csv": "📥 Download CSV",
+        "input_header": "📋 Input Data Table",
     },
     "de": {
         "title": "🧬 Genexpressionsanalyse-Anwendung",
@@ -58,6 +60,7 @@ translations = {
         "results": "📊 Ergebnisse",
         "stats_results": "📈 Statistische Ergebnisse",
         "download_csv": "📥 CSV herunterladen",
+        "input_header": "📋 Eingabedaten-Tabelle",
     }
 }
 
@@ -159,8 +162,6 @@ for i in range(num_target_genes):
                 "ΔCt (Patient)": sample_delta_ct[idx]
             })
             sample_counter += 1
-            
- df = pd.DataFrame(input_values_table)
 
         # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
@@ -212,7 +213,7 @@ for i in range(num_target_genes):
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table: 
-    st.subheader("📋 Giriş Verileri Tablosu") 
+    st.subheader("input_header") 
     input_df = pd.DataFrame(input_values_table) 
     st.write(input_df) 
 
