@@ -178,7 +178,7 @@ for i in range(num_target_genes):
             test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
             test_method = "Mann-Whitney U test"
         
-        significance = "significant" if test_pvalue < 0.05 else "Anlamsız"
+        significance = "significant" if test_pvalue < 0.05 else "t["not_significant"]"
         
         stats_data.append({
             t["target_gene"]: f"{t['target_gene']} {i+1}",
@@ -277,7 +277,7 @@ for i in range(num_target_genes):
 
     # Veri Noktaları (Kontrol Grubu)
     fig.add_trace(go.Scatter(
-        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
+        x=np.ones(len(control_delta_ct)) + np.random.normal(0, 0.02, len(control_delta_ct)),
         y=control_delta_ct,
         mode='markers',
         name=t["control_group"],
@@ -297,7 +297,7 @@ for i in range(num_target_genes):
             continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
 
         fig.add_trace(go.Scatter(
-            x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
+            x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.normal(0, 0.02, len(sample_delta_ct_values)),
             y=sample_delta_ct_values,
             mode='markers',
             name=f"{t['patient_group']} {j+1}",
@@ -348,6 +348,9 @@ def create_pdf(results, stats, input_df, lang_key):
     elements.append(Paragraph(input_table_header, styles['Heading2']))
     
     # Table Data
+if input_df.empty:
+    elements.append(Paragraph("No input data available", styles['Normal']))
+else:
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
     col_width = (letter[0] - 80) / len(input_df.columns)
     table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
