@@ -31,6 +31,7 @@ translations = {
         "stats_results": "📈 İstatistik Sonuçları",
         "download_csv": "📥 CSV İndir",
         "input_header": "📋 Giriş Verileri Tablosu",
+        "Target_Gene": "🧬 Hedef Gen",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -46,6 +47,7 @@ translations = {
         "stats_results": "📈 Statistical Results",
         "download_csv": "📥 Download CSV",
         "input_header": "📋 Input Data Table",
+        "Target_Gene": "🧬 Zielgen",
     },
     "de": {
         "title": "🧬 Genexpressionsanalyse-Anwendung",
@@ -87,8 +89,8 @@ last_control_delta_ct = None
 last_gene_index = None
 
 for i in range(num_target_genes):
-    st.subheader(f"🧬 Target Gene {i+1}")
-    
+    st.subheader("Target_Gene {i+1}") 
+       
     # Kontrol Grubu Verileri
     control_target_ct = st.text_area(f"🟦 Kontrol Grubu Target Gene {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
