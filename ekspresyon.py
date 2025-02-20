@@ -181,13 +181,17 @@ for i in range(num_target_genes):
         
         significance = "significant" if test_pvalue < 0.05 else "not_significant"
 
-
+        # Kolon ekleme veya kontrol etme kodu
         if "delta_ct_control" not in t.columns:
             t["delta_ct_control"] = average_delta_ct_control
         else:
             t["delta_ct_control"] = t["delta_ct_control"].append(average_delta_ct_control)
 
-        # Kolon ekleme veya kontrol etme kodu
+        if 'target_gene_count' in t.columns and 'distribution_chart' in t.columns:
+            st.subheader(f"{t['target_gene_count']} {i+1} - {t['distribution_chart']}")
+        else:
+            st.warning("Kolonlar mevcut değil: 'target_gene_count' veya 'distribution_chart'")
+
         stats_data.append({
             t["target_gene_count"]: f"{t['target_gene_count']} {i+1}",
             t["patient_group_count"]: f"{t['patient_group_count']} {j+1}",
