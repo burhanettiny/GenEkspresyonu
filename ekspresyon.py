@@ -196,8 +196,8 @@ for i in range(num_target_genes):
             "ΔΔCt": delta_delta_ct,
             t["expression_change"]: expression_change,
             t["regulation_status"]: regulation_status,
-            t["delta_ct_control"]: average_control_delta_ct,
-            t["delta_ct_patient"]: average_sample_delta_ct
+            t["delta_ct_control"]: average_delta_ct_control,
+            t["delta_ct_patient"]: average_delta_ct_patient
         })       
 
 # Giriş Verileri Tablosunu Göster
@@ -267,10 +267,10 @@ for i in range(num_target_genes):
         if not sample_delta_ct_values:
             continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
         
-        average_sample_delta_ct = np.mean(sample_delta_ct_values)
+        average_delta_ct_patient = np.mean(sample_delta_ct_values)
         fig.add_trace(go.Scatter(
             x=[(j + 1.8), (j + 2.2)],
-            y=[average_sample_delta_ct, average_sample_delta_ct],
+            y=[average_delta_ct_patient, average_delta_ct_patient],
             mode='lines',
             line=dict(color='black', width=4),
             name=f"{t['patient_group_count']} {j+1} {t['average']}"
