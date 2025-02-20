@@ -247,22 +247,27 @@ if stats_data:
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
     st.subheader(f"Target Gene {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
-    
+
+
+# Dil seçimine göre kontrol grubunu almak
+group_control = translations[lang].get("group_control", "Kontrol")  # Eğer dilde yoksa 'Kontrol' olarak varsayalım
+
+for i in range(num_target_genes):
+    st.subheader(f"{translations[lang]['Target_Gene']} {i+1} - {translations[lang]['graph_title']}")
+
     # Kontrol Grubu Verileri
     control_target_ct_values = [
-        d["Target Gene Ct Value"]
-        for d in input_values_table
-        if d["Grup"] == group_control 
+        d["Target Gene Ct Value"] for d in input_values_table
+        if isinstance(d, dict) and d["Grup"] == group_control  # 'd' değişkeni bir sözlük olmalı
         and d["Target Gene"] == f"{translations[lang]['Target_Gene']} {i+1}"
     ]
     
     control_reference_ct_values = [
-        d["Reference Ct"]
-        for d in input_values_table
-        if d["Grup"] == group_control
+        d["Reference Ct"] for d in input_values_table
+        if isinstance(d, dict) and d["Grup"] == group_control  # 'd' değişkeni bir sözlük olmalı
         and d["Target Gene"] == f"{translations[lang]['Target_Gene']} {i+1}"
     ]
-    
+
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
         st.error(f"⚠️ Hata: Kontrol Grubu için Target Gene {i+1} verileri eksik!")
         continue
