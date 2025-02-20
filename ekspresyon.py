@@ -243,7 +243,7 @@ for i in range(num_target_genes):
         continue
 
     control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
-    average_control_delta_ct = np.mean(control_delta_ct)
+    average_control_delta_ct = np.mean(delta_ct_control)
 
     # Hasta Grubu Verileri
     fig = go.Figure()
