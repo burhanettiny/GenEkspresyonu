@@ -141,7 +141,12 @@ for i in range(num_target_genes):
         
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
-        
+
+        try:
+            st.error(translations[lang]["error_input_patient_group"].format(i=i+1))
+        except KeyError as e:
+            st.error(f"Hata: {e} anahtarı {lang} dilinde eksik.")
+
         if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
             st.error(translations[lang]["error_input_patient_group"].format(i=i+1))
             continue
