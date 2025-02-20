@@ -178,7 +178,7 @@ for i in range(num_target_genes):
             test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
             test_method = "Mann-Whitney U test"
         
-        significance = "significant" if test_pvalue < 0.05 else "t["not_significant"]"
+        significance = "significant" if test_pvalue < 0.05 else "not_significant"
         
         stats_data.append({
             t["target_gene"]: f"{t['target_gene']} {i+1}",
