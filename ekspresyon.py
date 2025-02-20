@@ -180,7 +180,14 @@ for i in range(num_target_genes):
             test_method = "Mann-Whitney U test"
         
         significance = "significant" if test_pvalue < 0.05 else "not_significant"
-        
+
+
+        if "delta_ct_control" not in t.columns:
+            t["delta_ct_control"] = average_delta_ct_control
+        else:
+            t["delta_ct_control"] = t["delta_ct_control"].append(average_delta_ct_control)
+
+        # Kolon ekleme veya kontrol etme kodu
         stats_data.append({
             t["target_gene_count"]: f"{t['target_gene_count']} {i+1}",
             t["patient_group_count"]: f"{t['patient_group_count']} {j+1}",
