@@ -14,18 +14,21 @@ from reportlab.platypus import Table, TableStyle
 language = st.selectbox("Dil Seçin", ["Türkçe", "English"])
 
 # Başlık ve açıklamalar dil seçimine göre ayarlandı
+
 if language == "Türkçe":
     st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
     st.markdown("### B. Yalçınkaya tarafından geliştirildi")
     st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
     target_genes_label = "🔹 Hedef Gen Sayısını Girin"
     patient_groups_label = "🔹 Hasta Grubu Sayısını Girin"
+    input_table_header = "Giriş Verileri Tablosu"
 else:
     st.title("🧬 Gene Expression Analysis Application")
     st.markdown("### Developed by B. Yalçınkaya")
     st.header("📊 Enter Patient and Control Group Data")
     target_genes_label = "🔹 Enter the Number of Target Genes"
     patient_groups_label = "🔹 Enter the Number of Patient Groups"
+    input_table_header = "Input Data Table"
 
 # Kullanıcıdan giriş al
 num_target_genes = st.number_input(target_genes_label, min_value=1, step=1, key="gene_count")
