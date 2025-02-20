@@ -62,7 +62,7 @@ translations = {
         "t_test": "t-test",
         "mann_whitney": "Mann-Whitney U test",
         "significant": "Significant",
-        "not_significant": "Not Significant"
+        "not_significant": "Not Significant",
         "expression_change": "Expression Change"
     }
 }
