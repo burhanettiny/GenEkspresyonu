@@ -47,7 +47,7 @@ translations = {
         "stats_results": "📈 Statistical Results",
         "download_csv": "📥 Download CSV",
         "input_header": "📋 Input Data Table",
-        "Target_Gene": "🧬 Zielgen",
+        "Target_Gene": "🧬 Target Gene",
     },
     "de": {
         "title": "🧬 Genexpressionsanalyse-Anwendung",
@@ -63,6 +63,7 @@ translations = {
         "stats_results": "📈 Statistische Ergebnisse",
         "download_csv": "📥 CSV herunterladen",
         "input_header": "📋 Eingabedaten-Tabelle",
+        "Target_Gene": "🧬 Zielgen",
     }
 }
 
