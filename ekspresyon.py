@@ -28,6 +28,7 @@ translations = {
         "generate_pdf": "📥 PDF Raporu Hazırla",
         "pdf_report": "Gen Ekspresyon Analizi Raporu",
         "statistics": "istatistiksel Sonuçlar",
+        "nil_mine": "📊 Sonuçlar",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -46,6 +47,7 @@ translations = {
         "generate_pdf": "📥 Prepare PDF Report",
         "pdf_report": "Gene Expression Analysis Report",
         "statistics": "Statistical Results",
+        "nil_mine": "📊 Results",
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -64,6 +66,7 @@ translations = {
         "generate_pdf": "📥 PDF-Bericht erstellen",
         "pdf_report": "Genexpression-Analysebericht",
         "statistics": "Statistische Ergebnisse",
+        "nil_mine": "📊 Ergebnisse",
     }
 }
 
@@ -235,7 +238,8 @@ if input_values_table:
 
 # Sonuçlar Tablosunu Göster
 if data:
-    st.subheader("📊 Sonuçlar")
+    st.subheader(f"📊 {translations[language_code]['nil_mine']}")
+
     df = pd.DataFrame(data)
     st.write(df)
 
