@@ -203,7 +203,7 @@ for i in range(num_target_genes):
         if len(sample_delta_ct) > 0:
             average_sample_delta_ct = np.mean(sample_delta_ct)
         else:
-            st.warning(translations[language_code]["warning_patient_ct"]
+            st.warning(translations[language_code]["warning_patient_ct"])
             continue
         
         sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
