@@ -241,7 +241,8 @@ if data:
 
 # İstatistik Sonuçları
 if stats_data:
-    st.subheader("📈 İstatistik Sonuçları")
+    st.subheader(f"📈 {translations[language_code]['statistical_results']}")
+    
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
     
