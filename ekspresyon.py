@@ -346,14 +346,6 @@ for i in range(num_target_genes):
             name=f'Hasta Grubu {j+1} Ortalama'
         ))
         
-        # Hasta Grubu Veri Noktalarını Ekle
-        fig.add_trace(go.Box(
-            y=sample_delta_ct_values,
-            name=f"Hasta Grubu {j+1}",
-            marker=dict(color='red'),
-            boxmean=True
-        ))
-
     # Veri Noktaları (Kontrol Grubu)
     fig.add_trace(go.Scatter(
         x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
