@@ -175,7 +175,7 @@ for i in range(num_target_genes):
     
     # Hasta Grubu Verileri
     for j in range(num_patient_groups):
-        salha = translations[language_code]["hast"]
+        hast = translations[language_code]["hast"]
         st.subheader(f"{hast} {i+1}")
         
         sample_target_ct_text = translations[language_code]["hast"].format(i=i+1)
