@@ -50,7 +50,7 @@ translations = {
         "hast": "🩸 Hasta Grubu",
         "ctrl_trgt_ct": "🟦 Kontrol Grubu Hedef Gen {i} Ct Değerleri",
         "ctrl_ref_ct": "🟦 Kontrol Grubu Referans Gen {i} Ct Değerleri",
-
+        "warning_control_ct": "⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -75,6 +75,7 @@ translations = {
         "hast": "🩸 Patient Group",
         "ctrl_trgt_ct": "🟦 Control Group Target Gene {i} Ct Values",
         "ctrl_ref_ct": "🟦 Control Group Reference Gene {i} Ct Values",
+        "warning_control_ct": "⚠️ Warning: Enter control group Ct values line by line or copy-paste from Excel without empty cells.",
 
     },
     "de": {
@@ -100,6 +101,8 @@ translations = {
         "hast": "🩸 Patientendaten Gruppe",
         "ctrl_trgt_ct": "🟦 Kontrollgruppe Zielgen {i} Ct-Werte",
         "ctrl_ref_ct": "🟦 Kontrollgruppe Referenz {i} Ct-Werte",
+        "warning_control_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Kontrollgruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
+
     }
 }
 
@@ -154,8 +157,8 @@ for i in range(num_target_genes):
         last_control_delta_ct = control_delta_ct  
         last_gene_index = i
     else:
-        st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
-        continue
+        st.warning(translations[language_code]["warning_control_ct"])
+    continue
     
     sample_counter = 1  # Kontrol grubu örnek sayacı
     for idx in range(min_control_len):
