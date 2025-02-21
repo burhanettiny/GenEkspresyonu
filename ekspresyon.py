@@ -11,7 +11,7 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
 # Dil seçim kutusu
-language = st.selectbox("Dil Seçin", ["Türkçe", "English", "Deutsch"])
+language_code = st.selectbox("Dil Seçin", ["Türkçe", "English", "Deutsch"])
 
 # Dil kodlarını belirleyin
 language_map = {
