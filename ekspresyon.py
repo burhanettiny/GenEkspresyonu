@@ -10,6 +10,13 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
 
+# Dil seçim kutusu
+if 'language' not in st.session_state:
+    st.session_state.language = st.selectbox("Dil Seçin", ["Türkçe", "English", "Deutsch"])
+
+# Dili seçme
+language = st.session_state.language
+
 translations = {
     "tr": {
         "title": "🧬 Gen Ekspresyon Analizi Uygulaması",
@@ -76,12 +83,6 @@ translations = {
     }
 }
 
-# Add a language selector
-language = st.selectbox("Select Language", ["Türkçe", "English", "Deutsch"])
-
-# Set the corresponding language code based on the selection
-language_code = "tr" if language == "Türkçe" else "en" if language == "English" else "de"
-
 # Translate text using the selected language
 st.title(translations[language_code]["title"])
 st.markdown(f"### {translations[language_code]['subtitle']}")
@@ -107,11 +108,6 @@ def parse_input_data(input_data):
 # Grafik için son işlenen Hedef Genın kontrol verilerini saklamak amacıyla değişkenler
 last_control_delta_ct = None
 last_gene_index = None
-
-selected_language = st.selectbox("Dil Seçin", ["tr", "en", "de"])
-
-# Seçilen dil için 'salha' (hedef gen) çevirisini alıyoruz
-salha = translations[selected_language]["salha"]
 
 for i in range(num_target_genes):
     st.subheader(f"{salha} {i+1}")
