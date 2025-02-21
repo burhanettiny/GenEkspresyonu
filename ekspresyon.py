@@ -47,6 +47,10 @@ translations = {
         "nil_mine": "📊 Sonuçlar",
         "gr_tbl": "📋 Giriş Verileri Tablosu",
         "salha": "🧬 Hedef Gen",
+        "ctrl_trgt_ct": "🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri",
+        "ctrl_ref_ct": "🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri",
+
+
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -68,6 +72,9 @@ translations = {
         "nil_mine": "📊 Results",
         "gr_tbl": "📋 Input Data Table",
         "salha": "🧬 Target Gene",
+        "ctrl_trgt_ct": "🟦 Control Group Target Gene {i+1} Ct Values",
+        "ctrl_ref_ct": "🟦 Control Group Reference Gene {i+1} Ct Values",
+
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -89,6 +96,8 @@ translations = {
         "nil_mine": "📊 Ergebnisse",
         "gr_tbl": "📋 Eingabedaten Tabelle",
         "salha": "🧬 Zielgen",
+        "ctrl_trgt_ct": "🟦 Kontrollgruppe Zielgen {i+1} Ct-Werte",
+        "ctrl_ref_ct": "🟦 Kontrollgruppe Referenz {i+1} Ct-Werte",
     }
 }
 
@@ -123,9 +132,12 @@ for i in range(num_target_genes):
     st.subheader(f"{salha} {i+1}")
     
     # Kontrol Grubu Verileri
-    control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
-    control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
+    control_target_ct_text = translations[language_code]["ctrl_trgt_ct"].format(i+1)
+    control_target_ct = st.text_area(ctrl_trgt_ct_text, key=f"control_target_ct_{i}")
     
+    control_reference_ct_text = translations[language_code]["ctrl_ref_ct"].format(i+1)
+    control_target_ct = st.text_area(ctrl_ref_ct_text, key=f"control_reference_ct_{i}")
+   
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
     
