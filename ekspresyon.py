@@ -30,6 +30,7 @@ translations = {
         "statistics": "istatistiksel Sonuçlar",
         "nil_mine": "📊 Sonuçlar",
         "gr_tbl": "📋 Giriş Verileri Tablosu",
+        "salha": "🧬 Hedef Gen",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -50,6 +51,7 @@ translations = {
         "statistics": "Statistical Results",
         "nil_mine": "📊 Results",
         "gr_tbl": "📋 Input Data Table",
+        "salha": "🧬 Target Gene",
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -70,6 +72,7 @@ translations = {
         "statistics": "Statistische Ergebnisse",
         "nil_mine": "📊 Ergebnisse",
         "gr_tbl": "📋 Eingabedaten Tabelle",
+        "salha": "🧬 Zielgen",
     }
 }
 
@@ -106,7 +109,7 @@ last_control_delta_ct = None
 last_gene_index = None
 
 for i in range(num_target_genes):
-    st.subheader(f"🧬 Hedef Gen {i+1}")
+    st.subheader(f"{salha} {i+1}")
     
     # Kontrol Grubu Verileri
     control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
