@@ -29,6 +29,7 @@ translations = {
         "pdf_report": "Gen Ekspresyon Analizi Raporu",
         "statistics": "istatistiksel Sonuçlar",
         "nil_mine": "📊 Sonuçlar",
+        "gr_tbl": "📋 Giriş Verileri Tablosu",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -48,6 +49,7 @@ translations = {
         "pdf_report": "Gene Expression Analysis Report",
         "statistics": "Statistical Results",
         "nil_mine": "📊 Results",
+        "gr_tbl": "📋 Input Data Table",
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -67,6 +69,7 @@ translations = {
         "pdf_report": "Genexpression-Analysebericht",
         "statistics": "Statistische Ergebnisse",
         "nil_mine": "📊 Ergebnisse",
+        "gr_tbl": "📋 Eingabedaten Tabelle",
     }
 }
 
@@ -229,7 +232,8 @@ for i in range(num_target_genes):
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table: 
-    st.subheader("📋 Giriş Verileri Tablosu") 
+    st.subheader("📋 Giriş Verileri Tablosu")
+    st.subheader(f"📊 {translations[language_code]['gr_tbl']}")
     input_df = pd.DataFrame(input_values_table) 
     st.write(input_df) 
 
