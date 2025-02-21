@@ -47,7 +47,7 @@ translations = {
         "nil_mine": "📊 Sonuçlar",
         "gr_tbl": "📋 Giriş Verileri Tablosu",
         "salha": "🧬 Kontrol Grubu",
-        "hast" "🩸 Hasta Grubu",
+        "hast": "🩸 Hasta Grubu",
         "ctrl_trgt_ct": "🟦 Kontrol Grubu Hedef Gen {i} Ct Değerleri",
         "ctrl_ref_ct": "🟦 Kontrol Grubu Referans Gen {i} Ct Değerleri",
 
@@ -72,7 +72,7 @@ translations = {
         "nil_mine": "📊 Results",
         "gr_tbl": "📋 Input Data Table",
         "salha": "🧬 Control Group",
-        "hast" "🩸 Patient Group",
+        "hast": "🩸 Patient Group",
         "ctrl_trgt_ct": "🟦 Control Group Target Gene {i} Ct Values",
         "ctrl_ref_ct": "🟦 Control Group Reference Gene {i} Ct Values",
 
@@ -97,7 +97,7 @@ translations = {
         "nil_mine": "📊 Ergebnisse",
         "gr_tbl": "📋 Eingabedaten Tabelle",
         "salha": "🧬 Kontrollgruppe",
-        "hast" "🩸 Patientendaten Gruppe",
+        "hast": "🩸 Patientendaten Gruppe",
         "ctrl_trgt_ct": "🟦 Kontrollgruppe Zielgen {i} Ct-Werte",
         "ctrl_ref_ct": "🟦 Kontrollgruppe Referenz {i} Ct-Werte",
     }
