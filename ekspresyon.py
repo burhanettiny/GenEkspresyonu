@@ -132,10 +132,10 @@ for i in range(num_target_genes):
     st.subheader(f"{salha} {i+1}")
     
     # Kontrol Grubu Verileri
-    control_target_ct_text = translations[language_code]["ctrl_trgt_ct"].format(i+i)
+    control_target_ct_text = translations[language_code]["ctrl_trgt_ct"].format(i+1)
     control_target_ct = st.text_area(control_target_ct_text, key=f"control_target_ct_{i}")
     
-    control_reference_ct_text = translations[language_code]["ctrl_ref_ct"].format(i+1i)
+    control_reference_ct_text = translations[language_code]["ctrl_ref_ct"].format(i+1)
     control_target_ct = st.text_area(control_reference_ct_text, key=f"control_reference_ct_{i}")
    
     control_target_ct_values = parse_input_data(control_target_ct)
