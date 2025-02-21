@@ -119,7 +119,6 @@ last_control_delta_ct = None
 last_gene_index = None
 
 for i in range(num_target_genes):
-    salha = translations[language_code]["salha"]
     st.subheader(f"{salha} {i+1}")
     
     # Kontrol Grubu Verileri
