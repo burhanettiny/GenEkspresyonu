@@ -51,6 +51,8 @@ translations = {
         "ctrl_trgt_ct": "🟦 Kontrol Grubu Hedef Gen {i} Ct Değerleri",
         "ctrl_ref_ct": "🟦 Kontrol Grubu Referans Gen {i} Ct Değerleri",
         "warning_control_ct": "⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
+        "warning_patient_ct": "⚠️ Dikkat: Hasta grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
+
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -76,6 +78,8 @@ translations = {
         "ctrl_trgt_ct": "🟦 Control Group Target Gene {i} Ct Values",
         "ctrl_ref_ct": "🟦 Control Group Reference Gene {i} Ct Values",
         "warning_control_ct": "⚠️ Warning: Enter control group Ct values line by line or copy-paste from Excel without empty cells.",
+        "warning_patient_ct": "⚠️ Warning: Enter patient group Ct values line by line or copy-paste from Excel without empty cells.",
+
 
     },
     "de": {
@@ -102,6 +106,7 @@ translations = {
         "ctrl_trgt_ct": "🟦 Kontrollgruppe Zielgen {i} Ct-Werte",
         "ctrl_ref_ct": "🟦 Kontrollgruppe Referenz {i} Ct-Werte",
         "warning_control_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Kontrollgruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
+        "warning_patient_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Patientendatengruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
 
     }
 }
@@ -198,7 +203,7 @@ for i in range(num_target_genes):
         if len(sample_delta_ct) > 0:
             average_sample_delta_ct = np.mean(sample_delta_ct)
         else:
-            st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+            st.warning(translations[language_code]["warning_patient_ct"]
             continue
         
         sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
