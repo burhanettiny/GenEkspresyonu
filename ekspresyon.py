@@ -14,8 +14,15 @@ from reportlab.platypus import Table, TableStyle
 if 'language' not in st.session_state:
     st.session_state.language = st.selectbox("Dil Seçin", ["Türkçe", "English", "Deutsch"])
 
-# Dili seçme
-language = st.session_state.language
+# Dil kodlarını belirleyin
+language_map = {
+    "Türkçe": "tr",
+    "English": "en",
+    "Deutsch": "de"
+}
+
+# Seçilen dilin kodu
+language_code = language_map[st.session_state.language]
 
 translations = {
     "tr": {
