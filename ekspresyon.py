@@ -108,6 +108,11 @@ def parse_input_data(input_data):
 last_control_delta_ct = None
 last_gene_index = None
 
+selected_language = st.selectbox("Dil Seçin", ["tr", "en", "de"])
+
+# Seçilen dil için 'salha' (hedef gen) çevirisini alıyoruz
+salha = translations[selected_language]["salha"]
+
 for i in range(num_target_genes):
     st.subheader(f"{salha} {i+1}")
     
