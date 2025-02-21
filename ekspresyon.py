@@ -50,7 +50,6 @@ translations = {
         "ctrl_trgt_ct": "🟦 Kontrol Grubu Hedef Gen {i} Ct Değerleri",
         "ctrl_ref_ct": "🟦 Kontrol Grubu Referans Gen {i} Ct Değerleri",
 
-
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -136,7 +135,7 @@ for i in range(num_target_genes):
     control_target_ct = st.text_area(control_target_ct_text, key=f"control_target_ct_{i}")
     
     control_reference_ct_text = translations[language_code]["ctrl_ref_ct"].format(i=i+1)
-    control_target_ct = st.text_area(control_reference_ct_text, key=f"control_reference_ct_{i}")
+    control_reference_ct = st.text_area(control_reference_ct_text, key=f"control_reference_ct_{i}")
    
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
