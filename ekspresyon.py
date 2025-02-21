@@ -195,11 +195,7 @@ for j in range(num_patient_groups):
 
     sample_target_ct_values = parse_input_data(sample_target_ct)
     sample_reference_ct_values = parse_input_data(sample_reference_ct)
-    
-    if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-        st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-        continue
-        
+         
     min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
     sample_target_ct_values = sample_target_ct_values[:min_sample_len]
     sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
