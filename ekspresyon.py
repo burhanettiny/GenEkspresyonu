@@ -152,18 +152,15 @@ for i in range(num_target_genes):
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
 
-if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-    # Dil kontrolü
-    if selected_language not in translations:
-        st.error(f"Geçersiz dil seçimi: {selected_language}")
-        continue  # Bu continue sadece dil kontrolü başarısızsa, döngüyü atlar.
-    
-    # Formatlı hata mesajı
-    error_message = translations[selected_language]['warning_control_ct'].format(i=i+1)
-    st.error(error_message)
-    continue
-
-    
+    # Uzunluk kontrolü ve dil kontrolü
+    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
+        if selected_language not in translations:
+            st.error(f"Geçersiz dil seçimi: {selected_language}")
+            continue  # Dil geçerli değilse döngüyü atla ve bir sonraki iterasyona geç
+        error_message = translations[selected_language]['warning_control_ct'].format(i=i+1)
+        st.error(error_message)
+        continue  
+        
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
