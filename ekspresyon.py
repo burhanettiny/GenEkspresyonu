@@ -187,40 +187,43 @@ for j in range(num_patient_groups):
     hast = translations[language_code]["hast"]
         
     st.subheader(f"{hast} {j+1}")
-    sample_target_ct = st.text_area(
-        sample_target_ct_text, 
-        key=f"sample_target_ct_group_{j+1}"
-    )
 
-    sample_reference_ct_text = translations[language_code]["hst_ref_ct"].format(i=i+1)
-    sample_reference_ct = st.text_area(sample_reference_ct_text, key=f"sample_reference_ct_{i}")
+    sample_target_ct_text = translations[language_code]["hst_target_ct"].format(j=j+1)
+    sample_target_ct = st.text_area(sample_target_ct_text, key=f"sample_target_ct_group_{j+1}")
 
-    sample_target_ct_values = parse_input_data(sample_target_ct)
-    sample_reference_ct_values = parse_input_data(sample_reference_ct)
-         
+    sample_reference_ct_text = translations[language_code]["hst_ref_ct"].format(j=j+1)
+    sample_reference_ct = st.text_area(sample_reference_ct_text, key=f"sample_reference_ct_group_{j+1}")
+
+    # Girilen verileri sayısal değerlere dönüştürme
+    sample_target_ct_values = np.array(parse_input_data(sample_target_ct))
+    sample_reference_ct_values = np.array(parse_input_data(sample_reference_ct))
+
+    # Minimum uzunluğu belirleyerek verileri eşitleme
     min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
     sample_target_ct_values = sample_target_ct_values[:min_sample_len]
     sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
-    sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
-    
-    if len(sample_delta_ct) > 0:
+
+    # ΔCt hesaplama
+    if min_sample_len > 0:
+        sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
         average_sample_delta_ct = np.mean(sample_delta_ct)
     else:
         st.warning(translations[language_code]["warning_patient_ct"])
         continue
-        
-    sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
+
+    # Her Hasta Grubu için örnek sayacı sıfırlanıyor
+    sample_counter = 1  
     for idx in range(min_sample_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
-            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Hedef Gen": f"Hedef Gen {j+1}",  # `i+1` yerine `j+1` kullanıldı
             "Grup": f"Hasta Grubu {j+1}",
             "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
             "Referans Ct": sample_reference_ct_values[idx],
             "ΔCt (Hasta)": sample_delta_ct[idx]
         })
         sample_counter += 1
-        
+
         # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
         expression_change = 2 ** (-delta_delta_ct)
