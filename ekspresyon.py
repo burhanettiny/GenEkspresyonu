@@ -156,7 +156,7 @@ for i in range(num_target_genes):
         error_message = translations[selected_language]['warning_control_ct'].format(i=i+1)
         st.error(error_message)
         continue
-        
+ 
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
