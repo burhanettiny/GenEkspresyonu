@@ -54,7 +54,7 @@ translations = {
         "hst_ref_ct": "🩸 Hasta Grubu Referans Gen {j} Ct Değerleri",
         "warning_control_ct": "⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "warning_patient_ct": "⚠️ Dikkat: Hasta grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
-
+        "statistical_results": "📈 İstatistik Sonuçları",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -83,7 +83,7 @@ translations = {
         "hst_ref_ct": "🩸 Patient Group Reference Gene {j} Ct Values",
         "warning_control_ct": "⚠️ Warning: Enter control group Ct values line by line or copy-paste from Excel without empty cells.",
         "warning_patient_ct": "⚠️ Warning: Enter patient group Ct values line by line or copy-paste from Excel without empty cells.",
-
+        "statistical_results": "📈 Statistical Results",
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -112,7 +112,7 @@ translations = {
         "hst_ref_ct": "🩸 Patientendaten gruppe Referenz {j} Ct-Werte",
         "warning_control_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Kontroll gruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
         "warning_patient_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Patientendaten gruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
-
+        "statistical_results": "📈 Statistische Ergebnisse",
     }
 }
 
@@ -123,20 +123,20 @@ st.markdown(f"### {translations[language_code]['subtitle']}")
 # User Input Section
 st.header(f"📊 {translations[language_code]['patient_data_header']}")
 
-num_target_genes = st.number_input(translations[language_code]["num_target_genes"], min_value=1, step=1, key="gene_count")
-num_patient_groups = st.number_input(translations[language_code]["num_patient_groups"], min_value=1, step=1, key="patient_count")
+# Kullanıcıdan giriş alın
+st.header(translations[language_code]["patient_data_header"])
+num_target_genes = st.number_input(translations[language_code]["num_target_genes"], min_value=1, step=1)
+num_patient_groups = st.number_input(translations[language_code]["num_patient_groups"], min_value=1, step=1)
 
-# Error/Warning Messages
-st.error(translations[language_code]["warning_empty_input"])
+# Veri işleme fonksiyonu
+def parse_input_data(input_data):
+    values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
+    return np.array([float(x) for x in values if x])
 
 # Veri listeleri
 input_values_table = []
 data = []
 stats_data = []
-
-def parse_input_data(input_data):
-    values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
-    return np.array([float(x) for x in values if x])
 
 # Grafik için son işlenen Hedef Genın kontrol verilerini saklamak amacıyla değişkenler
 last_control_delta_ct = None
@@ -147,19 +147,12 @@ for i in range(num_target_genes):
     st.subheader(f"{salha} {i+1}")
     
     # Kontrol Grubu Verileri
-    control_target_ct_text = translations[language_code]["ctrl_trgt_ct"].format(i=i+1)
-    control_target_ct = st.text_area(control_target_ct_text, key=f"control_target_ct_{i}")
-    
-    control_reference_ct_text = translations[language_code]["ctrl_ref_ct"].format(i=i+1)
-    control_reference_ct = st.text_area(control_reference_ct_text, key=f"control_reference_ct_{i}")
-   
-    control_target_ct_values = parse_input_data(control_target_ct)
-    control_reference_ct_values = parse_input_data(control_reference_ct)
-      
-    min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
-    control_target_ct_values = control_target_ct_values[:min_control_len]
-    control_reference_ct_values = control_reference_ct_values[:min_control_len]
-    control_delta_ct = control_target_ct_values - control_reference_ct_values
+    control_ct = st.text_area(f"Kontrol Grubu Hedef Gen {i+1} Ct Değerleri")
+    control_ref = st.text_area(f"Kontrol Grubu Referans Gen {i+1} Ct Değerleri")
+    control_ct_values = parse_input_data(control_ct)
+    control_ref_values = parse_input_data(control_ref)
+    control_delta_ct = control_ct_values - control_ref_values
+    delta_ct_values[f"Hedef Gen {i+1}"] = control_delta_ct
     
     if len(control_delta_ct) > 0:
         average_control_delta_ct = np.mean(control_delta_ct)
