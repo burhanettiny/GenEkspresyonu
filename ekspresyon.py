@@ -52,7 +52,7 @@ translations = {
         "ctrl_ref_ct": "🟦 Kontrol Grubu Referans Gen {i} Ct Değerleri",
         "hst_trgt_ct": "🩸 Hasta Grubu Hedef Gen {j} Ct Değerleri",
         "hst_ref_ct": "🩸 Hasta Grubu Referans Gen {j} Ct Değerleri",
-        "warning_control_ct": "⚠️ Dikkat: {salha} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
+        "warning_control_ct": "⚠️ Dikkat: Kontrol Grubu verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "warning_patient_ct": "⚠️ Dikkat: Hasta grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "statistical_results": "📈 İstatistik Sonuçları",
     },
