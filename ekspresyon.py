@@ -50,8 +50,8 @@ translations = {
         "hast": "🩸 Hasta Grubu",
         "ctrl_trgt_ct": "🟦 Kontrol Grubu Hedef Gen {i} Ct Değerleri",
         "ctrl_ref_ct": "🟦 Kontrol Grubu Referans Gen {i} Ct Değerleri",
-        "hst_trgt_ct": "🩸 Hasta Grubu Hedef Gen {i} Ct Değerleri",
-        "hst_ref_ct": "🩸 Hasta Grubu Referans Gen {i} Ct Değerleri",
+        "hst_trgt_ct": "🩸 Hasta Grubu Hedef Gen {j} Ct Değerleri",
+        "hst_ref_ct": "🩸 Hasta Grubu Referans Gen {j} Ct Değerleri",
         "warning_control_ct": "⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "warning_patient_ct": "⚠️ Dikkat: Hasta grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
 
@@ -79,8 +79,8 @@ translations = {
         "hast": "🩸 Patient Group",
         "ctrl_trgt_ct": "🟦 Control Group Target Gene {i} Ct Values",
         "ctrl_ref_ct": "🟦 Control Group Reference Gene {i} Ct Values",
-        "hst_trgt_ct": "🩸 Patient Group Target Gene {i} Ct Values",
-        "hst_ref_ct": "🩸 Patient Group Reference Gene {i} Ct Values",
+        "hst_trgt_ct": "🩸 Patient Group Target Gene {j} Ct Values",
+        "hst_ref_ct": "🩸 Patient Group Reference Gene {j} Ct Values",
         "warning_control_ct": "⚠️ Warning: Enter control group Ct values line by line or copy-paste from Excel without empty cells.",
         "warning_patient_ct": "⚠️ Warning: Enter patient group Ct values line by line or copy-paste from Excel without empty cells.",
 
@@ -108,8 +108,8 @@ translations = {
         "hast": "🩸 Patientendaten Gruppe",
         "ctrl_trgt_ct": "🟦 Kontrollgruppe Zielgen {i} Ct-Werte",
         "ctrl_ref_ct": "🟦 Kontrollgruppe Referenz {i} Ct-Werte",
-        "hst_trgt_ct": "🩸 Patientendaten gruppe Zielgen {i} Ct-Werte",
-        "hst_ref_ct": "🩸 Patientendaten gruppe Referenz {i} Ct-Werte",
+        "hst_trgt_ct": "🩸 Patientendaten gruppe Zielgen {j} Ct-Werte",
+        "hst_ref_ct": "🩸 Patientendaten gruppe Referenz {j} Ct-Werte",
         "warning_control_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Kontroll gruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
         "warning_patient_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Patientendaten gruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
 
