@@ -154,11 +154,7 @@ for i in range(num_target_genes):
 
     # Uzunluk kontrolü ve dil kontrolü
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        if selected_language not in translations:
-            st.error(f"Geçersiz dil seçimi: {selected_language}")
-            continue  # Dil geçerli değilse döngüyü atla ve bir sonraki iterasyona geç
-        error_message = translations[selected_language]['warning_control_ct'].format(i=i+1)
-        st.error(error_message)
+        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
         continue  
         
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
