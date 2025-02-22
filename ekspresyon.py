@@ -251,7 +251,7 @@ for j in range(num_patient_groups):
         significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
         
         stats_data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Hedef Gen": f"Hedef Gen {j+1}",
             "Hasta Grubu": f"Hasta Grubu {j+1}",
             "Test Türü": test_type,
             "Kullanılan Test": test_method,  
@@ -260,7 +260,7 @@ for j in range(num_patient_groups):
         })
         
         data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Hedef Gen": f"Hedef Gen {j+1}",
             "Hasta Grubu": f"Hasta Grubu {j+1}",
             "ΔΔCt": delta_delta_ct,
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
