@@ -52,7 +52,7 @@ translations = {
         "ctrl_ref_ct": "🟦 Kontrol Grubu Referans Gen {i} Ct Değerleri",
         "hst_trgt_ct": "🩸 Hasta Grubu Hedef Gen {j} Ct Değerleri",
         "hst_ref_ct": "🩸 Hasta Grubu Referans Gen {j} Ct Değerleri",
-        "warning_control_ct": "⚠️ Dikkat: {salha} {group_number} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
+        "warning_control_ct": "⚠️ Dikkat: {salha} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "warning_patient_ct": "⚠️ Dikkat: Hasta grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "statistical_results": "📈 İstatistik Sonuçları",
     },
@@ -81,7 +81,7 @@ translations = {
         "ctrl_ref_ct": "🟦 Control Group Reference Gene {i} Ct Values",
         "hst_trgt_ct": "🩸 Patient Group Target Gene {j} Ct Values",
         "hst_ref_ct": "🩸 Patient Group Reference Gene {j} Ct Values",
-        "warning_control_ct": "⚠️ Warning: {salha} {group_number} data should be entered line by line or copied from Excel without empty cells.",
+        "warning_control_ct": "⚠️ Warning: {salha} data should be entered line by line or copied from Excel without empty cells.",
         "warning_patient_ct": "⚠️ Warning: Enter patient group Ct values line by line or copy-paste from Excel without empty cells.",
         "statistical_results": "📈 Statistical Results",
     },
@@ -110,7 +110,7 @@ translations = {
         "ctrl_ref_ct": "🟦 Kontrollgruppe Referenz {i} Ct-Werte",
         "hst_trgt_ct": "🩸 Patientendaten gruppe Zielgen {j} Ct-Werte",
         "hst_ref_ct": "🩸 Patientendaten gruppe Referenz {j} Ct-Werte",
-        "warning_control_ct": "⚠️ Achtung: {salha} {group_number} Daten sollten untereinander eingegeben oder aus Excel ohne leere Zellen eingefügt werden.",
+        "warning_control_ct": "⚠️ Achtung: {salha} Daten sollten untereinander eingegeben oder aus Excel ohne leere Zellen eingefügt werden.",
         "warning_patient_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Patientendaten gruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
         "statistical_results": "📈 Statistische Ergebnisse",
     }
@@ -153,7 +153,7 @@ for i in range(num_target_genes):
     control_reference_ct_values = parse_input_data(control_reference_ct)
 
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values[i]) == 0:
-        st.error(f"{translations[selected_language]['warning_control_ct'].format(salha=translations[selected_language]['salha'], group_number=i+1)}")
+        st.error(f"{translations[selected_language]['warning_control_ct'].format(salha=translations[selected_language]['salha'], {i+1}")
         continue
     
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
