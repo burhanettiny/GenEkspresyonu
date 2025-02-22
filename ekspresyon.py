@@ -186,9 +186,6 @@ for i in range(num_target_genes):
 for j in range(num_patient_groups):
     hast = translations[language_code]["hast"]
         
-    sample_target_ct_text = translations[language_code]["hst_trgt_ct"].format(i=i+1)
-    sample_target_ct = st.text_area(sample_target_ct_text, key=f"sample_target_ct_{i}")
-
     st.subheader(f"{hast} {j+1}")
     sample_target_ct = st.text_area(
         sample_target_ct_text, 
