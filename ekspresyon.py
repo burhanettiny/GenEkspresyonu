@@ -56,7 +56,8 @@ translations = {
         "warning_patient_ct": "⚠️ Dikkat: Hasta grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "statistical_results": "📈 İstatistik Sonuçları",
         "hfg": "Hedef Gen",
-        "rfg": "Referans Gen",   
+        "rfg": "Referans Gen",
+        "ctd": "Ct Değerleri",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -88,6 +89,7 @@ translations = {
         "statistical_results": "📈 Statistical Results",
         "hfg": "Target Gene",
         "rfg": "Reference Gen",
+        "ctd": "Ct values",
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -119,6 +121,7 @@ translations = {
         "statistical_results": "📈 Statistische Ergebnisse",
         "hfg": "Zielgen",
         "rfg": "Referenzgen",
+        "ctd": "Ct Werte",
     }
 }
 
@@ -148,10 +151,11 @@ for i in range(num_target_genes):
     salha = translations[language_code]["salha"]
     hfg = translations[language_code]["hfg"]
     rfg = translations[language_code]["rfg"]
+    ctd = translations[language_code]["ctd"]
     st.subheader(f"{salha} {i+1} - {hfg} {i+1}")
  
     # Kontrol Grubu Verileri
-    control_target_ct = st.text_area(f"{salha} {i+1} - {hfg} {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
+    control_target_ct = st.text_area(f"{salha} {i+1} - {hfg} {i+1} - {ctd}", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"{salha} {i+1} - {rfg} {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
    
     control_target_ct_values = parse_input_data(control_target_ct)
