@@ -55,6 +55,7 @@ translations = {
         "warning_control_ct": "⚠️ Dikkat: Kontrol Grubu {i} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "warning_patient_ct": "⚠️ Dikkat: Hasta grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "statistical_results": "📈 İstatistik Sonuçları",
+        "hfg": "Hedef Gen",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -84,6 +85,7 @@ translations = {
         "warning_control_ct": "⚠️ Warning: Control Group {i} data should be entered line by line or copied from Excel without empty cells.",
         "warning_patient_ct": "⚠️ Warning: Enter patient group Ct values line by line or copy-paste from Excel without empty cells.",
         "statistical_results": "📈 Statistical Results",
+        "hfg": "Target Gene",
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -113,6 +115,7 @@ translations = {
         "warning_control_ct": "⚠️ Achtung: Kontrollgruppe {i} Daten sollten untereinander eingegeben oder aus Excel ohne leere Zellen eingefügt werden.",
         "warning_patient_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Patientendaten gruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
         "statistical_results": "📈 Statistische Ergebnisse",
+        "hfg": "Zielgen",
     }
 }
 
@@ -140,7 +143,7 @@ last_gene_index = None
 
 for i in range(num_target_genes):
     salha = translations[language_code]["salha"]
-    st.subheader(f"{salha} {i+1} - Hedef Gen {i+1}")
+    st.subheader(f"{salha} {i+1} - {hfg} {i+1}")
  
     # Kontrol Grubu Verileri
     control_target_ct_text = translations[language_code]["ctrl_trgt_ct"].format(i=i+1)
