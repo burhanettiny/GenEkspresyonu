@@ -144,7 +144,7 @@ last_gene_index = None
 for i in range(num_target_genes):
     salha = translations[language_code]["salha"]
     hfg = translations[language_code]["hfg"]
-    st.subheader(f"{salha} {j+1} - {hfg} {i+1}")
+    st.subheader(f"{salha} {i+1} - {hfg} {i+1}")
  
     # Kontrol Grubu Verileri
     control_target_ct_text = translations[language_code]["ctrl_trgt_ct"].format(i=i+1)
@@ -191,7 +191,7 @@ for i in range(num_target_genes):
     for i in range(num_patient_groups):
         hast = translations[language_code]["hast"]
         hfg = translations[language_code]["hfg"]
-        st.subheader(f"{hast} {i+1} - {hfg} {i+1}")
+        st.subheader(f"{hast} {j+1} - {hfg} {i+1}")
         
         sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
         sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
