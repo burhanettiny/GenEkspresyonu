@@ -140,7 +140,7 @@ last_gene_index = None
 
 for i in range(num_target_genes):
     salha = translations[language_code]["salha"]
-    st.subheader(f"{salha} {i+1}")
+    st.subheader(f"{salha} {i+1} - Hedef Gen {i+1}")
  
     # Kontrol Grubu Verileri
     control_target_ct_text = translations[language_code]["ctrl_trgt_ct"].format(i=i+1)
