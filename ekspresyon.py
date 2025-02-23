@@ -154,8 +154,8 @@ for i in range(num_target_genes):
 
     # Uzunluk kontrolü ve dil kontrolü
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-        continue  
+        st.error(f"warning_control_ct")
+        continue 
         
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
