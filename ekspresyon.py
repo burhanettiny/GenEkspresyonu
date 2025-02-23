@@ -188,8 +188,10 @@ for i in range(num_target_genes):
         sample_counter += 1
     
     # Hasta Grubu Verileri
-    for j in range(num_patient_groups):
-        st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
+for i in range(num_patient_groups):
+    salha = translations[language_code]["hst"]
+    hfg = translations[language_code]["hfg"]
+    st.subheader(f"{hst} {i+1} - {hfg} {i+1}")
         
         sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
         sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
