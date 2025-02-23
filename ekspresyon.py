@@ -155,7 +155,8 @@ for i in range(num_target_genes):
     # Uzunluk kontrolü ve dil kontrolü
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
         warning_control_ct = translations[language_code]["warning_control_ct"]
-        st.error(f"{warning_control_ct})
+        warning_control_ct = f"{warning_control_ct}"
+        st.error(warning_control_ct)
         continue 
         
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
