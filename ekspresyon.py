@@ -188,7 +188,7 @@ for i in range(num_target_genes):
         sample_counter += 1
     
     # Hasta Grubu Verileri
-    for i in range(num_patient_groups):
+    for j in range(num_patient_groups):
         hast = translations[language_code]["hast"]
         hfg = translations[language_code]["hfg"]
         st.subheader(f"{hast} {j+1} - {hfg} {i+1}")
