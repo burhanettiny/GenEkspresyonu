@@ -196,11 +196,13 @@ for i in range(num_target_genes):
     for j in range(num_patient_groups):
         hast = translations[language_code]["hast"]
         hfg = translations[language_code]["hfg"]
+        rfg = translations[language_code]["rfg"]
+        ctd = translations[language_code]["ctd"]
         st.subheader(f"{hast} {j+1} - {hfg} {i+1}")
         
-        sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
-        sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
-        
+        sample_target_ct = st.text_area(f"{hast} {j+1} - {hfg} {i+1} - {ctd}", key=f"sample_target_ct_{i}_{j}")
+        sample_reference_ct = st.text_area(f"{hast} {i+1} - {rfg} {i+1} - {ctd}", key=f"sample_reference_ct_{i}_{j}")
+
         sample_target_ct_values = parse_input_data(sample_target_ct)
         sample_reference_ct_values = parse_input_data(sample_reference_ct)
         
