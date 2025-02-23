@@ -143,6 +143,7 @@ last_gene_index = None
 
 for i in range(num_target_genes):
     salha = translations[language_code]["salha"]
+    hfg = translations[language_code]["hfg"]
     st.subheader(f"{salha} {i+1} - {hfg} {i+1}")
  
     # Kontrol Grubu Verileri
