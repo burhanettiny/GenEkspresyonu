@@ -147,8 +147,8 @@ for i in range(num_target_genes):
     st.subheader(f"{salha} {i+1} - {hfg} {i+1}")
  
     # Kontrol Grubu Verileri
-    control_target_ct = st.text_area(f"{salha} {i+1} - {hfg} {i+1}" Ct Değerleri", key=f"control_target_ct_{i}_{j}")
-
+    control_target_ct = st.text_area(f"{salha} {i+1} - {hfg} {i+1} Ct Değerleri", key=f"control_target_ct_{i}_{j}")
+      
     control_reference_ct_text = translations[language_code]["ctrl_ref_ct"].format(i=i+1)
     control_reference_ct = st.text_area(control_reference_ct_text, key=f"control_reference_ct_{i}")
    
