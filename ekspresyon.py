@@ -56,6 +56,7 @@ translations = {
         "warning_patient_ct": "⚠️ Dikkat: Hasta grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "statistical_results": "📈 İstatistik Sonuçları",
         "hfg": "Hedef Gen",
+        "rfg": "Referans Gen",   
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -86,6 +87,7 @@ translations = {
         "warning_patient_ct": "⚠️ Warning: Enter patient group Ct values line by line or copy-paste from Excel without empty cells.",
         "statistical_results": "📈 Statistical Results",
         "hfg": "Target Gene",
+        "rfg": "Reference Gen",
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -116,6 +118,7 @@ translations = {
         "warning_patient_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Patientendaten gruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
         "statistical_results": "📈 Statistische Ergebnisse",
         "hfg": "Zielgen",
+        "rfg": "Referenzgen",
     }
 }
 
@@ -148,9 +151,7 @@ for i in range(num_target_genes):
  
     # Kontrol Grubu Verileri
     control_target_ct = st.text_area(f"{salha} {i+1} - {hfg} {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
-      
-    control_reference_ct_text = translations[language_code]["ctrl_ref_ct"].format(i=i+1)
-    control_reference_ct = st.text_area(control_reference_ct_text, key=f"control_reference_ct_{i}")
+    control_reference_ct = st.text_area(f"{salha} {i+1} - {rfg} {i+1} Ct Değerleri" key=f"control_reference_ct_{i}")
    
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
