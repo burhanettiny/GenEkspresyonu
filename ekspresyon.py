@@ -147,12 +147,11 @@ last_gene_index = None
 for i in range(num_target_genes):
     salha = translations[language_code]["salha"]
     hfg = translations[language_code]["hfg"]
-    rfg = translations[language_code]["rfg"]
     st.subheader(f"{salha} {i+1} - {hfg} {i+1}")
  
     # Kontrol Grubu Verileri
     control_target_ct = st.text_area(f"{salha} {i+1} - {hfg} {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
-    control_reference_ct = st.text_area(f"{salha} {i+1} - {rfg} {i+1} Ct Değerleri" key=f"control_reference_ct_{i}")
+    control_reference_ct = st.text_area(f"{salha} {i+1} - {rfg} {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
    
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
