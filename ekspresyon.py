@@ -199,23 +199,6 @@ def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
 
-    # Verileri parçalayalım
-    try:
-        control_target_ct_values = input_data.get("control_target", [])
-        control_reference_ct_values = input_data.get("control_reference", [])
-        sample_target_ct_values = input_data.get("sample_target", [])
-        sample_reference_ct_values = input_data.get("sample_reference", [])
-
-        st.write("control_target_ct_values:", control_target_ct_values)
-        st.write("control_reference_ct_values:", control_reference_ct_values)
-        st.write("sample_target_ct_values:", sample_target_ct_values)
-        st.write("sample_reference_ct_values:", sample_reference_ct_values)
-
-        return control_target_ct_values, control_reference_ct_values, sample_target_ct_values, sample_reference_ct_values
-    except Exception as e:
-        st.write("Hata oluştu:", str(e))
-        return [], [], [], []
-
 # Veri listeleri
 input_values_table = []
 data = []
@@ -575,3 +558,18 @@ if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
         st.download_button(label=f"{translations[language_code]['pdf_report']} {language}", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
+
+# HFG'ye göre veri çekme
+control_target_ct_values = [
+    d[translations[language_code]["gene_ct_value"]] for d in input_values_table
+    if d[translations[language_code]["group"]] == salha and d[translations[language_code]["hfg"]] == f"HFG {i+1}"
+]
+
+control_reference_ct_values = [
+    d[translations[language_code]["reference_ct"]] for d in input_values_table
+    if d[translations[language_code]["group"]] == salha and d[translations[language_code]["hfg"]] == f"HFG {i+1}"
+]
+
+# Çekilen verileri kontrol etme
+print("Control Target CT Values:", control_target_ct_values)
+print("Control Reference CT Values:", control_reference_ct_values)
