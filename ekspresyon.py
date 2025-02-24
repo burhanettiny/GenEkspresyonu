@@ -257,7 +257,10 @@ for i in range(num_target_genes):
         rfg = translations[language_code]["rfg"]
         ctd = translations[language_code]["ctd"]
         st.subheader(f"{hast} {j+1} - {hfg} {i+1}")
-        
+
+print(translations[language_code]["salha"])
+print(translations[language_code]["hfg"])
+
         sample_target_ct = st.text_area(f"{hast} {j+1} - {hfg} {i+1} - {ctd}", key=f"sample_target_ct_{i}_{j}")
         sample_reference_ct = st.text_area(f"{hast} {i+1} - {rfg} {i+1} - {ctd}", key=f"sample_reference_ct_{i}_{j}")
 
@@ -555,5 +558,3 @@ if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
         st.download_button(label=f"{translations[language_code]['pdf_report']} {language}", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
-print(translations[language_code]["salha"])
-print(translations[language_code]["hfg"])
