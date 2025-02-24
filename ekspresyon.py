@@ -371,7 +371,6 @@ if stats_data:
     st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
-# Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
     st.subheader(f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['graph_title']}")
     
@@ -560,3 +559,5 @@ if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
 
 st.markdown(f"### {translations[language_code]['subtitle']}")
+st.write(f"Target Gene {i+1} için kontrol grup Ct değerleri:", control_target_ct_values)
+st.write(f"Target Gene {i+1} için referans Ct değerleri:", control_reference_ct_values)
