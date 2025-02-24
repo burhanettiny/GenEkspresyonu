@@ -465,12 +465,11 @@ fig.update_layout(
     showlegend=True
 )
 
-# Burada grafik çizimi için en az bir geçerli veri seti gereklidir
+# Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir
 if len(control_delta_ct) > 0 or any(sample_delta_ct_values):  # Örnek koşul
     st.plotly_chart(fig)
 else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
-
 # PDF rapor oluşturma kısmı
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
