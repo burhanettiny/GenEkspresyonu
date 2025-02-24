@@ -557,5 +557,5 @@ if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
 
 if not gen_1_data:
+    st.write("Veri eksik, hata kontrolü tetiklendi.")
     st.error("Hedef Gen 1 verisi eksik! Lütfen tüm gerekli alanları doldurun.")
-
