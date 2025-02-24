@@ -383,10 +383,9 @@ control_reference_ct_values = [
     if d[translations[language_code]["salha"]] == translations[language_code]["salha"] and 
     d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
 ]
-
-if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-    st.error(f"⚠️ {translations[language_code]['error_missing_data']} {translations[language_code]['hfg']} {i+1}!")
-    continue
+    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
+        st.error(f"⚠️ {translations[language_code]['error_missing_data']} {translations[language_code]['hfg']} {i+1}!")
+        continue
 
 control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
 average_control_delta_ct = np.mean(control_delta_ct)
