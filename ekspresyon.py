@@ -394,78 +394,78 @@ average_control_delta_ct = np.mean(control_delta_ct)
 # Hasta Grubu Verileri
 fig = go.Figure()
 
-    # Kontrol Grubu Ortalama Çizgisi
+# Kontrol Grubu Ortalama Çizgisi
+fig.add_trace(go.Scatter(
+    x=[0.8, 1.2],  
+    y=[average_control_delta_ct, average_control_delta_ct],  
+    mode='lines',
+    line=dict(color='black', width=4),
+    name=translations[language_code]['control_avg']
+))
+
+# Hasta Gruplarının Ortalama Çizgileri
+for j in range(num_patient_groups):
+    sample_delta_ct_values = [
+        d[translations[language_code]["delta_cth"]] for d in input_values_table 
+        if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+    ]
+
+    if not sample_delta_ct_values:
+        continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
+
+    average_sample_delta_ct = np.mean(sample_delta_ct_values)
     fig.add_trace(go.Scatter(
-        x=[0.8, 1.2],  
-        y=[average_control_delta_ct, average_control_delta_ct],  
+        x=[(j + 1.8), (j + 2.2)],  
+        y=[average_sample_delta_ct, average_sample_delta_ct],  
         mode='lines',
         line=dict(color='black', width=4),
-        name=translations[language_code]['control_avg']
+        name=f"{translations[language_code]['hast']} {j+1} {translations[language_code]['avg']}"
     ))
- 
-    # Hasta Gruplarının Ortalama Çizgileri
-    for j in range(num_patient_groups):
-        sample_delta_ct_values = [
-            d[translations[language_code]["delta_cth"]] for d in input_values_table 
-            if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}":
-        ]
+
+# Veri Noktaları (Kontrol Grubu)
+fig.add_trace(go.Scatter(
+    x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
+    y=control_delta_ct,
+    mode='markers',  
+    name=translations[language_code]['salha'],
+    marker=dict(color='blue'),
+    text=[f"{translations[language_code]['salha']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(control_delta_ct)],
+    hoverinfo='text'
+))
+
+# Veri Noktaları (Hasta Grupları)
+for j in range(num_patient_groups):
+    sample_delta_ct_values = [
+        d[translations[language_code]["delta_cth"]] for d in input_values_table 
+        if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+    ]
+
+    if not sample_delta_ct_values:
+        continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
     
-        if not sample_delta_ct_values:
-            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
-
-        average_sample_delta_ct = np.mean(sample_delta_ct_values)
-        fig.add_trace(go.Scatter(
-            x=[(j + 1.8), (j + 2.2)],  
-            y=[average_sample_delta_ct, average_sample_delta_ct],  
-            mode='lines',
-            line=dict(color='black', width=4),
-            name=f'{translations[language_code]['hast']} {j+1} {translations[language_code]['avg']}'
-        ))
-
-    # Veri Noktaları (Kontrol Grubu)
     fig.add_trace(go.Scatter(
-        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
-        y=control_delta_ct,
+        x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
+        y=sample_delta_ct_values,
         mode='markers',  
-        name=translations[language_code]['salha'],
-        marker=dict(color='blue'),
-        text=[f'{translations[language_code]['salha']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}' for idx, value in enumerate(control_delta_ct)],
+        name=f"{translations[language_code]['hast']} {j+1}",
+        marker=dict(color='red'),
+        text=[f"{translations[language_code]['hast']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
         hoverinfo='text'
     ))
 
-    # Veri Noktaları (Hasta Grupları)
-    for j in range(num_patient_groups):
-        sample_delta_ct_values = [
-            d[translations[language_code]["delta_cth"]] for d in input_values_table 
-            if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}":
-        ]
-    
-        if not sample_delta_ct_values:
-            continue # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
-        
-        fig.add_trace(go.Scatter(
-            x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
-            y=sample_delta_ct_values,
-            mode='markers',  
-            name=f'{translations[language_code]['hast']} {j+1}',
-            marker=dict(color='red'),
-            text=[f'{translations[language_code]['hast']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}' for idx, value in enumerate(sample_delta_ct_values)],
-            hoverinfo='text'
-        ))
+# Grafik ayarları
+fig.update_layout(
+    title=f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['delta_ct_distribution']}",
+    xaxis=dict(
+        tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
+        ticktext=[translations[language_code]['salha']] + [f"{translations[language_code]['hast']} {i+1}" for i in range(num_patient_groups)],
+        title=translations[language_code]['salha']
+    ),
+    yaxis=dict(title=translations[language_code]['delta_ct']),
+    showlegend=True
+)
 
-    # Grafik ayarları
-    fig.update_layout(
-        title=f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['delta_ct_distribution']}",
-        xaxis=dict(
-            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-            ticktext=[translations[language_code]['salha']] + [f'{translations[language_code]['hast']} {i+1}' for i in range(num_patient_groups)],
-            title=translations[language_code]['salha']
-        ),
-        yaxis=dict(title=translations[language_code]['delta_ct']),
-        showlegend=True
-    )
-
-    st.plotly_chart(fig)
+st.plotly_chart(fig)
 
 else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
