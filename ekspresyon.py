@@ -455,8 +455,13 @@ for j in range(num_patient_groups):
         text=[f"{translations[language_code]['hast']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
         hoverinfo='text'
     ))
-st.write("Kontrol Delta Ct:", control_delta_ct)
-st.write("Hasta Delta Ct:", sample_delta_ct_values)
+control_target_ct_values, control_reference_ct_values, sample_target_ct_values, sample_reference_ct_values = parse_input_data(input_data)
+
+st.write("Control Target Ct Values:", control_target_ct_values)
+st.write("Control Reference Ct Values:", control_reference_ct_values)
+st.write("Sample Target Ct Values:", sample_target_ct_values)
+st.write("Sample Reference Ct Values:", sample_reference_ct_values)
+
 # Grafik ayarları
 fig.update_layout(
     title=f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['delta_ct_distribution']}",
