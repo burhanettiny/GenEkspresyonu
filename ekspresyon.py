@@ -198,18 +198,7 @@ num_patient_groups = st.number_input(translations[language_code]["num_patient_gr
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
-def parse_input_data(input_data):
-    if isinstance(input_data, str):
-        st.write("Gelen veri (input_data):", input_data)  # Debug için
-        values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
-        return np.array([float(x) for x in values if x])
-    else:
-        st.write("Hata: input_data bir string değil!")
-    
-    # Eğer input_data sözlükse, içinde hangi anahtarlar olduğunu görelim
-    if isinstance(input_data, dict):
-        st.write("Input Data Anahtarları:", list(input_data.keys()))
-    
+
     # Verileri parçalayalım
     try:
         control_target_ct_values = input_data.get("control_target", [])
