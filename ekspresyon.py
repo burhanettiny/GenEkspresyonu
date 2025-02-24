@@ -34,7 +34,6 @@ translations = {
         "num_target_genes": "🔹 Hedef Gen Sayısını Girin",
         "num_patient_groups": "🔹 Hasta Grubu Sayısını Girin",
         "sample_number": "Örnek Numarası",
-        "group": "Grup",
         "gene_ct_value": "Hedef Gen Ct Değeri",
         "reference_ct": "Referans Ct",
         "delta_ct": "ΔCt (Kontrol)",
@@ -86,7 +85,6 @@ translations = {
         "num_target_genes": "🔹 Enter the Number of Target Genes",
         "num_patient_groups": "🔹 Enter the Number of Patient Groups",
         "sample_number": "Sample Number",
-        "group": "Group",
         "gene_ct_value": "Target Gene Ct Value",
         "reference_ct": "Reference Ct",
         "delta_ct": "ΔCt (Control)",
@@ -139,7 +137,6 @@ translations = {
         "num_target_genes": "🔹 Geben Sie die Anzahl der Zielgene ein",
         "num_patient_groups": "🔹 Geben Sie die Anzahl der Patientengruppen ein",
         "sample_number": "Beispielnummer",
-        "group": "Gruppe",
         "gene_ct_value": "Zielgen Ct-Wert",
         "reference_ct": "Referenz Ct",
         "delta_ct": "ΔCt (Kontrolle)",
@@ -246,7 +243,7 @@ for i in range(num_target_genes):
         input_values_table.append({
             translations[language_code]["sample_number"]: sample_counter,
             translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {i+1}",
-            translations[language_code]["group"]:f"{translations[language_code]['salha']} {i+1}",  # "Kontrol"
+            translations[language_code]['salha']} {i+1}",  # "Kontrol"
             translations[language_code]["gene_ct_value"]: control_target_ct_values[idx],
             translations[language_code]["reference_ct"]: control_reference_ct_values[idx], 
             translations[language_code]["delta_ct"]: control_delta_ct[idx]
@@ -287,7 +284,7 @@ for i in range(num_target_genes):
             input_values_table.append({
                 translations[language_code]["sample_number"]: sample_counter,
                 translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {j+1}",
-                translations[language_code]["group"]:f"{translations[language_code]['hast']} {j+1}",  # "Hasta"
+                translations[language_code]['hast']} {j+1}",  # "Hasta"
                 translations[language_code]["gene_ct_value"]: sample_target_ct_values[idx],
                 translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
                 translations[language_code]["delta_cth"]: sample_delta_ct[idx]
@@ -377,12 +374,12 @@ for i in range(num_target_genes):
     # Kontrol Grubu Verileri
     control_target_ct_values = [
         d[translations[language_code]["gene_ct_value"]] for d in input_values_table
-        if d[translations[language_code]["group"]] == translations[language_code]["salha"] and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+        if d[translations[language_code]["salha"] and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
     ]
 
     control_reference_ct_values = [
         d[translations[language_code]["reference_ct"]] for d in input_values_table
-        if d[translations[language_code]["group"]] == translations[language_code]["salha"] and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+        if d[translations[language_code]["salha"] and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
     ]
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
@@ -408,7 +405,7 @@ for i in range(num_target_genes):
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
             d[translations[language_code]["delta_cth"]] for d in input_values_table 
-            if d[translations[language_code]["group"]] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+            if d[translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
         ]
     
         if not sample_delta_ct_values:
@@ -438,7 +435,7 @@ for i in range(num_target_genes):
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
             d[translations[language_code]["delta_cth"]] for d in input_values_table 
-            if d[translations[language_code]["group"]] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+            if d[translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
         ]
     
         if not sample_delta_ct_values:
@@ -460,7 +457,7 @@ for i in range(num_target_genes):
         xaxis=dict(
             tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
             ticktext=[translations[language_code]['salha']] + [f'{translations[language_code]['hast']} {i+1}' for i in range(num_patient_groups)],
-            title=translations[language_code]['group']
+            title=translations[language_code]['salha']
         ),
         yaxis=dict(title=translations[language_code]['delta_ct']),
         showlegend=True
@@ -557,7 +554,3 @@ if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
         st.download_button(label=f"{translations[language_code]['pdf_report']} {language}", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
-
-st.write("Salha Value:", translations[language_code]["salha"])
-st.write("HFG Value for Target Gene:", f"{translations[language_code]['hfg']} {i+1}")
-
