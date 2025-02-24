@@ -372,18 +372,19 @@ if stats_data:
     st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
+# Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
     st.subheader(f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['graph_title']}")
     
-# Kontrol Grubu Verileri
+    # Kontrol Grubu Verileri
     control_target_ct_values = [
         d[translations[language_code]["gene_ct_value"]] for d in input_values_table
-        if d[translations[language_code]["group"]] == translations[language_code]["salha"]] and d[translations[language_code]["hfg"]]"
+        if d[translations[language_code]["group"]] == translations[language_code]["salha"] and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
     ]
 
     control_reference_ct_values = [
         d[translations[language_code]["reference_ct"]] for d in input_values_table
-        if d[translations[language_code]["group"]] == translations[language_code]["salha"] and d[translations[language_code]["hfg"]]"
+        if d[translations[language_code]["group"]] == translations[language_code]["salha"] and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
     ]
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
