@@ -59,6 +59,21 @@ translations = {
         "hfg": "Hedef Gen",
         "rfg": "Referans Gen",
         "ctd": "Ct Değerleri",
+        "no_change": "Değişim Yok",
+        "upregulated": "Yükselmiş",
+        "downregulated": "Azalmış",
+        "significant": "Anlamlı",
+        "not_significant": "Anlamsız",
+        "parametric": "Parametrik",
+        "nonparametric": "Nonparametrik",
+        "mann_whitney": "Mann-Whitney U testi",
+        "test_type": "Test Türü",
+        "used_test": "Kullanılan Test",
+        "test_pvalue": "Test P-değeri",
+        "significance": "Anlamlılık",
+        "gene_expression_change": "Gen Ekspresyon Değişimi (2^(-ΔΔCt))",
+        "regulation_status": "Regülasyon Durumu",
+          
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -92,6 +107,20 @@ translations = {
         "hfg": "Target Gene",
         "rfg": "Reference Gen",
         "ctd": "Ct values",
+        "no_change": "No Change",
+        "upregulated": "Upregulated",
+        "downregulated": "Downregulated",
+        "significant": "Significant",
+        "not_significant": "Not Significant",
+        "parametric": "Parametric",
+        "nonparametric": "Nonparametric",
+        "mann_whitney": "Mann-Whitney U test",
+        "test_type": "Test Type",
+        "used_test": "Used Test",
+        "test_pvalue": "Test P-value",
+        "significance": "Significance",
+        "gene_expression_change": "Gene Expression Change (2^(-ΔΔCt))",
+        "regulation_status": "Regulation Status",
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -125,6 +154,20 @@ translations = {
         "hfg": "Zielgen",
         "rfg": "Referenzgen",
         "ctd": "Ct Werte",
+        "no_change": "Keine Änderung",
+        "upregulated": "Hochreguliert",
+        "downregulated": "Herunterreguliert",
+        "significant": "Signifikant",
+        "not_significant": "Nicht signifikant",
+        "parametric": "Parametrisch",
+        "nonparametric": "Nichtparametrisch",
+        "mann_whitney": "Mann-Whitney U test",
+        "test_type": "Testart",
+        "used_test": "Verwendeter Test",
+        "test_pvalue": "Test P-Wert",
+        "significance": "Signifikanz",
+        "gene_expression_change": "Genexpressionsänderung (2^(-ΔΔCt))",
+        "regulation_status": "Regulationsstatus",
     }
 }
 
@@ -241,8 +284,12 @@ for i in range(num_target_genes):
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
         expression_change = 2 ** (-delta_delta_ct)
         
-        regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
-        
+        regulation_status = (
+            translations[language_code]["no_change"] if expression_change == 1 else (
+                translations[language_code]["upregulated"] if expression_change > 1 else translations[language_code]["downregulated"]
+            )
+        )
+
         # İstatistiksel Testler
         shapiro_control = stats.shapiro(control_delta_ct)
         shapiro_sample = stats.shapiro(sample_delta_ct)
@@ -252,37 +299,34 @@ for i in range(num_target_genes):
         sample_normal = shapiro_sample.pvalue > 0.05
         equal_variance = levene_test.pvalue > 0.05
         
-        test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
+        test_type = translations[language_code]["parametric"] if control_normal and sample_normal and equal_variance else translations[language_code]["nonparametric"]
         
-        if test_type == "Parametrik":
+        if test_type == translations[language_code]["parametric"]:
             test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
             test_method = "t-test"
         else:
             test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
-            test_method = "Mann-Whitney U testi"
+            test_method = translations[language_code]["mann_whitney"]
         
-        significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
+        significance = translations[language_code]["significant"] if test_pvalue < 0.05 else translations[language_code]["not_significant"]
         
         stats_data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta Grubu": f"Hasta Grubu {j+1}",
-            "Test Türü": test_type,
-            "Kullanılan Test": test_method,  
-            "Test P-değeri": test_pvalue,
-            "Anlamlılık": significance
+            translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {i+1}",
+            translations[language_code]["hast"]: f"{translations[language_code]['hast']} {j+1}",
+            translations[language_code]["test_type"]: test_type,
+            translations[language_code]["used_test"]: test_method,  
+            translations[language_code]["test_pvalue"]: test_pvalue,
+            translations[language_code]["significance"]: significance
         })
         
         data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta Grubu": f"Hasta Grubu {j+1}",
+            translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {i+1}",
+            translations[language_code]["hast"]: f"{translations[language_code]['hast']} {j+1}",
             "ΔΔCt": delta_delta_ct,
-            "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
-            "Regülasyon Durumu": regulation_status,
-          
-
-
-  "ΔCt (Kontrol)": average_control_delta_ct,
-            "ΔCt (Hasta)": average_sample_delta_ct
+            translations[language_code]["gene_expression_change"]: expression_change,
+            translations[language_code]["regulation_status"]: regulation_status,
+            translations[language_code]["delta_ct"]: average_control_delta_ct,
+            translations[language_code]["delta_cth"]: average_sample_delta_ct
         })
 
 # Giriş Verileri Tablosunu Göster
