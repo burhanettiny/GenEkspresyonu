@@ -373,16 +373,16 @@ for i in range(num_target_genes):
     st.subheader(f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['graph_title']}")
     
     # Kontrol Grubu Verileri
-    control_target_ct_values = [
-        d["Hedef Gen Ct Değeri"] for d in input_values_table
-        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
-    ]
-    
-    control_reference_ct_values = [
-        d[translations[language_code]["reference_ct"]] for d in input_values_table
-        if d[translations[language_code]['salha']] == translations[language_code]["salha"] and 
-           d[translations[language_code]["rfg"]] == f"{translations[language_code]['rfg']} {i+1}"
-    ]
+control_target_ct_values = [
+    d["Hedef Gen Ct Değeri"] for d in input_values_table
+    if d["Grup"] == translations[language_code]["salha"] and d["Hedef Gen"] == f"Hedef Gen {i + 1}"
+]
+
+control_reference_ct_values = [
+    d[translations[language_code]["reference_ct"]] for d in input_values_table
+    if d[translations[language_code]["salha"]] == translations[language_code]["salha"] and
+       d[translations[language_code]["rfg"]] == f"{translations[language_code]['rfg']} {i + 1}"
+]
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
         st.error(f"⚠️ {translations[language_code]['error_missing_data']} {translations[language_code]['hfg']} {i+1}!")
