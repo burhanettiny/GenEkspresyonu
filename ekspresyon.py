@@ -230,8 +230,8 @@ for i in range(num_target_genes):
                 translations[language_code]["sample_number"]: sample_counter,
                 translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {j+1}",
                 translations[language_code]["group"]:f"{translations[language_code]['hast']} {j+1}",  # "Hasta"
-                translations[language_code]["gene_ct_value"]: control_target_ct_values[idx],
-                translations[language_code]["reference_ct"]: control_reference_ct_values[idx],
+                translations[language_code]["gene_ct_value"]: sample_target_ct_values[idx],
+                translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
                 translations[language_code]["delta_cth"]: sample_delta_ct[idx]
 
             })
