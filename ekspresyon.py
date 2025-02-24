@@ -253,10 +253,6 @@ for i in range(num_target_genes):
         })
         sample_counter += 1
 
-if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-    st.error(f"⚠️ Missing data! Please fill in all required fields. {translations[language_code]['hfg']} {i+1}!")
-    continue
-  
     # Hasta Grubu Verileri
     for j in range(num_patient_groups):
         hast = translations[language_code]["hast"]
