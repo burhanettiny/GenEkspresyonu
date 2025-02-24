@@ -198,6 +198,33 @@ num_patient_groups = st.number_input(translations[language_code]["num_patient_gr
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
+def parse_input_data(input_data):
+    st.write("parse_input_data çağrıldı!")
+    
+    if not input_data:
+        st.write("Hata: input_data boş!")
+        return [], [], [], []
+    
+    # Eğer input_data sözlükse, içinde hangi anahtarlar olduğunu görelim
+    if isinstance(input_data, dict):
+        st.write("Input Data Anahtarları:", list(input_data.keys()))
+    
+    # Verileri parçalayalım
+    try:
+        control_target_ct_values = input_data.get("control_target", [])
+        control_reference_ct_values = input_data.get("control_reference", [])
+        sample_target_ct_values = input_data.get("sample_target", [])
+        sample_reference_ct_values = input_data.get("sample_reference", [])
+
+        st.write("control_target_ct_values:", control_target_ct_values)
+        st.write("control_reference_ct_values:", control_reference_ct_values)
+        st.write("sample_target_ct_values:", sample_target_ct_values)
+        st.write("sample_reference_ct_values:", sample_reference_ct_values)
+
+        return control_target_ct_values, control_reference_ct_values, sample_target_ct_values, sample_reference_ct_values
+    except Exception as e:
+        st.write("Hata oluştu:", str(e))
+        return [], [], [], []
 
 # Veri listeleri
 input_values_table = []
@@ -455,12 +482,6 @@ for j in range(num_patient_groups):
         text=[f"{translations[language_code]['hast']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
         hoverinfo='text'
     ))
-control_target_ct_values, control_reference_ct_values, sample_target_ct_values, sample_reference_ct_values = parse_input_data(input_data)
-
-st.write("Control Target Ct Values:", control_target_ct_values)
-st.write("Control Reference Ct Values:", control_reference_ct_values)
-st.write("Sample Target Ct Values:", sample_target_ct_values)
-st.write("Sample Reference Ct Values:", sample_reference_ct_values)
 
 # Grafik ayarları
 fig.update_layout(
