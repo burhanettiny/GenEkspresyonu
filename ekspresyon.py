@@ -91,11 +91,9 @@ translations = {
         "delta_ct": "ΔCt (Control)",
         "delta_cth": "ΔCt (Patient)",
         "warning_empty_input": "⚠️ Warning: Write data one below the other or copy-paste without empty cells from Excel.",
-        "statistical_results": "📈 Statistical Results",
         "download_csv": "📥 Download CSV",
         "generate_pdf": "📥 Prepare PDF Report",
         "pdf_report": "Gene Expression Analysis Report",
-        "statistics": "Statistical Results",
         "nil_mine": "📊 Results",
         "gr_tbl": "📋 Input Data Table",
         "salha": "🧬 Control Group",
@@ -148,7 +146,6 @@ translations = {
         "download_csv": "📥 CSV herunterladen",
         "generate_pdf": "📥 PDF-Bericht erstellen",
         "pdf_report": "Genexpression-Analysebericht",
-        "statistics": "Statistische Ergebnisse",
         "nil_mine": "📊 Ergebnisse",
         "gr_tbl": "📋 Eingabedaten Tabelle",
         "salha": "🧬 Kontrollgruppe",
@@ -409,7 +406,7 @@ fig.add_trace(go.Scatter(
 for j in range(num_patient_groups):
     sample_delta_ct_values = [
         d[translations[language_code]["delta_cth"]] for d in input_values_table 
-        if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+        if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {j+1}"
     ]
 
     if not sample_delta_ct_values:
@@ -558,18 +555,3 @@ if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
         st.download_button(label=f"{translations[language_code]['pdf_report']} {language}", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
-
-# HFG'ye göre veri çekme
-control_target_ct_values = [
-    d[translations[language_code]["gene_ct_value"]] for d in input_values_table
-    if d[translations[language_code]["group"]] == salha and d[translations[language_code]["hfg"]] == f"HFG {i+1}"
-]
-
-control_reference_ct_values = [
-    d[translations[language_code]["reference_ct"]] for d in input_values_table
-    if d[translations[language_code]["group"]] == salha and d[translations[language_code]["hfg"]] == f"HFG {i+1}"
-]
-
-# Çekilen verileri kontrol etme
-print("Control Target CT Values:", control_target_ct_values)
-print("Control Reference CT Values:", control_reference_ct_values)
