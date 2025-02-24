@@ -258,9 +258,6 @@ for i in range(num_target_genes):
         ctd = translations[language_code]["ctd"]
         st.subheader(f"{hast} {j+1} - {hfg} {i+1}")
 
-print(translations[language_code]["salha"])
-print(translations[language_code]["hfg"])
-
         sample_target_ct = st.text_area(f"{hast} {j+1} - {hfg} {i+1} - {ctd}", key=f"sample_target_ct_{i}_{j}")
         sample_reference_ct = st.text_area(f"{hast} {i+1} - {rfg} {i+1} - {ctd}", key=f"sample_reference_ct_{i}_{j}")
 
@@ -344,6 +341,9 @@ print(translations[language_code]["hfg"])
             translations[language_code]["delta_ct"]: average_control_delta_ct,
             translations[language_code]["delta_cth"]: average_sample_delta_ct
         })
+
+print(translations[language_code]["salha"])
+print(translations[language_code]["hfg"])
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table: 
