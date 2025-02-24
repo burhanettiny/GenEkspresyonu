@@ -342,8 +342,7 @@ for i in range(num_target_genes):
             translations[language_code]["delta_cth"]: average_sample_delta_ct
         })
 
-print(translations[language_code]["salha"])
-print(translations[language_code]["hfg"])
+print(translations)
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table: 
