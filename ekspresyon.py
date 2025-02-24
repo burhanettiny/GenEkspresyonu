@@ -465,8 +465,9 @@ fig.update_layout(
     showlegend=True
 )
 
-st.plotly_chart(fig)
-
+# Burada grafik çizimi için en az bir geçerli veri seti gereklidir
+if len(control_delta_ct) > 0 or any(sample_delta_ct_values):  # Örnek koşul
+    st.plotly_chart(fig)
 else:
     st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
 
