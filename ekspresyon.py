@@ -199,11 +199,12 @@ def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
 def parse_input_data(input_data):
-    st.write("parse_input_data çağrıldı!")
-    
-    if not input_data:
-        st.write("Hata: input_data boş!")
-        return [], [], [], []
+    if isinstance(input_data, str):
+        st.write("Gelen veri (input_data):", input_data)  # Debug için
+        values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
+        return np.array([float(x) for x in values if x])
+    else:
+        st.write("Hata: input_data bir string değil!")
     
     # Eğer input_data sözlükse, içinde hangi anahtarlar olduğunu görelim
     if isinstance(input_data, dict):
