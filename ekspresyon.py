@@ -455,7 +455,8 @@ for j in range(num_patient_groups):
         text=[f"{translations[language_code]['hast']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
         hoverinfo='text'
     ))
-
+st.write("Kontrol Delta Ct:", control_delta_ct)
+st.write("Hasta Delta Ct:", sample_delta_ct_values)
 # Grafik ayarları
 fig.update_layout(
     title=f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['delta_ct_distribution']}",
