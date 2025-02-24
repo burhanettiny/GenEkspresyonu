@@ -558,5 +558,6 @@ if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
 
-st.markdown(f"### {translations[language_code]['subtitle']}")
-st.write("Input Values Table:", input_values_table)
+st.write("Salha Value:", translations[language_code]["salha"])
+st.write("HFG Value for Target Gene:", f"{translations[language_code]['hfg']} {i+1}")
+
