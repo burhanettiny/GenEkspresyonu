@@ -378,12 +378,12 @@ for i in range(num_target_genes):
 # Kontrol Grubu Verileri
     control_target_ct_values = [
         d[translations[language_code]["gene_ct_value"]] for d in input_values_table
-        if d[translations[language_code]["group"]] == translations[language_code]["salha"] and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+        if d[translations[language_code]["group"]] == translations[language_code]["salha"]] == f"{translations[language_code]['salha']} {i+1} and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
     ]
 
     control_reference_ct_values = [
         d[translations[language_code]["reference_ct"]] for d in input_values_table
-        if d[translations[language_code]["group"]] == translations[language_code]["salha"] and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+        if d[translations[language_code]["group"]] == translations[language_code]["salha"] ] == f"{translations[language_code]['salha']} {i+1}and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
     ]
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
