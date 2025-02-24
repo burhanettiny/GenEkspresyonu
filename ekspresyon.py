@@ -182,7 +182,7 @@ translations = {
         "group": "Grouppeee.",
     }
 }
-print(translations)
+
 # Translate text using the selected language
 st.title(translations[language_code]["title"])
 
