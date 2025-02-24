@@ -38,6 +38,7 @@ translations = {
         "gene_ct_value": "Hedef Gen Ct Değeri",
         "reference_ct": "Referans Ct",
         "delta_ct": "ΔCt (Kontrol)",
+        "delta_cth": "ΔCt (Hasta)",
         "warning_empty_input": "⚠️ Dikkat: Verileri alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
         "statistical_results": "📈 İstatistik Sonuçları",
         "download_csv": "📥 CSV İndir",
@@ -70,6 +71,7 @@ translations = {
         "gene_ct_value": "Target Gene Ct Value",
         "reference_ct": "Reference Ct",
         "delta_ct": "ΔCt (Control)",
+        "delta_cth": "ΔCt (Patient)",
         "warning_empty_input": "⚠️ Warning: Write data one below the other or copy-paste without empty cells from Excel.",
         "statistical_results": "📈 Statistical Results",
         "download_csv": "📥 Download CSV",
@@ -102,6 +104,7 @@ translations = {
         "gene_ct_value": "Zielgen Ct-Wert",
         "reference_ct": "Referenz Ct",
         "delta_ct": "ΔCt (Kontrolle)",
+        "delta_cth": "ΔCt (Patientendaten)",
         "warning_empty_input": "⚠️ Warnung: Geben Sie die Daten untereinander ein oder kopieren Sie sie ohne leere Zellen aus Excel.",
         "statistical_results": "📈 Statistische Ergebnisse",
         "download_csv": "📥 CSV herunterladen",
@@ -185,7 +188,7 @@ for i in range(num_target_genes):
         input_values_table.append({
             translations[language_code]["sample_number"]: sample_counter,
             translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {i+1}",
-            translations[language_code]["group"]: translations[language_code]["salha"],  # "Kontrol"
+            translations[language_code]["group"]:f"{translations[language_code]['salha']} {i+1}",  # "Kontrol"
             translations[language_code]["gene_ct_value"]: control_target_ct_values[idx],
             translations[language_code]["reference_ct"]: control_reference_ct_values[idx], 
             translations[language_code]["delta_ct"]: control_delta_ct[idx]
@@ -224,12 +227,13 @@ for i in range(num_target_genes):
         sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
         for idx in range(min_sample_len):
             input_values_table.append({
-                "Örnek Numarası": sample_counter,
-                "Hedef Gen": f"Hedef Gen {i+1}",
-                "Grup": f"Hasta Grubu {j+1}",
-                "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
-                "Referans Ct": sample_reference_ct_values[idx],
-                "ΔCt (Hasta)": sample_delta_ct[idx]
+                translations[language_code]["sample_number"]: sample_counter,
+                translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {j+1}",
+                translations[language_code]["group"]:f"{translations[language_code]['hast']} {j+1}",  # "Hasta"
+                translations[language_code]["gene_ct_value"]: control_target_ct_values[idx],
+                translations[language_code]["reference_ct"]: control_reference_ct_values[idx],
+                translations[language_code]["delta_cth"]: sample_delta_ct[idx]
+
             })
             sample_counter += 1
         
