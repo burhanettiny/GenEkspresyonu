@@ -9,6 +9,10 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
+print("salha:", salha)
+print("hfg:", hfg)
+print("rfg:", rfg)
+print("ctd:", ctd)
 
 # Dil seçim kutusu
 if 'language' not in st.session_state:
