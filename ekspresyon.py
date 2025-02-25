@@ -329,9 +329,6 @@ for i in range(num_target_genes):
             translations[language_code]["delta_ct"]: average_control_delta_ct,
             translations[language_code]["delta_cth"]: average_sample_delta_ct
         })
-print("Selected Language Code:", language_code)
-print("Translations Keys:", translations.keys())
-print("Translations for selected language:", translations.get(language_code, "LANGUAGE NOT FOUND"))
 # Giriş Verileri Tablosunu Göster
 if input_values_table:
     st.subheader(f" {translations[language_code]['gr_tbl']}")
