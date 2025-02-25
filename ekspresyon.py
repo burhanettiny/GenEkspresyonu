@@ -25,9 +25,6 @@ language_map = {
 
 # Seçilen dilin kodu
 language_code = language_map[st.session_state.language]
-print("Selected Language Code:", language_code)
-print("Translations Keys:", translations.keys())
-print("Translations for selected language:", translations.get(language_code, "LANGUAGE NOT FOUND"))
 
 translations = {
     "tr": {
@@ -171,7 +168,7 @@ translations = {
         "group": "Gruppe",
     }
 }
-
+print("Type of translations:", type(translations))
 # Translate text using the selected language
 st.title(translations[language_code]["title"])
 
