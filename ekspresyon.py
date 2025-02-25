@@ -25,7 +25,7 @@ language_map = {
 
 # Seçilen dilin kodu
 language_code = language_map[st.session_state.language]
-
+print("Type of translations:", type(translations))
 translations = {
     "tr": {
         "title": "🧬 Gen Ekspresyon Analizi Uygulaması",
@@ -168,7 +168,7 @@ translations = {
         "group": "Gruppe",
     }
 }
-print("Type of translations:", type(translations))
+
 # Translate text using the selected language
 st.title(translations[language_code]["title"])
 
