@@ -368,6 +368,9 @@ if stats_data:
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
     st.subheader(f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['graph_title']}")
+    
+    # Yeni figür oluştur
+    fig = go.Figure()
 
     # Kontrol Grubu Verileri
     control_target_ct_values = [
@@ -386,9 +389,6 @@ for i in range(num_target_genes):
     control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
     average_control_delta_ct = np.mean(control_delta_ct)
 
-    # Hasta Grubu Verileri
-    fig = go.Figure()
-
     # Kontrol Grubu Ortalama Çizgisi
     fig.add_trace(go.Scatter(
         x=[0.8, 1.2],  
@@ -402,7 +402,7 @@ for i in range(num_target_genes):
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
             d[translations[language_code]["delta_cth"]] for d in input_values_table 
-            if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {j+1}"
+            if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
         ]
 
         if not sample_delta_ct_values:
@@ -448,17 +448,20 @@ for i in range(num_target_genes):
             hoverinfo='text'
         ))
 
-# Grafik ayarları
-fig.update_layout(
-    title=f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['delta_ct_distribution']}",
-    xaxis=dict(
-        tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-        ticktext=[translations[language_code]['salha']] + [f"{translations[language_code]['hast']} {i+1}" for i in range(num_patient_groups)],
-        title=translations[language_code]['salha']
-    ),
-    yaxis=dict(title=translations[language_code]['delta_ct']),
-    showlegend=True
-)
+    # Grafik ayarları
+    fig.update_layout(
+        title=f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['delta_ct_distribution']}",
+        xaxis=dict(
+            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
+            ticktext=[translations[language_code]['salha']] + [f"{translations[language_code]['hast']} {i+1}" for i in range(num_patient_groups)],
+            title=translations[language_code]['salha']
+        ),
+        yaxis=dict(title=translations[language_code]['delta_ct']),
+        showlegend=True
+    )
+
+    # Grafiği göster
+    st.plotly_chart(fig)
 
 # Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir
 if len(control_delta_ct) > 0 or any(sample_delta_ct_values):  # Örnek koşul
