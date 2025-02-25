@@ -342,113 +342,111 @@ for i in range(num_target_genes):
         })
 
 # Giriş Verileri Tablosunu Göster
-if input_values_table: 
+if input_values_table:
     st.subheader(f" {translations[language_code]['gr_tbl']}")
-    input_df = pd.DataFrame(input_values_table) 
-    st.write(input_df) 
+    input_df = pd.DataFrame(input_values_table)
+    st.write(input_df)
 
-    csv = input_df.to_csv(index=False).encode("utf-8") 
-    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
+    csv = input_df.to_csv(index=False).encode("utf-8")
+    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv")
 
 # Sonuçlar Tablosunu Göster
 if data:
     st.subheader(f"📊 {translations[language_code]['nil_mine']}")
-
     df = pd.DataFrame(data)
     st.write(df)
 
 # İstatistik Sonuçları
 if stats_data:
     st.subheader(f"📈 {translations[language_code]['statistical_results']}")
-    
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
-    
+
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
     st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
     st.subheader(f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['graph_title']}")
-    
-# Kontrol Grubu Verileri
-control_target_ct_values = [
-    d["Hedef Gen Ct Değeri"] for d in input_values_table
-    if d["Grup"] == f"{translations[language_code]['salha']} {i+1}" and d["hfg"] == f"hfg {i+1}"
-]
-control_reference_ct_values = [
-    d["Referans Ct"] for d in input_values_table
-    if d["Grup"] == f"{translations[language_code]['salha']} {i+1}" and d["hfg"] == f"hfg {i+1}"
-]
 
-if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-    st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
-    continue
-
-control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
-average_control_delta_ct = np.mean(control_delta_ct)
-    
-# Hasta Grubu Verileri
-fig = go.Figure()
-
-# Kontrol Grubu Ortalama Çizgisi
-fig.add_trace(go.Scatter(
-    x=[0.8, 1.2],  
-    y=[average_control_delta_ct, average_control_delta_ct],  
-    mode='lines',
-    line=dict(color='black', width=4),
-    name=translations[language_code]['control_avg']
-))
-
-# Hasta Gruplarının Ortalama Çizgileri
-for j in range(num_patient_groups):
-    sample_delta_ct_values = [
-        d[translations[language_code]["delta_cth"]] for d in input_values_table 
-        if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {j+1}"
+    # Kontrol Grubu Verileri
+    control_target_ct_values = [
+        d["Hedef Gen Ct Değeri"] for d in input_values_table
+        if d["Grup"] == f"{translations[language_code]['salha']} {i+1}" and d["hfg"] == f"hfg {i+1}"
+    ]
+    control_reference_ct_values = [
+        d["Referans Ct"] for d in input_values_table
+        if d["Grup"] == f"{translations[language_code]['salha']} {i+1}" and d["hfg"] == f"hfg {i+1}"
     ]
 
-    if not sample_delta_ct_values:
-        continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
+    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
+        st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
+        continue
 
-    average_sample_delta_ct = np.mean(sample_delta_ct_values)
+    control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
+    average_control_delta_ct = np.mean(control_delta_ct)
+
+    # Hasta Grubu Verileri
+    fig = go.Figure()
+
+    # Kontrol Grubu Ortalama Çizgisi
     fig.add_trace(go.Scatter(
-        x=[(j + 1.8), (j + 2.2)],  
-        y=[average_sample_delta_ct, average_sample_delta_ct],  
+        x=[0.8, 1.2],  
+        y=[average_control_delta_ct, average_control_delta_ct],  
         mode='lines',
         line=dict(color='black', width=4),
-        name=f"{translations[language_code]['hast']} {j+1} {translations[language_code]['avg']}"
+        name=translations[language_code]['control_avg']
     ))
 
-# Veri Noktaları (Kontrol Grubu)
-fig.add_trace(go.Scatter(
-    x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
-    y=control_delta_ct,
-    mode='markers',  
-    name=translations[language_code]['salha'],
-    marker=dict(color='blue'),
-    text=[f"{translations[language_code]['salha']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(control_delta_ct)],
-    hoverinfo='text'
-))
+    # Hasta Gruplarının Ortalama Çizgileri
+    for j in range(num_patient_groups):
+        sample_delta_ct_values = [
+            d[translations[language_code]["delta_cth"]] for d in input_values_table 
+            if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {j+1}"
+        ]
 
-# Veri Noktaları (Hasta Grupları)
-for j in range(num_patient_groups):
-    sample_delta_ct_values = [
-        d[translations[language_code]["delta_cth"]] for d in input_values_table 
-        if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
-    ]
+        if not sample_delta_ct_values:
+            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
 
-    if not sample_delta_ct_values:
-        continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
-    
+        average_sample_delta_ct = np.mean(sample_delta_ct_values)
+        fig.add_trace(go.Scatter(
+            x=[(j + 1.8), (j + 2.2)],  
+            y=[average_sample_delta_ct, average_sample_delta_ct],  
+            mode='lines',
+            line=dict(color='black', width=4),
+            name=f"{translations[language_code]['hast']} {j+1} {translations[language_code]['avg']}"
+        ))
+
+    # Veri Noktaları (Kontrol Grubu)
     fig.add_trace(go.Scatter(
-        x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
-        y=sample_delta_ct_values,
+        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
+        y=control_delta_ct,
         mode='markers',  
-        name=f"{translations[language_code]['hast']} {j+1}",
-        marker=dict(color='red'),
-        text=[f"{translations[language_code]['hast']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
+        name=translations[language_code]['salha'],
+        marker=dict(color='blue'),
+        text=[f"{translations[language_code]['salha']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(control_delta_ct)],
         hoverinfo='text'
     ))
+
+    # Veri Noktaları (Hasta Grupları)
+    for j in range(num_patient_groups):
+        sample_delta_ct_values = [
+            d[translations[language_code]["delta_cth"]] for d in input_values_table 
+            if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+        ]
+
+        if not sample_delta_ct_values:
+            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
+
+        fig.add_trace(go.Scatter(
+            x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
+            y=sample_delta_ct_values,
+            mode='markers',  
+            name=f"{translations[language_code]['hast']} {j+1}",
+            marker=dict(color='red'),
+            text=[f"{translations[language_code]['hast']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
+            hoverinfo='text'
+        ))
 
 # Grafik ayarları
 fig.update_layout(
