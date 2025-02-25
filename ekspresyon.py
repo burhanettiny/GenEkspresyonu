@@ -39,7 +39,6 @@ translations = {
         "delta_ct": "ΔCt (Kontrol)",
         "delta_cth": "ΔCt (Hasta)",
         "warning_empty_input": "⚠️ Dikkat: Verileri alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
-        "statistical_results": "📈 İstatistik Sonuçları",
         "download_csv": "📥 CSV İndir",
         "generate_pdf": "📥 PDF Raporu Hazırla",
         "pdf_report": "Gen Ekspresyon Analizi Raporu",
@@ -144,7 +143,6 @@ translations = {
         "hast": "🩸 Patientengruppe",
         "warning_control_ct": "⚠️ Achtung: Kontrollgruppe {i} Daten sollten untereinander eingegeben oder aus Excel ohne leere Zellen eingefügt werden.",
         "warning_patient_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Patientendaten gruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
-        "statistical_results": "📈 Statistische Ergebnisse",
         "hfg": "Zielgen",
         "rfg": "Referenzgen",
         "ctd": "Ct Werte",
@@ -157,8 +155,8 @@ translations = {
         "nonparametric": "Nichtparametrisch",
         "mann_whitney": "Mann-Whitney U test",
         "test_type": "Testart",
-        "used_test": "Verwendeter Test",
-        "test_pvalue": "Test P-Wert",
+        "used_test": "Angewendeter Test",
+        "test_pvalue": "P-Wert des Tests",
         "significance": "Signifikanz",
         "gene_expression_change": "Genexpressionsänderung (2^(-ΔΔCt))",
         "regulation_status": "Regulationsstatus",
@@ -167,7 +165,7 @@ translations = {
         "avg": "Durchschnitt",
         "delta_ct_distribution": "ΔCt-Verteilung",
         "error_missing_data": "Missing data! Please fill in all required fields.",
-        "group": "Grouppeee.",
+        "group": "Gruppe",
     }
 }
 
