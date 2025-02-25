@@ -329,7 +329,9 @@ for i in range(num_target_genes):
             translations[language_code]["delta_ct"]: average_control_delta_ct,
             translations[language_code]["delta_cth"]: average_sample_delta_ct
         })
-
+print("Selected Language Code:", language_code)
+print("Translations Keys:", translations.keys())
+print("Translations for selected language:", translations.get(language_code, "LANGUAGE NOT FOUND"))
 # Giriş Verileri Tablosunu Göster
 if input_values_table:
     st.subheader(f" {translations[language_code]['gr_tbl']}")
@@ -543,6 +545,3 @@ if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
         st.download_button(label=f"{translations[language_code]['pdf_report']} {language}", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
-print("Selected Language Code:", language_code)
-print("Translations Keys:", translations.keys())
-print("Translations for selected language:", translations.get(language_code, "LANGUAGE NOT FOUND"))
