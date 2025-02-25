@@ -404,7 +404,7 @@ for i in range(num_target_genes):
     # Hasta Gruplarının Ortalama Çizgileri
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
-            d[translations[language_code]["delta_cth"]] for d in input_values_table 
+            d[translations[language_code]["delta_ct"]] for d in input_values_table 
             if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
         ]
 
