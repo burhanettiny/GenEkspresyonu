@@ -376,7 +376,7 @@ for i in range(num_target_genes):
     ]
     control_reference_ct_values = [
         d["Referans Ct"] for d in input_values_table
-        if d.get("Grup", "") == f"{translations[language_code]['salha']} {i+1}" and d.get("hfg", "") == f"hfg {i+1}
+        if d.get("Grup", "") == f"{translations[language_code]['salha']} {i+1}" and d.get("hfg", "") == f"hfg {i+1}"
     ]
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
