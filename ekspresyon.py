@@ -243,7 +243,7 @@ for i in range(num_target_genes):
         input_values_table.append({
             translations[language_code]["sample_number"]: sample_counter,
             translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {i+1}",
-            translations[language_code]["group"]:f"{translations[language_code]['salha']} {i+1}",  # "Kontrol"
+            "Grup": "Kontrol",
             translations[language_code]["gene_ct_value"]: control_target_ct_values[idx],
             translations[language_code]["reference_ct"]: control_reference_ct_values[idx], 
             translations[language_code]["delta_ct"]: control_delta_ct[idx]
@@ -284,7 +284,7 @@ for i in range(num_target_genes):
             input_values_table.append({
                 translations[language_code]["sample_number"]: sample_counter,
                 translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {j+1}",
-                translations[language_code]["group"]:f"{translations[language_code]['hast']} {j+1}",  # "Hasta"
+                "Grup": f"Hasta Grubu {j+1}",
                 translations[language_code]["gene_ct_value"]: sample_target_ct_values[idx],
                 translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
                 translations[language_code]["delta_cth"]: sample_delta_ct[idx]
@@ -373,22 +373,21 @@ for i in range(num_target_genes):
     
 # Kontrol Grubu Verileri
     control_target_ct_values = [
-        d[translations[language_code]["gene_ct_value"]] for d in input_values_table
-        if d["group"] == translations[language_code]["salha"] and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+        d["Hedef Gen Ct Değeri"] for d in input_values_table
+        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
     ]
-
     control_reference_ct_values = [
-        d[translations[language_code]["reference_ct"]] for d in input_values_table
-        if d["group"] == translations[language_code]["salha"] and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
+        d["Referans Ct"] for d in input_values_table
+        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
     ]
-    
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ {translations[language_code]['error_missing_data']} {translations[language_code]['hfg']} {i+1}!")
+        st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
         continue
-    
+
+
     control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
     average_control_delta_ct = np.mean(control_delta_ct)
-      
+    
     # Hasta Grubu Verileri
     fig = go.Figure()
 
