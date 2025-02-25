@@ -372,21 +372,21 @@ for i in range(num_target_genes):
     st.subheader(f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['graph_title']}")
     
 # Kontrol Grubu Verileri
-    control_target_ct_values = [
-        d["Hedef Gen Ct Değeri"] for d in input_values_table
-        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
-    ]
-    control_reference_ct_values = [
-        d["Referans Ct"] for d in input_values_table
-        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
-    ]
-    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
-        continue
+control_target_ct_values = [
+    d["Hedef Gen Ct Değeri"] for d in input_values_table
+    if d["Grup"] == f"{translations[language_code]['salha']} {i+1}" and d["hfg"] == f"hfg {i+1}"
+]
+control_reference_ct_values = [
+    d["Referans Ct"] for d in input_values_table
+    if d["Grup"] == f"{translations[language_code]['salha']} {i+1}" and d["hfg"] == f"hfg {i+1}"
+]
 
+if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
+    st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
+    continue
 
-    control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
-    average_control_delta_ct = np.mean(control_delta_ct)
+control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
+average_control_delta_ct = np.mean(control_delta_ct)
     
     # Hasta Grubu Verileri
     fig = go.Figure()
