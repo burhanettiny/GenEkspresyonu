@@ -388,8 +388,8 @@ if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
 control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
 average_control_delta_ct = np.mean(control_delta_ct)
     
-    # Hasta Grubu Verileri
-    fig = go.Figure()
+# Hasta Grubu Verileri
+fig = go.Figure()
 
 # Kontrol Grubu Ortalama Çizgisi
 fig.add_trace(go.Scatter(
