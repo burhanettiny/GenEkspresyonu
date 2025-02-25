@@ -15,6 +15,9 @@ if 'language' not in st.session_state:
     st.session_state.language = "Türkçe"  # Varsayılan dil Türkçe olarak ayarlanıyor.
  
 st.session_state.language = st.selectbox("Dil / Language / Sprache", ["Türkçe", "English", "Deutsch"])
+print("Selected Language Code:", language_code)
+print("Translations Keys:", translations.keys())
+print("Translations for selected language:", translations.get(language_code, "LANGUAGE NOT FOUND"))
 
 # Dil kodlarını belirleyin
 language_map = {
