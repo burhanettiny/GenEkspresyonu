@@ -215,13 +215,16 @@ for i in range(num_target_genes):
     # Kontrol Grubu Verileri
     control_target_ct = st.text_area(f"{salha} {i+1} - {hfg} {i+1} - {ctd}", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"{salha} {i+1} - {rfg} {i+1} - {ctd}", key=f"control_reference_ct_{i}")
-   
+    
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
-
+    
     # Uzunluk kontrolü ve dil kontrolü
-    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+    if len(control_target_ct_values) == 0:
+        st.warning(f"⚠️ Dikkat: Kontrol Grubu {i+1} için Hedef Gen verileri girilmedi.")
+        continue
+    if len(control_reference_ct_values) == 0:
+        st.warning(f"⚠️ Dikkat: Kontrol Grubu {i+1} için Referans Gen verileri girilmedi.")
         continue
         
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
