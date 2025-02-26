@@ -231,13 +231,13 @@ for i in range(num_target_genes):
     for idx in range(min_control_len):
         input_values_table.append({
             translations[language_code]["sample_number"]: sample_counter,
-            translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {i+1}",
-            "Grup": f"{translations[language_code]['salha']} {i+1}",
-            translations[language_code]["gene_ct_value"]: control_target_ct_values[idx],
-            translations[language_code]["reference_ct"]: control_reference_ct_values[idx], 
-            translations[language_code]["delta_ct"]: control_delta_ct[idx]
+            translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {j+1}",
+            translations[language_code]["group"]: f"{translations[language_code]['hast']} {j+1}",
+            translations[language_code]["gene_ct_value"]: sample_target_ct_values[idx],
+            translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
+            translations[language_code]["delta_cth"]: sample_delta_ct[idx]  # Hasta için ΔCt (Hasta)
         })
-        sample_counter += 1
+          sample_counter += 1
 
     # Hasta Grubu Verileri
     for j in range(num_patient_groups):
@@ -271,13 +271,13 @@ for i in range(num_target_genes):
         sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
         for idx in range(min_sample_len):
             input_values_table.append({
+            input_values_table.append({
                 translations[language_code]["sample_number"]: sample_counter,
-                translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {j+1}",
-                "Grup": f"{translations[language_code]['hast']} {j+1}",
-                translations[language_code]["gene_ct_value"]: sample_target_ct_values[idx],
-                translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
-                translations[language_code]["delta_cth"]: sample_delta_ct[idx]
-
+                translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {i+1}",
+                translations[language_code]["group"]: f"{translations[language_code]['salha']} {i+1}",
+                translations[language_code]["gene_ct_value"]: control_target_ct_values[idx],
+                translations[language_code]["reference_ct"]: control_reference_ct_values[idx], 
+                translations[language_code]["delta_ct"]: control_delta_ct[idx]  # Kontrol için ΔCt
             })
             sample_counter += 1
         
@@ -353,96 +353,69 @@ if stats_data:
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
     st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
-# Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
     st.subheader(f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['graph_title']}")
-    
+
     # Yeni figür oluştur
     fig = go.Figure()
 
-    # Kontrol Grubu Verileri
+    # **Kontrol Grubu Verileri**
     control_target_ct_values = [
-        d["Hedef Gen Ct Değeri"] for d in input_values_table
-        if d.get("Grup", "") == f"{translations[language_code]['salha']} {i+1}" and d.get("hfg", "") == f"hfg {i+1}"
+        d[translations[language_code]["gene_ct_value"]] for d in input_values_table
+        if d.get(translations[language_code]["group"], "") == f"{translations[language_code]['salha']} {i+1}" and 
+           d.get(translations[language_code]["hfg"], "") == f"{translations[language_code]['hfg']} {i+1}"
     ]
     control_reference_ct_values = [
-        d["Referans Ct"] for d in input_values_table
-        if d.get("Grup", "") == f"{translations[language_code]['salha']} {i+1}" and d.get("hfg", "") == f"hfg {i+1}"
+        d[translations[language_code]["reference_ct"]] for d in input_values_table
+        if d.get(translations[language_code]["group"], "") == f"{translations[language_code]['salha']} {i+1}" and 
+           d.get(translations[language_code]["hfg"], "") == f"{translations[language_code]['hfg']} {i+1}"
     ]
-         
+
+    # **Kontrol ΔCt Hesaplama**
     control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
     average_control_delta_ct = np.mean(control_delta_ct)
 
-    # Kontrol Grubu Ortalama Çizgisi
-    fig.add_trace(go.Scatter(
-        x=[0.8, 1.2],  
-        y=[average_control_delta_ct, average_control_delta_ct],  
-        mode='lines',
-        line=dict(color='black', width=4),
-        name=translations[language_code]['control_avg']
-    ))
-
-    # Hasta Gruplarının Ortalama Çizgileri
+    # **Hasta Gruplarının ΔCt (Hasta) Hesaplanması**
     for j in range(num_patient_groups):
-        sample_delta_ct_values = [
-            d["Hedef Gen Ct Değeri"] for d in input_values_table
-            if d.get("Grup", "") == f"{translations[language_code]['hast']} {i+1}" and d.get("hfg", "") == f"hfg {j+1}"
+        sample_target_ct_values = [
+            d[translations[language_code]["gene_ct_value"]] for d in input_values_table
+            if d.get(translations[language_code]["group"], "") == f"{translations[language_code]['hast']} {j+1}" and 
+               d.get(translations[language_code]["hfg"], "") == f"{translations[language_code]['hfg']} {j+1}"
+        ]
+        sample_reference_ct_values = [
+            d[translations[language_code]["reference_ct"]] for d in input_values_table
+            if d.get(translations[language_code]["group"], "") == f"{translations[language_code]['hast']} {j+1}" and 
+               d.get(translations[language_code]["hfg"], "") == f"{translations[language_code]['hfg']} {j+1}"
         ]
 
-        if not sample_delta_ct_values:
-            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
+        # **Hasta ΔCt (Hasta) Hesaplama**
+        sample_delta_cth = np.array(sample_target_ct_values) - np.array(sample_reference_ct_values)
+        average_sample_delta_cth = np.mean(sample_delta_cth)
 
-        average_sample_delta_ct = np.mean(sample_delta_ct_values)
+        # **Hasta Grubu için Veri Çizimi**
         fig.add_trace(go.Scatter(
             x=[(j + 1.8), (j + 2.2)],  
-            y=[average_sample_delta_ct, average_sample_delta_ct],  
+            y=[average_sample_delta_cth, average_sample_delta_cth],  
             mode='lines',
-            line=dict(color='black', width=4),
+            line=dict(color='red', width=4),
             name=f"{translations[language_code]['hast']} {j+1} {translations[language_code]['avg']}"
         ))
 
-    # Veri Noktaları (Kontrol Grubu)
-    fig.add_trace(go.Scatter(
-        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
-        y=control_delta_ct,
-        mode='markers',  
-        name=translations[language_code]['salha'],
-        marker=dict(color='blue'),
-        text=[f"{translations[language_code]['salha']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(control_delta_ct)],
-        hoverinfo='text'
-    ))
-
-    # Veri Noktaları (Hasta Grupları)
-    fig.add_trace(go.Scatter(
-        x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
-        y=sample_delta_ct_values,
-        mode='markers',  
-        name=f"{translations[language_code]['hast']} {j+1}",
-        marker=dict(color='red'),
-        text=[f"{translations[language_code]['hast']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
-        hoverinfo='text'
-    ))
-
-    # Grafik ayarları
+    # **Grafik Ayarları**
     fig.update_layout(
         title=f"{translations[language_code]['hfg']} {i+1} - {translations[language_code]['delta_ct_distribution']}",
         xaxis=dict(
-            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-            ticktext=[translations[language_code]['salha']] + [f"{translations[language_code]['hast']} {i+1}" for i in range(num_patient_groups)],
-            title=translations[language_code]['salha']
+            tickvals=[1] + [k + 2 for k in range(num_patient_groups)],
+            ticktext=[translations[language_code]['salha']] + [f"{translations[language_code]['hast']} {k+1}" for k in range(num_patient_groups)],
+            title=translations[language_code]['group']
         ),
         yaxis=dict(title=translations[language_code]['delta_ct']),
         showlegend=True
     )
 
-    # Grafiği göster
+    # **Grafiği Göster**
     st.plotly_chart(fig)
 
-# Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir
-if len(control_delta_ct) > 0 or any(sample_delta_ct_values):  # Örnek koşul
-    st.plotly_chart(fig)
-else:
-    st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
 # PDF rapor oluşturma kısmı
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
