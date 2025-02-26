@@ -370,9 +370,9 @@ for i in range(num_target_genes):
         if d.get("Grup", "") == f"{translations[language_code]['salha']} {i+1}" and d.get("hfg", "") == f"hfg {i+1}"
     ]
     
-    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
-        continue
+if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
+    st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
+    continue
         
     control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
     average_control_delta_ct = np.mean(control_delta_ct)
