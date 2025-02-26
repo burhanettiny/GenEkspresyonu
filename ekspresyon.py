@@ -352,16 +352,13 @@ if stats_data:
 
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
-    st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
-for i in range(num_target_genes):
     st.subheader(translations[language_code]["graph_title"].format(i=i+1))
     
     # Kontrol Grubu Verileri
     control_target_ct_values = [
         d["Hedef Gen Ct Değeri"] for d in input_values_table
-        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == "Hedef Gen " + str(i+1):
+        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
     ]
-    
     control_reference_ct_values = [
         d["Referans Ct"] for d in input_values_table
         if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
@@ -386,9 +383,14 @@ for i in range(num_target_genes):
     
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
-            d["ΔCt (Hasta)"] for d in input_values_table
-            if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
-        ]
+            d["Hedef Gen Ct Değeri"] for d in input_values_table
+            if d["Grup"] == "Hasta" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+    ]
+    
+    patient_reference_ct_values = [
+        d["Referans Ct"] for d in input_values_table
+        if d["Grup"] == "Hasta" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+    ]
         
         if not sample_delta_ct_values:
             continue
