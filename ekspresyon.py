@@ -237,7 +237,7 @@ for i in range(num_target_genes):
             translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
             translations[language_code]["delta_cth"]: sample_delta_ct[idx]  # Hasta için ΔCt (Hasta)
         })
-          sample_counter += 1
+        sample_counter += 1
 
     # Hasta Grubu Verileri
     for j in range(num_patient_groups):
@@ -270,7 +270,6 @@ for i in range(num_target_genes):
         
         sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
         for idx in range(min_sample_len):
-            input_values_table.append({
             input_values_table.append({
                 translations[language_code]["sample_number"]: sample_counter,
                 translations[language_code]["hfg"]: f"{translations[language_code]['hfg']} {i+1}",
