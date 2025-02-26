@@ -158,8 +158,6 @@ input_values_table = []
 data = []
 stats_data = []
  
-
-def parse_input_data(input_data):
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
