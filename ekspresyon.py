@@ -413,24 +413,15 @@ for i in range(num_target_genes):
     ))
 
     # Veri Noktaları (Hasta Grupları)
-    for j in range(num_patient_groups):
-        sample_delta_ct_values = [
-            d[translations[language_code]["delta_cth"]] for d in input_values_table 
-            if d[translations[language_code]['hast']] == f"{translations[language_code]['hast']} {j+1}" and d[translations[language_code]["hfg"]] == f"{translations[language_code]['hfg']} {i+1}"
-        ]
-
-        if not sample_delta_ct_values:
-            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
-
-        fig.add_trace(go.Scatter(
-            x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
-            y=sample_delta_ct_values,
-            mode='markers',  
-            name=f"{translations[language_code]['hast']} {j+1}",
-            marker=dict(color='red'),
-            text=[f"{translations[language_code]['hast']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
-            hoverinfo='text'
-        ))
+    fig.add_trace(go.Scatter(
+        x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
+        y=sample_delta_ct_values,
+        mode='markers',  
+        name=f"{translations[language_code]['hast']} {j+1}",
+        marker=dict(color='red'),
+        text=[f"{translations[language_code]['hast']} {value:.2f}, {translations[language_code]['sample_number']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
+        hoverinfo='text'
+    ))
 
     # Grafik ayarları
     fig.update_layout(
