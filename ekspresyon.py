@@ -1,16 +1,3 @@
-
-Öğe seçilmedi 
-
-İçeriğe atla
-Gmail ürününü ekran okuyucularla birlikte kullanma
-
-2.150 ileti dizisinden 2.
-güncel tr kod gen ekspresyonu
-
-B Yalçınkaya <burhanettinyalcinkaya@gmail.com>
-19 Şub 2025 10:12 (7 gün önce)
-Alıcı: mailtoburhanettin
-
 import streamlit as st
 
 import pandas as pd
@@ -754,7 +741,3 @@ if st.button("📥 PDF Raporu Hazırla"):
     else:
 
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
-
-
---
-Burhanettin YALÇINKAYA PhD
