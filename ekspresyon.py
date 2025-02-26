@@ -48,17 +48,15 @@ translations = {
         "graph_title": "Hedef Gen {i} - Hasta ve Kontrol Grubu Dağılım Grafiği",
         "control_avg": "Kontrol Grubu Ortalama",
         "patient_avg": "Hasta Grubu {j} Ortalama",
-        "error_control_data": "⚠️ Hata: Kontrol Grubu için Hedef Gen {i} verileri eksik!"
-        "control_avg": "Kontrol Grubu Ortalama",
-        "patient_avg": "Hasta Grubu {j} Ortalama",
-        "error_control_data": "⚠️ Hata: Kontrol Grubu için Hedef Gen {i} verileri eksik!"
+        "error_control_data": "⚠️ Hata: Kontrol Grubu için Hedef Gen {i} verileri eksik!",
+        "error_control_data": "⚠️ Hata: Kontrol Grubu için Hedef Gen {i} verileri eksik!",
         "download_pdf": "📥 PDF Olarak İndir",
         "pdf_title": "Gen Ekspresyon Analizi Raporu",
         "input_data_table": "Giris Verileri Tablosu:",
         "results": "Sonuçlar:",
         "statistical_results": "İstatistiksel Sonuçlar:",
         "statistical_evaluation": "İstatistiksel Değerlendirme:",
-        "error_no_data": "Veri bulunamadı, PDF oluşturulamadı."
+        "error_no_data": "Veri bulunamadı, PDF oluşturulamadı.",
 
     },
     "en": {
@@ -80,16 +78,14 @@ translations = {
         "graph_title": "Target Gene {i} - Patient and Control Group Distribution Graph",
         "control_avg": "Control Group Average",
         "patient_avg": "Patient Group {j} Average",
-        "error_control_data": "⚠️ Error: Data missing for Control Group Target Gene {i}!"
-        "control_avg": "Control Group Average",
-        "patient_avg": "Patient Group {j} Average",
+        "error_control_data": "⚠️ Error: Data missing for Control Group Target Gene {i}!",
         "download_pdf": "📥 Download PDF",
         "pdf_title": "Gene Expression Analysis Report",
         "input_data_table": "Input Data Table:",
         "results": "Results:",
         "statistical_results": "Statistical Results:",
         "statistical_evaluation": "Statistical Evaluation:",
-        "error_no_data": "No data found, PDF could not be generated."
+        "error_no_data": "No data found, PDF could not be generated.",
  
     },
     "de": {
@@ -111,14 +107,14 @@ translations = {
         "graph_title": "Zielgen {i} - Patienten- und Kontrollgruppen-Verteilungsdiagramm",
         "control_avg": "Kontrollgruppe Durchschnitt",
         "patient_avg": "Patientengruppe {j} Durchschnitt",
-        "error_control_data": "⚠️ Fehler: Fehlende Daten für Kontrollgruppe Zielgen {i}!"
+        "error_control_data": "⚠️ Fehler: Fehlende Daten für Kontrollgruppe Zielgen {i}!",
         "download_pdf": "📥 PDF herunterladen",
         "pdf_title": "Genexpressionsanalyse-Bericht",
         "input_data_table": "Eingabedatentabelle:",
         "results": "Ergebnisse:",
         "statistical_results": "Statistische Ergebnisse:",
         "statistical_evaluation": "Statistische Bewertung:",
-        "error_no_data": "Keine Daten gefunden, PDF konnte nicht generiert werden."
+        "error_no_data": "Keine Daten gefunden, PDF konnte nicht generiert werden.",
         }
 }
 
