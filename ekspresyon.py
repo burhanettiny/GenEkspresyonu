@@ -49,11 +49,9 @@ translations = {
         "control_avg": "Kontrol Grubu Ortalama",
         "patient_avg": "Hasta Grubu {j} Ortalama",
         "error_control_data": "⚠️ Hata: Kontrol Grubu için Hedef Gen {i} verileri eksik!"
-        "graph_title": "Hedef Gen {i} - Hasta ve Kontrol Grubu Dağılım Grafiği",
         "control_avg": "Kontrol Grubu Ortalama",
         "patient_avg": "Hasta Grubu {j} Ortalama",
         "error_control_data": "⚠️ Hata: Kontrol Grubu için Hedef Gen {i} verileri eksik!"
-        "subtitle": "B. Yalçınkaya tarafından geliştirildi",
         "download_pdf": "📥 PDF Olarak İndir",
         "pdf_title": "Gen Ekspresyon Analizi Raporu",
         "input_data_table": "Giris Verileri Tablosu:",
