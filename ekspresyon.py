@@ -359,7 +359,7 @@ for i in range(num_target_genes):
     # Kontrol Grubu Verileri
     control_target_ct_values = [
         d["Hedef Gen Ct Değeri"] for d in input_values_table
-        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == "Hedef Gen {}".format(i+1):
+        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == "Hedef Gen " + str(i+1):
     ]
     
     control_reference_ct_values = [
