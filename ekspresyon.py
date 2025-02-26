@@ -459,7 +459,7 @@ def create_pdf(results, stats, input_df):
     elements.append(Paragraph(translations[language_code]["statistical_evaluation"], styles['Heading2']))
     elements.append(Spacer(1, 12))
     
-    explanation = " "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
+    explanation = "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
 
         "Normallik saglanirsa, gruplar arasindaki varyans esitligi Levene testi ile kontrol edilmistir. "
 
