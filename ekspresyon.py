@@ -469,9 +469,8 @@ def create_pdf(results, stats, input_df):
 
         "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir. "
 
-        "<b>Görüs ve önerileriniz icin; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
+        "<b>Görüs ve önerileriniz icin; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>."
 
-"
     elements.append(Paragraph(explanation, styles['Normal']))
     elements.append(Spacer(1, 6))
     
