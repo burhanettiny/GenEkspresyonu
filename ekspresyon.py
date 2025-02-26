@@ -281,7 +281,7 @@ for i in range(num_target_genes):
             translate("delta_ct_control"): average_control_delta_ct,
             translate("delta_ct_patient"): average_sample_delta_ct
         })
-            sample_counter += 1
+        sample_counter += 1
        
         # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
