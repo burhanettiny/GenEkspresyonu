@@ -344,7 +344,7 @@ if data:
 
 # İstatistik Sonuçları
 if stats_data:
-    st.subheader(translations[language_code]["statistics"])
+    st.subheader(translations[language_code]["statistical_results"])
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
