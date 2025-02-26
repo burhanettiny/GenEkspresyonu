@@ -392,9 +392,7 @@ for i in range(num_target_genes):
         if d["Grup"] == "Hasta" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
     ]
         
-        if not sample_delta_ct_values:
-            continue
-        
+      
         average_sample_delta_ct = np.mean(sample_delta_ct_values)
         fig.add_trace(go.Scatter(
             x=[(j + 1.8), (j + 2.2)],
