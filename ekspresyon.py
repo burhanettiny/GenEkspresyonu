@@ -102,7 +102,7 @@ for i in range(num_target_genes):
     st.subheader(f"🧬 {language['control_group']} {i+1}")
 
     # Control Group Data
-    control_target_ct = st.text_area(f"🟦 {language['control_group']} {i+1} {language['target_gene_ct_value'] {i+1}", key=f"control_target_ct_{i}")
+    control_target_ct = st.text_area(f"🟦 {language['control_group']} {i+1} {language['target_gene_ct_value']} {i+1}", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"🟦 {language['control_group']} {i+1} {language['reference_ct'] {i+1}", key=f"control_reference_ct_{i}")
 
     control_target_ct_values = parse_input_data(control_target_ct)
