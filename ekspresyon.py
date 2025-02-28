@@ -214,7 +214,6 @@ if stats_data:
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
     st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
 
-
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 
 for i in range(num_target_genes):
