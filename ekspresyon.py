@@ -124,6 +124,7 @@ translations = {
         "ctd": "Ct Werte",
     }
 }
+}
 
 # Translate text using the selected language
 st.title(translations[language_code]["title"])
