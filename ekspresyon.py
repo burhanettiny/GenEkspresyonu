@@ -92,7 +92,7 @@ for i in range(num_target_genes):
     control_reference_ct_values = parse_input_data(control_reference_ct)
 
    # Eğer verilerde birden fazla ölçüm varsa, ortalama alınır
-if isinstance(control_target_ct_values, np.ndarray):
+ if isinstance(control_target_ct_values, np.ndarray):
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
@@ -100,14 +100,6 @@ if isinstance(control_target_ct_values, np.ndarray):
 else:
     control_delta_ct = control_target_ct_values - control_reference_ct_values
 
-
-    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-
-        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-
-        continue
-
-   
 
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
 
