@@ -27,6 +27,7 @@ input_values_table = []
 data = []
 stats_data = []
  
+# Giriş verilerini işleyen fonksiyon
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
@@ -35,6 +36,9 @@ def parse_input_data(input_data):
 last_control_delta_ct = None
 last_gene_index = None
 
+input_values_table = []  # Sonuçları saklamak için kullanılan liste
+
+# Her hedef gen için işlem yapılır
 for i in range(num_target_genes):
     st.subheader(f"🧬 Hedef Gen {i+1}")
 
@@ -62,26 +66,26 @@ for i in range(num_target_genes):
         st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
         continue
    
-# Verilerin ortalama alınması ve örnek numarasına göre sıralanması
-sample_counter = 1  # Kontrol grubu örnek sayacı
-grouped_data = {}
+    # Verilerin ortalama alınması ve örnek numarasına göre sıralanması
+    sample_counter = 1  # Kontrol grubu örnek sayacı
+    grouped_data = {}
 
-for idx in range(min_control_len):
-    # Aynı örnek numarasına ait verileri yan yana gruplama
-    if sample_counter not in grouped_data:
-        grouped_data[sample_counter] = []
-    grouped_data[sample_counter].append(control_delta_ct[idx])
-    sample_counter += 1
+    for idx in range(min_control_len):
+        # Aynı örnek numarasına ait verileri yan yana gruplama
+        if sample_counter not in grouped_data:
+            grouped_data[sample_counter] = []
+        grouped_data[sample_counter].append(control_delta_ct[idx])
+        sample_counter += 1
 
-for sample_num, values in grouped_data.items():
-    input_values_table.append({
-        "Örnek Numarası": sample_num,
-        "Hedef Gen": f"Hedef Gen {i+1}",
-        "Grup": "Kontrol",
-        "Hedef Gen Ct Değeri": np.mean([control_target_ct_values[idx] for idx in range(len(control_target_ct_values))]),
-        "Referans Ct": np.mean([control_reference_ct_values[idx] for idx in range(len(control_reference_ct_values))]),
-        "ΔCt (Kontrol)": np.mean(values)  # Aynı örnek numarasındaki ΔCt değerlerinin ortalaması
-    })
+    for sample_num, values in grouped_data.items():
+        input_values_table.append({
+            "Örnek Numarası": sample_num,
+            "Hedef Gen": f"Hedef Gen {i+1}",
+            "Grup": "Kontrol",
+            "Hedef Gen Ct Değeri": np.mean([control_target_ct_values[idx] for idx in range(len(control_target_ct_values))]),
+            "Referans Ct": np.mean([control_reference_ct_values[idx] for idx in range(len(control_reference_ct_values))]),
+            "ΔCt (Kontrol)": np.mean(values)  # Aynı örnek numarasındaki ΔCt değerlerinin ortalaması
+        })
 
 # Aynı işlemi Hasta grubu için de yapıyoruz:
 for j in range(num_patient_groups):
