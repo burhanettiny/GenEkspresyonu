@@ -26,6 +26,7 @@ num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_v
 input_values_table = []
 data = []
 stats_data = []
+
 # Giriş verilerini işleyen fonksiyon
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
@@ -67,17 +68,19 @@ for i in range(num_target_genes):
    
     # Her örneği işleyerek ortalama alınması
     grouped_data = {}
-    sample_counter = 1
+    sample_counter = 1  # Örnek numarasını başlatıyoruz
 
     for idx in range(min_control_len):
         # Aynı örnek numarasına ait verileri yan yana gruplama
         if sample_counter not in grouped_data:
             grouped_data[sample_counter] = []
         grouped_data[sample_counter].append(control_delta_ct[idx])
-        
-        if (idx + 1) % min_control_len == 0:  # Her örnek numarası için bir yeni satır
+
+        # Alt satıra inildiğinde yeni örnek numarasını tanımlıyoruz
+        if (idx + 1) % min_control_len == 0:  # Her yeni satırda örnek numarası artırılacak
             sample_counter += 1
 
+    # Her örnek numarasına ait verilerin ortalaması alınıp, tabloya ekleniyor
     for sample_num, values in grouped_data.items():
         input_values_table.append({
             "Örnek Numarası": sample_num,
@@ -122,9 +125,11 @@ for j in range(num_patient_groups):
             grouped_data_sample[sample_counter] = []
         grouped_data_sample[sample_counter].append(sample_delta_ct[idx])
 
-        if (idx + 1) % min_sample_len == 0:  # Her örnek numarası için bir yeni satır
+        # Alt satıra inildiğinde yeni örnek numarası tanımlanır
+        if (idx + 1) % min_sample_len == 0:  # Her yeni satırda örnek numarası artırılacak
             sample_counter += 1
 
+    # Her örnek numarasına ait verilerin ortalaması alınıp, tabloya ekleniyor
     for sample_num, values in grouped_data_sample.items():
         input_values_table.append({
             "Örnek Numarası": sample_num,
@@ -133,7 +138,7 @@ for j in range(num_patient_groups):
             "Hedef Gen Ct Değeri": np.mean([sample_target_ct_values[idx] for idx in range(len(sample_target_ct_values))]),
             "Referans Ct": np.mean([sample_reference_ct_values[idx] for idx in range(len(sample_reference_ct_values))]),
             "ΔCt (Hasta)": np.mean(values)  # Aynı örnek numarasındaki ΔCt değerlerinin ortalaması
-        }) 
+        })
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table:
