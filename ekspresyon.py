@@ -1,151 +1,142 @@
 import streamlit as st
-
 import pandas as pd
-
 import numpy as np
-
 import plotly.graph_objects as go
-
 import scipy.stats as stats
-
 from io import BytesIO
-
 from reportlab.lib.pagesizes import letter
-
 from reportlab.lib import colors
-
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-
 from reportlab.pdfgen import canvas
-
 from reportlab.platypus import Table, TableStyle
 
- 
+# Language dictionary
+languages = {
+    "tr": {
+        "title": "🧬 Gen Ekspresyon Analizi Uygulaması",
+        "subtitle": "B. Yalçınkaya tarafından geliştirildi",
+        "header": "📊 Hasta ve Kontrol Grubu Verisi Girin",
+        "target_gen_count": "🔹 Hedef Gen Sayısını Girin",
+        "patient_count": "🔹 Hasta Grubu Sayısını Girin",
+        "control_group": "🧬 Kontrol Grubu",
+        "warning": "⚠️ Dikkat: Kontrol Grubu verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
+        "sample": "Örnek Numarası",
+        "group": "Grup",
+        "target_gene_ct_value": "Hedef Gen Ct Değeri",
+        "reference_ct": "Referans Ct",
+        "delta_ct": "ΔCt",
+        "input_data_table": "Giris Verileri Tablosu:",
+        "statistical_results": "📈 İstatistik Sonuçları",
+        "download_csv": "📥 CSV İndir",
+        "error": "⚠️ Hata: Veriler eksik!"
+    },
+    "en": {
+        "title": "🧬 Gene Expression Analysis App",
+        "subtitle": "Developed by B. Yalçınkaya",
+        "header": "📊 Enter Patient and Control Group Data",
+        "target_gen_count": "🔹 Enter the Number of Target Genes",
+        "patient_count": "🔹 Enter the Number of Patient Groups",
+        "control_group": "🧬 Control Group",
+        "warning": "⚠️ Warning: Write Control Group data one below the other or copy-paste from Excel without empty cells.",
+        "sample": "Sample Number",
+        "group": "Group",
+        "target_gene_ct_value": "Target Gene Ct Value",
+        "reference_ct": "Reference Ct",
+        "delta_ct": "ΔCt",
+        "input_data_table": "Input Data Table:",
+        "statistical_results": "📈 Statistical Results",
+        "download_csv": "📥 Download CSV",
+        "error": "⚠️ Error: Missing data!"
+    },
+    "de": {
+        "title": "🧬 Genexpressionsanalyse-App",
+        "subtitle": "Entwickelt von B. Yalçınkaya",
+        "header": "📊 Geben Sie Patientengruppen- und Kontrollgruppendaten ein",
+        "target_gen_count": "🔹 Geben Sie die Anzahl der Zielgene ein",
+        "patient_count": "🔹 Geben Sie die Anzahl der Patientengruppen ein",
+        "control_group": "🧬 Kontrollgruppe",
+        "warning": "⚠️ Warnung: Geben Sie die Daten der Kontrollgruppe untereinander ein oder kopieren Sie sie ohne leere Zellen aus Excel.",
+        "sample": "Probenummer",
+        "group": "Gruppe",
+        "target_gene_ct_value": "Zielgen Ct-Wert",
+        "reference_ct": "Referenz Ct",
+        "delta_ct": "ΔCt",
+        "input_data_table": "Eingabedatentabelle:",
+        "statistical_results": "📈 Statistische Ergebnisse",
+        "download_csv": "📥 CSV Herunterladen",
+        "error": "⚠️ Fehler: Fehlende Daten!"
+    }
+}
 
-# Başlık
+# Language selection
+lang = st.selectbox('Select Language', ['tr', 'en', 'de'])
 
-st.title("🧬 Gen Ekspresyon Analizi Uygulaması")
+# Use selected language
+language = languages[lang]
 
-st.markdown("### B. Yalçınkaya tarafından geliştirildi")
+# Title and subtitle
+st.title(language["title"])
+st.markdown(f"### {language['subtitle']}")
 
- 
+# User input
+st.header(language["header"])
 
-# Kullanıcıdan giriş al
+# Number of target genes and patient groups
+num_target_genes = st.number_input(language["target_gen_count"], min_value=1, step=1, key="gene_count")
+num_patient_groups = st.number_input(language["patient_count"], min_value=1, step=1, key="patient_count")
 
-st.header("📊 Hasta ve Kontrol Grubu Verisi Girin")
-
- 
-
-# Hedef Gen ve Hasta Grubu Sayısı
-
-num_target_genes = st.number_input("🔹 Hedef Gen Sayısını Girin", min_value=1, step=1, key="gene_count")
-
-num_patient_groups = st.number_input("🔹 Hasta Grubu Sayısını Girin", min_value=1, step=1, key="patient_count")
-
- 
-
-# Veri listeleri
-
+# Input lists
 input_values_table = []
-
 data = []
-
 stats_data = []
 
- 
-
 def parse_input_data(input_data):
-
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
-
     return np.array([float(x) for x in values if x])
 
- 
-
-# Grafik için son işlenen Hedef Genın kontrol verilerini saklamak amacıyla değişkenler
-
-last_control_delta_ct = None
-
-last_gene_index = None
-
- 
-
+# Loop for each target gene
 for i in range(num_target_genes):
+    st.subheader(f"🧬 {language['control_group']} {i+1}")
 
-    st.subheader(f"🧬 Hedef Gen {i+1}")
-
-   
-
-    # Kontrol Grubu Verileri
-
-    control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
-
-    control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
-
-   
+    # Control Group Data
+    control_target_ct = st.text_area(f"🟦 {language['control_group']} {i+1} {language['target_gene_ct_value']}", key=f"control_target_ct_{i}")
+    control_reference_ct = st.text_area(f"🟦 {language['control_group']} {i+1} {language['reference_ct']}", key=f"control_reference_ct_{i}")
 
     control_target_ct_values = parse_input_data(control_target_ct)
-
     control_reference_ct_values = parse_input_data(control_reference_ct)
 
-   
-
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-
-        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-
+        st.error(language["warning"])
         continue
 
    
-
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
-
     control_target_ct_values = control_target_ct_values[:min_control_len]
-
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
-
     control_delta_ct = control_target_ct_values - control_reference_ct_values
-
-   
+  
 
     if len(control_delta_ct) > 0:
-
         average_control_delta_ct = np.mean(control_delta_ct)
-
         # Grafik kısmında kullanabilmek için bu genin kontrol verilerini saklıyoruz.
-
         last_control_delta_ct = control_delta_ct 
-
         last_gene_index = i
-
     else:
-
         st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
-
         continue
 
    
 
     sample_counter = 1  # Kontrol grubu örnek sayacı
-
     for idx in range(min_control_len):
-
         input_values_table.append({
-
             "Örnek Numarası": sample_counter,
-
             "Hedef Gen": f"Hedef Gen {i+1}",
-
             "Grup": "Kontrol",
-
             "Hedef Gen Ct Değeri": control_target_ct_values[idx],
-
             "Referans Ct": control_reference_ct_values[idx], 
-
             "ΔCt (Kontrol)": control_delta_ct[idx]
-
         })
-
         sample_counter += 1
 
    
@@ -153,7 +144,6 @@ for i in range(num_target_genes):
     # Hasta Grubu Verileri
 
     for j in range(num_patient_groups):
-
         st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
 
        
@@ -324,18 +314,11 @@ for i in range(num_target_genes):
 
 if input_values_table:
 
-    st.subheader("📋 Giriş Verileri Tablosu")
-
+    st.subheader(language["input_data_table"])
     input_df = pd.DataFrame(input_values_table)
-
     st.write(input_df)
-
- 
-
     csv = input_df.to_csv(index=False).encode("utf-8")
-
-    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv")
-
+    st.download_button(label=language["download_csv"], data=csv, file_name="input_data.csv", mime="text/csv")
  
 
 # Sonuçlar Tablosunu Göster
