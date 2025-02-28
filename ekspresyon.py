@@ -147,11 +147,11 @@ stats_data = []
 last_control_delta_ct = None
 last_gene_index = None
 
-    salha = translations[language_code]["salha"]
-    hfg = translations[language_code]["hfg"]
-    rfg = translations[language_code]["rfg"]
-    ctd = translations[language_code]["ctd"]
-    hast = translations[language_code]["hast"]
+salha = translations[language_code]["salha"]
+hfg = translations[language_code]["hfg"]
+rfg = translations[language_code]["rfg"]
+ctd = translations[language_code]["ctd"]
+hast = translations[language_code]["hast"]
 
     # Kontrol Grubu Verileri
 for i in range(num_target_genes):
