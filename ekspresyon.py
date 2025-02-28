@@ -56,6 +56,20 @@ stats_data = []
 def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
+    lines = input_data.splitlines()  # Girdiyi satır satır ayır
+    result = []
+    for line in lines:
+        if line.strip():  # Boş satırları atla
+            # Virgül ve boşluklara göre parçala, nokta ayracı için düzeltme yap
+            parts = [x.strip() for x in line.replace(",", ".").split() if x.strip()]
+            try:
+                numbers = [float(x) for x in parts]
+            except Exception as e:
+                st.error(f"Geçersiz veri: {line}")
+                continue
+            # Birden fazla sayı varsa ortalama, yoksa tek sayı
+            result.append(np.mean(numbers) if len(numbers) > 1 else numbers[0])
+    return np.array(result)
 
 def calculate_average_for_line(input_values):
     """ Aynı satırda birden fazla veri varsa, ortalama hesaplar """
@@ -104,6 +118,17 @@ for i in range(num_target_genes):
         "Hedef Gen Ct Değeri": control_target_avg,
         "Referans Ct": control_reference_avg,
         "ΔCt (Kontrol)": control_delta_ct
+    })
+    for idx in range(len(control_target_ct_values)):
+        delta = control_target_ct_values[idx] - control_reference_ct_values[idx]
+        sample_number = idx + 1  # Örnek numarası, satır sırasına göre
+        input_values_table.append({
+        "Örnek Numarası": sample_number,
+        "Hedef Gen": f"Hedef Gen {i+1}",
+        "Grup": "Kontrol",
+        "Hedef Gen Ct Değeri": control_target_ct_values[idx],
+        "Referans Ct": control_reference_ct_values[idx],
+        "ΔCt (Kontrol)": delta
     })
 
     # Hasta Grubu Verileri
