@@ -19,6 +19,7 @@ languages = {
         "target_gen_count": "🔹 Hedef Gen Sayısını Girin",
         "patient_count": "🔹 Hasta Grubu Sayısını Girin",
         "control_group": "🧬 Kontrol Grubu",
+        "patient_group": "🩸 Hasta Grubu",        
         "warning": "⚠️ Dikkat: Kontrol Grubu verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
         "sample": "Örnek Numarası",
         "group": "Grup",
@@ -37,6 +38,7 @@ languages = {
         "target_gen_count": "🔹 Enter the Number of Target Genes",
         "patient_count": "🔹 Enter the Number of Patient Groups",
         "control_group": "🧬 Control Group",
+        "patient_group": "🩸 Patient Group", 
         "warning": "⚠️ Warning: Write Control Group data one below the other or copy-paste from Excel without empty cells.",
         "sample": "Sample Number",
         "group": "Group",
@@ -55,6 +57,7 @@ languages = {
         "target_gen_count": "🔹 Geben Sie die Anzahl der Zielgene ein",
         "patient_count": "🔹 Geben Sie die Anzahl der Patientengruppen ein",
         "control_group": "🧬 Kontrollgruppe",
+        "patient_group": "🩸 Patientengruppen",
         "warning": "⚠️ Warnung: Geben Sie die Daten der Kontrollgruppe untereinander ein oder kopieren Sie sie ohne leere Zellen aus Excel.",
         "sample": "Probenummer",
         "group": "Gruppe",
@@ -99,8 +102,8 @@ for i in range(num_target_genes):
     st.subheader(f"🧬 {language['control_group']} {i+1}")
 
     # Control Group Data
-    control_target_ct = st.text_area(f"🟦 {language['control_group']} {i+1} {language['target_gene_ct_value']}", key=f"control_target_ct_{i}")
-    control_reference_ct = st.text_area(f"🟦 {language['control_group']} {i+1} {language['reference_ct']}", key=f"control_reference_ct_{i}")
+    control_target_ct = st.text_area(f"🟦 {language['control_group']} {i+1} {language['target_gene_ct_value'] {i+1}}", key=f"control_target_ct_{i}")
+    control_reference_ct = st.text_area(f"🟦 {language['control_group']} {i+1} {language['reference_ct'] {i+1}}", key=f"control_reference_ct_{i}")
 
     control_target_ct_values = parse_input_data(control_target_ct)
     control_reference_ct_values = parse_input_data(control_reference_ct)
