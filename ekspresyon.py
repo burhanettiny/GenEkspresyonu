@@ -185,7 +185,7 @@ for i in range(num_target_genes):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
             "Hedef Gen": f"Hedef Gen {i+1}",
-            "Grup": "Kontrol",
+            "xyz": "Kontrol",
             "Hedef Gen Ct Değeri": control_target_ct_values[idx],
             "Referans Ct": control_reference_ct_values[idx],  
             "ΔCt (Kontrol)": control_delta_ct[idx]
@@ -226,7 +226,7 @@ for i in range(num_target_genes):
             input_values_table.append({
                 "Örnek Numarası": sample_counter,
                 "Hedef Gen": f"Hedef Gen {i+1}",
-                "Grup": f"Hasta Grubu {j+1}",
+                "xyz": f"Hasta Grubu {j+1}",
                 "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
                 "Referans Ct": sample_reference_ct_values[idx],
                 "ΔCt (Hasta)": sample_delta_ct[idx]
@@ -314,12 +314,12 @@ for i in range(num_target_genes):
     # Kontrol Grubu Verileri
     control_target_ct_values = [
         d["Hedef Gen Ct Değeri"] for d in input_values_table
-        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+        if d["xyz"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
     ]
     
     control_reference_ct_values = [
         d["Referans Ct"] for d in input_values_table
-        if d["Grup"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+        if d["xyz"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
     ]
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
@@ -345,7 +345,7 @@ for i in range(num_target_genes):
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
             d["ΔCt (Hasta)"] for d in input_values_table 
-            if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+            if d["xyz"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
         ]
     
         if not sample_delta_ct_values:
@@ -375,7 +375,7 @@ for i in range(num_target_genes):
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
             d["ΔCt (Hasta)"] for d in input_values_table 
-            if d["Grup"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+            if d["xyz"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
         ]
     
         if not sample_delta_ct_values:
@@ -397,7 +397,7 @@ for i in range(num_target_genes):
         xaxis=dict(
             tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
             ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
-            title='Grup'
+            title='xyz'
         ),
         yaxis=dict(title='ΔCt Değeri'),
         showlegend=True
