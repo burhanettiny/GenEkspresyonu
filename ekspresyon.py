@@ -33,7 +33,7 @@ def parse_input_data(input_data):
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
 
-# Grafik için son işlenen Hedef Genın kontrol verilerini saklamak amacıyla değişkenler
+# Grafik için son işlenen Hedef Gen'ın kontrol verilerini saklamak amacıyla değişkenler
 last_control_delta_ct = None
 last_gene_index = None
 
@@ -54,8 +54,8 @@ for i in range(num_target_genes):
         st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
         continue
 
-    # Yan yana girilen her değerin ortalaması alınacak, alt alta girilen veriler yeni örnek numarası alacak
-    control_counter = 1  # Kontrol grubu için örnek sayacı
+    # Kontrol Grubu için örnek numarası
+    control_counter = 1
     for idx in range(len(control_target_ct_values)):
         avg_control_target_ct = np.mean(control_target_ct_values)  # Ortalamasını alıyoruz
         avg_control_reference_ct = np.mean(control_reference_ct_values)  # Ortalamasını alıyoruz
@@ -85,8 +85,8 @@ for j in range(num_patient_groups):
         st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
         continue
 
-    # Yan yana girilen her değerin ortalaması alınacak, alt alta girilen veriler yeni örnek numarası alacak
-    sample_counter = 1  # Hasta grubu için örnek sayacı
+    # Hasta Grubu için örnek numarası
+    sample_counter = 1
     for idx in range(len(sample_target_ct_values)):
         avg_sample_target_ct = np.mean(sample_target_ct_values)  # Ortalamasını alıyoruz
         avg_sample_reference_ct = np.mean(sample_reference_ct_values)  # Ortalamasını alıyoruz
