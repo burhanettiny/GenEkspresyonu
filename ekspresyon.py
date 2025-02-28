@@ -155,9 +155,9 @@ hast = translations[language_code]["hast"]
 
     # Kontrol Grubu Verileri
 for i in range(num_target_genes):
-    st.subheader(f"{salha} {i+1} - {hfg} {i+1}")
-    control_target_ct = st.text_area(f"{salha} {i+1} - {hfg} {i+1} - {ctd}", key=f"control_target_ct_{i}")
-    control_reference_ct = st.text_area(f"{salha} {i+1} - {rfg} {i+1} - {ctd}", key=f"control_reference_ct_{i}")
+    st.subheader(f"{translations[language_code]['control_group']} {i+1} - {translations[language_code]['target_gene']} {i+1}")
+    control_target_ct = st.text_area(f"{translations[language_code]['control_group']} {i+1} - {translations[language_code]['target_gene']} {i+1} - {translations[language_code]['ct_value']}", key=f"control_target_ct_{i}")
+    control_reference_ct = st.text_area(f"{translations[language_code]['control_group']} {i+1} - {translations[language_code]['reference_gene']} {i+1} - {translations[language_code]['ct_value']}", key=f"control_reference_ct_{i}")
    
     control_target_ct_values = np.array(parse_input_data(control_target_ct))
     control_reference_ct_values = np.array(parse_input_data(control_reference_ct))
@@ -187,10 +187,21 @@ for i in range(num_target_genes):
     
     # Hasta Grubu Verileri
     for j in range(num_patient_groups):
-        st.subheader(f"{hast} {j+1} - {hfg} {i+1}")        
+        input_values_table.append({
+            translations[language_code]["sample_number"]: sample_counter,
+            translations[language_code]["target_gene"]: f"{translations[language_code]['target_gene']} {i+1}",
+            "xyz": translations[language_code]["control_group"],
+            translations[language_code]["target_ct"]: control_target_ct_values[idx],
+            translations[language_code]["reference_ct"]: control_reference_ct_values[idx],  
+            translations[language_code]["delta_ct_control"]: control_delta_ct[idx]
+        })
+        sample_counter += 1
+    
+    for j in range(num_patient_groups):
+        st.subheader(f"{translations[language_code]['patient_group']} {j+1} - {translations[language_code]['target_gene']} {i+1}")        
         
-        sample_target_ct = st.text_area(f"{hast} {j+1} - {hfg} {i+1} - {ctd}", key=f"sample_target_ct_{i}_{j}")
-        sample_reference_ct = st.text_area(f"{hast} {j+1} - {rfg} {i+1} - {ctd}", key=f"sample_reference_ct_{i}_{j}")
+        sample_target_ct = st.text_area(f"{translations[language_code]['patient_group']} {j+1} - {translations[language_code]['target_gene']} {i+1} - {translations[language_code]['ct_value']}", key=f"sample_target_ct_{i}_{j}")
+        sample_reference_ct = st.text_area(f"{translations[language_code]['patient_group']} {j+1} - {translations[language_code]['reference_gene']} {i+1} - {translations[language_code]['ct_value']}", key=f"sample_reference_ct_{i}_{j}")
         
         sample_target_ct_values = np.array(parse_input_data(sample_target_ct))
         sample_reference_ct_values = np.array(parse_input_data(sample_reference_ct))
@@ -210,13 +221,14 @@ for i in range(num_target_genes):
         for idx in range(min_sample_len):
             input_values_table.append({
                 translations[language_code]["sample_number"]: sample_counter,
-                translations[language_code]["target_gene"]: f"{hfg} {i+1}",
-                "xyz": f"{translations[language_code]["patient_group"]} {j+1}",
+                translations[language_code]["target_gene"]: f"{translations[language_code]['target_gene']} {i+1}",
+                "xyz": f"{translations[language_code]['patient_group']} {j+1}",
                 translations[language_code]["target_ct"]: sample_target_ct_values[idx],
                 translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
                 translations[language_code]["delta_ct_patient"]: sample_delta_ct[idx]
             })
             sample_counter += 1
+
         
         # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
         if average_control_delta_ct is not None and average_sample_delta_ct is not None:
