@@ -54,23 +54,22 @@ for i in range(num_target_genes):
         st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
         continue
 
-    # Her bir satır için örnek numarasını arttıracağız
-    sample_counter = 1
+    # Yan yana girilen her değerin ortalaması alınacak, alt alta girilen veriler yeni örnek numarası alacak
+    control_counter = 1  # Kontrol grubu için örnek sayacı
     for idx in range(len(control_target_ct_values)):
-        # Kontrol grubundaki her bir örnek için ortalama alıyoruz
-        avg_control_target_ct = np.mean(control_target_ct_values)
-        avg_control_reference_ct = np.mean(control_reference_ct_values)
+        avg_control_target_ct = np.mean(control_target_ct_values)  # Ortalamasını alıyoruz
+        avg_control_reference_ct = np.mean(control_reference_ct_values)  # Ortalamasını alıyoruz
         avg_control_delta_ct = avg_control_target_ct - avg_control_reference_ct
 
         input_values_table.append({
-            "Örnek Numarası": sample_counter,
+            "Örnek Numarası": control_counter,
             "Hedef Gen": f"Hedef Gen {i+1}",
             "Grup": "Kontrol",
             "Hedef Gen Ct Değeri": avg_control_target_ct,
             "Referans Ct": avg_control_reference_ct,
             "ΔCt (Kontrol)": avg_control_delta_ct
         })
-        sample_counter += 1  # Her satırda örnek numarasını artırıyoruz
+        control_counter += 1  # Yeni örnek numarası alıyoruz
 
 # Aynı işlemi Hasta grubu için de yapıyoruz:
 for j in range(num_patient_groups):
@@ -86,12 +85,11 @@ for j in range(num_patient_groups):
         st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
         continue
 
-    # Her bir satır için örnek numarasını arttıracağız
-    sample_counter = 1
+    # Yan yana girilen her değerin ortalaması alınacak, alt alta girilen veriler yeni örnek numarası alacak
+    sample_counter = 1  # Hasta grubu için örnek sayacı
     for idx in range(len(sample_target_ct_values)):
-        # Hasta grubundaki her bir örnek için ortalama alıyoruz
-        avg_sample_target_ct = np.mean(sample_target_ct_values)
-        avg_sample_reference_ct = np.mean(sample_reference_ct_values)
+        avg_sample_target_ct = np.mean(sample_target_ct_values)  # Ortalamasını alıyoruz
+        avg_sample_reference_ct = np.mean(sample_reference_ct_values)  # Ortalamasını alıyoruz
         avg_sample_delta_ct = avg_sample_target_ct - avg_sample_reference_ct
 
         input_values_table.append({
@@ -102,7 +100,7 @@ for j in range(num_patient_groups):
             "Referans Ct": avg_sample_reference_ct,
             "ΔCt (Hasta)": avg_sample_delta_ct
         })
-        sample_counter += 1  # Her satırda örnek numarasını artırıyoruz
+        sample_counter += 1  # Yeni örnek numarası alıyoruz
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table:
