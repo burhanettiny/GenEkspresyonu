@@ -131,6 +131,7 @@ for j in range(num_patient_groups):
             "ΔCt (Hasta)": np.mean(values)  # Aynı örnek numarasındaki ΔCt değerlerinin ortalaması
         })
 
+
 # Giriş Verileri Tablosunu Göster
 if input_values_table:
     st.subheader("📋 Giriş Verileri Tablosu")
