@@ -162,7 +162,6 @@ for i in range(num_target_genes):
     control_target_ct_values = np.array(parse_input_data(control_target_ct))
     control_reference_ct_values = np.array(parse_input_data(control_reference_ct))
 
-    # Uzunluk kontrolü ve dil kontrolü
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
         st.error(translations[language_code]["warning_control_ct"].format(i=i+1))
         continue
@@ -177,12 +176,12 @@ for i in range(num_target_genes):
     
     for idx in range(min_control_len):
         input_values_table.append({
-            "Örnek Numarası": sample_counter,
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "xyz": "Kontrol",
-            "Hedef Gen Ct Değeri": control_target_ct_values[idx],
-            "Referans Ct": control_reference_ct_values[idx],  
-            "ΔCt (Kontrol)": control_delta_ct[idx]
+            translations[language_code]["sample_number"]: sample_counter,
+            translations[language_code]["target_gene"]: f"{hfg} {i+1}",
+            "xyz": translations[language_code]["control_group"],
+            translations[language_code]["target_ct"]: control_target_ct_values[idx],
+            translations[language_code]["reference_ct"]: control_reference_ct_values[idx],  
+            translations[language_code]["delta_ct_control"]: control_delta_ct[idx]
         })
         sample_counter += 1
     
@@ -207,15 +206,15 @@ for i in range(num_target_genes):
         
         average_sample_delta_ct = np.mean(sample_delta_ct) if len(sample_delta_ct) > 0 else None
         
-        sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
+        sample_counter = 1  
         for idx in range(min_sample_len):
             input_values_table.append({
-                "Örnek Numarası": sample_counter,
-                "Hedef Gen": f"Hedef Gen {i+1}",
-                "xyz": f"Hasta Grubu {j+1}",
-                "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
-                "Referans Ct": sample_reference_ct_values[idx],
-                "ΔCt (Hasta)": sample_delta_ct[idx]
+                translations[language_code]["sample_number"]: sample_counter,
+                translations[language_code]["target_gene"]: f"{hfg} {i+1}",
+                "xyz": f"{translations[language_code]["patient_group"]} {j+1}",
+                translations[language_code]["target_ct"]: sample_target_ct_values[idx],
+                translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
+                translations[language_code]["delta_ct_patient"]: sample_delta_ct[idx]
             })
             sample_counter += 1
         
