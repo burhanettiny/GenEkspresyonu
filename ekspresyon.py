@@ -67,29 +67,18 @@ for i in range(num_target_genes):
         continue
    
     # Her örneği işleyerek ortalama alınması
-    grouped_data = {}
     sample_counter = 1  # Örnek numarasını başlatıyoruz
 
     for idx in range(min_control_len):
-        # Aynı örnek numarasına ait verileri yan yana gruplama
-        if sample_counter not in grouped_data:
-            grouped_data[sample_counter] = []
-        grouped_data[sample_counter].append(control_delta_ct[idx])
-
-        # Alt satıra inildiğinde yeni örnek numarasını tanımlıyoruz
-        if (idx + 1) % min_control_len == 0:  # Her yeni satırda örnek numarası artırılacak
-            sample_counter += 1
-
-    # Her örnek numarasına ait verilerin ortalaması alınıp, tabloya ekleniyor
-    for sample_num, values in grouped_data.items():
         input_values_table.append({
-            "Örnek Numarası": sample_num,
+            "Örnek Numarası": sample_counter,
             "Hedef Gen": f"Hedef Gen {i+1}",
             "Grup": "Kontrol",
-            "Hedef Gen Ct Değeri": np.mean([control_target_ct_values[idx] for idx in range(len(control_target_ct_values))]),
-            "Referans Ct": np.mean([control_reference_ct_values[idx] for idx in range(len(control_reference_ct_values))]),
-            "ΔCt (Kontrol)": np.mean(values)  # Aynı örnek numarasındaki ΔCt değerlerinin ortalaması
+            "Hedef Gen Ct Değeri": control_target_ct_values[idx],
+            "Referans Ct": control_reference_ct_values[idx],
+            "ΔCt (Kontrol)": control_delta_ct[idx]
         })
+        sample_counter += 1  # Her satırda örnek numarasını artırıyoruz
 
 # Aynı işlemi Hasta grubu için de yapıyoruz:
 for j in range(num_patient_groups):
@@ -117,28 +106,19 @@ for j in range(num_patient_groups):
         continue
 
     # Her örneği işleyerek ortalama alınması
-    grouped_data_sample = {}
     sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
 
     for idx in range(min_sample_len):
-        if sample_counter not in grouped_data_sample:
-            grouped_data_sample[sample_counter] = []
-        grouped_data_sample[sample_counter].append(sample_delta_ct[idx])
-
-        # Alt satıra inildiğinde yeni örnek numarası tanımlanır
-        if (idx + 1) % min_sample_len == 0:  # Her yeni satırda örnek numarası artırılacak
-            sample_counter += 1
-
-    # Her örnek numarasına ait verilerin ortalaması alınıp, tabloya ekleniyor
-    for sample_num, values in grouped_data_sample.items():
         input_values_table.append({
-            "Örnek Numarası": sample_num,
+            "Örnek Numarası": sample_counter,
             "Hedef Gen": f"Hedef Gen {i+1}",
             "Grup": f"Hasta Grubu {j+1}",
-            "Hedef Gen Ct Değeri": np.mean([sample_target_ct_values[idx] for idx in range(len(sample_target_ct_values))]),
-            "Referans Ct": np.mean([sample_reference_ct_values[idx] for idx in range(len(sample_reference_ct_values))]),
-            "ΔCt (Hasta)": np.mean(values)  # Aynı örnek numarasındaki ΔCt değerlerinin ortalaması
+            "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
+            "Referans Ct": sample_reference_ct_values[idx],
+            "ΔCt (Hasta)": sample_delta_ct[idx]
         })
+        sample_counter += 1  # Her satırda örnek numarasını artırıyoruz
+
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table:
