@@ -29,6 +29,7 @@ stats_data = []
 
 # Giriş verilerini işleyen fonksiyon
 def parse_input_data(input_data):
+    # Virgülleri noktaya dönüştürüp, boşlukları ve fazlalıkları temizliyoruz
     values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
     return np.array([float(x) for x in values if x])
 
@@ -53,30 +54,21 @@ for i in range(num_target_genes):
         st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
         continue
 
-    min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
-    control_target_ct_values = control_target_ct_values[:min_control_len]
-    control_reference_ct_values = control_reference_ct_values[:min_control_len]
-    control_delta_ct = control_target_ct_values - control_reference_ct_values
+    # Her bir satır için örnek numarasını arttıracağız
+    sample_counter = 1
+    for idx in range(len(control_target_ct_values)):
+        # Kontrol grubundaki her bir örnek için ortalama alıyoruz
+        avg_control_target_ct = np.mean(control_target_ct_values)
+        avg_control_reference_ct = np.mean(control_reference_ct_values)
+        avg_control_delta_ct = avg_control_target_ct - avg_control_reference_ct
 
-    if len(control_delta_ct) > 0:
-        average_control_delta_ct = np.mean(control_delta_ct)
-        last_control_delta_ct = control_delta_ct 
-        last_gene_index = i
-    else:
-        st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
-        continue
-   
-    # Her örneği işleyerek ortalama alınması
-    sample_counter = 1  # Örnek numarasını başlatıyoruz
-
-    for idx in range(min_control_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
             "Hedef Gen": f"Hedef Gen {i+1}",
             "Grup": "Kontrol",
-            "Hedef Gen Ct Değeri": control_target_ct_values[idx],
-            "Referans Ct": control_reference_ct_values[idx],
-            "ΔCt (Kontrol)": control_delta_ct[idx]
+            "Hedef Gen Ct Değeri": avg_control_target_ct,
+            "Referans Ct": avg_control_reference_ct,
+            "ΔCt (Kontrol)": avg_control_delta_ct
         })
         sample_counter += 1  # Her satırda örnek numarasını artırıyoruz
 
@@ -94,31 +86,23 @@ for j in range(num_patient_groups):
         st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
         continue
 
-    min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
-    sample_target_ct_values = sample_target_ct_values[:min_sample_len]
-    sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
-    sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
+    # Her bir satır için örnek numarasını arttıracağız
+    sample_counter = 1
+    for idx in range(len(sample_target_ct_values)):
+        # Hasta grubundaki her bir örnek için ortalama alıyoruz
+        avg_sample_target_ct = np.mean(sample_target_ct_values)
+        avg_sample_reference_ct = np.mean(sample_reference_ct_values)
+        avg_sample_delta_ct = avg_sample_target_ct - avg_sample_reference_ct
 
-    if len(sample_delta_ct) > 0:
-        average_sample_delta_ct = np.mean(sample_delta_ct)
-    else:
-        st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-        continue
-
-    # Her örneği işleyerek ortalama alınması
-    sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
-
-    for idx in range(min_sample_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
             "Hedef Gen": f"Hedef Gen {i+1}",
             "Grup": f"Hasta Grubu {j+1}",
-            "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
-            "Referans Ct": sample_reference_ct_values[idx],
-            "ΔCt (Hasta)": sample_delta_ct[idx]
+            "Hedef Gen Ct Değeri": avg_sample_target_ct,
+            "Referans Ct": avg_sample_reference_ct,
+            "ΔCt (Hasta)": avg_sample_delta_ct
         })
         sample_counter += 1  # Her satırda örnek numarasını artırıyoruz
-
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table:
