@@ -62,114 +62,69 @@ for i in range(num_target_genes):
         st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
         continue
    
-    # Verilerin ortalama alınması ve örnek numarasına göre sıralanması
-    sample_counter = 1  # Kontrol grubu örnek sayacı
-    grouped_data = {}
+# Verilerin ortalama alınması ve örnek numarasına göre sıralanması
+sample_counter = 1  # Kontrol grubu örnek sayacı
+grouped_data = {}
 
-    for idx in range(min_control_len):
-        # Aynı örnek numarasına ait verileri yan yana gruplama
-        if sample_counter not in grouped_data:
-            grouped_data[sample_counter] = []
-        grouped_data[sample_counter].append(control_delta_ct[idx])
+for idx in range(min_control_len):
+    # Aynı örnek numarasına ait verileri yan yana gruplama
+    if sample_counter not in grouped_data:
+        grouped_data[sample_counter] = []
+    grouped_data[sample_counter].append(control_delta_ct[idx])
+    sample_counter += 1
+
+for sample_num, values in grouped_data.items():
+    input_values_table.append({
+        "Örnek Numarası": sample_num,
+        "Hedef Gen": f"Hedef Gen {i+1}",
+        "Grup": "Kontrol",
+        "Hedef Gen Ct Değeri": np.mean([control_target_ct_values[idx] for idx in range(len(control_target_ct_values))]),
+        "Referans Ct": np.mean([control_reference_ct_values[idx] for idx in range(len(control_reference_ct_values))]),
+        "ΔCt (Kontrol)": np.mean(values)  # Aynı örnek numarasındaki ΔCt değerlerinin ortalaması
+    })
+
+# Aynı işlemi Hasta grubu için de yapıyoruz:
+for j in range(num_patient_groups):
+    st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
+
+    sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
+    sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
+
+    sample_target_ct_values = parse_input_data(sample_target_ct)
+    sample_reference_ct_values = parse_input_data(sample_reference_ct)
+
+    if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
+        st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+        continue
+
+    min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
+    sample_target_ct_values = sample_target_ct_values[:min_sample_len]
+    sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
+    sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
+
+    if len(sample_delta_ct) > 0:
+        average_sample_delta_ct = np.mean(sample_delta_ct)
+    else:
+        st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+        continue
+
+    sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
+    grouped_data_sample = {}
+
+    for idx in range(min_sample_len):
+        if sample_counter not in grouped_data_sample:
+            grouped_data_sample[sample_counter] = []
+        grouped_data_sample[sample_counter].append(sample_delta_ct[idx])
         sample_counter += 1
 
-    for sample_num, values in grouped_data.items():
+    for sample_num, values in grouped_data_sample.items():
         input_values_table.append({
             "Örnek Numarası": sample_num,
             "Hedef Gen": f"Hedef Gen {i+1}",
-            "Grup": "Kontrol",
-            "Hedef Gen Ct Değeri": np.mean([control_target_ct_values[idx] for idx in range(len(control_target_ct_values))]),
-            "Referans Ct": np.mean([control_reference_ct_values[idx] for idx in range(len(control_reference_ct_values))]),
-            "ΔCt (Kontrol)": np.mean(values)
-        })
-
-    # Hasta Grubu Verileri
-    for j in range(num_patient_groups):
-        st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
-
-        sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
-        sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
-
-        sample_target_ct_values = parse_input_data(sample_target_ct)
-        sample_reference_ct_values = parse_input_data(sample_reference_ct)
-
-        if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-            continue
-
-        min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
-        sample_target_ct_values = sample_target_ct_values[:min_sample_len]
-        sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
-        sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
-
-        if len(sample_delta_ct) > 0:
-            average_sample_delta_ct = np.mean(sample_delta_ct)
-        else:
-            st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-            continue
-
-        sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
-        grouped_data_sample = {}
-
-        for idx in range(min_sample_len):
-            if sample_counter not in grouped_data_sample:
-                grouped_data_sample[sample_counter] = []
-            grouped_data_sample[sample_counter].append(sample_delta_ct[idx])
-            sample_counter += 1
-
-        for sample_num, values in grouped_data_sample.items():
-            input_values_table.append({
-                "Örnek Numarası": sample_num,
-                "Hedef Gen": f"Hedef Gen {i+1}",
-                "Grup": f"Hasta Grubu {j+1}",
-                "Hedef Gen Ct Değeri": np.mean([sample_target_ct_values[idx] for idx in range(len(sample_target_ct_values))]),
-                "Referans Ct": np.mean([sample_reference_ct_values[idx] for idx in range(len(sample_reference_ct_values))]),
-                "ΔCt (Hasta)": np.mean(values)
-            })
-
-        # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
-        delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
-        expression_change = 2 ** (-delta_delta_ct)
-
-        regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
-
-        # İstatistiksel Testler
-        shapiro_control = stats.shapiro(control_delta_ct)
-        shapiro_sample = stats.shapiro(sample_delta_ct)
-        levene_test = stats.levene(control_delta_ct, sample_delta_ct)
-
-        control_normal = shapiro_control.pvalue > 0.05
-        sample_normal = shapiro_sample.pvalue > 0.05
-        equal_variance = levene_test.pvalue > 0.05
-
-        test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
-
-        if test_type == "Parametrik":
-            test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
-            test_method = "t-test"
-        else:
-            test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
-            test_method = "Mann-Whitney U testi"
-
-        significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
-
-        stats_data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta Grubu": f"Hasta Grubu {j+1}",
-            "Test Türü": test_type,
-            "Kullanılan Test": test_method, 
-            "Test P-değeri": test_pvalue,
-            "Anlamlılık": significance
-        })
-
-        data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta Grubu": f"Hasta Grubu {j+1}",
-            "ΔΔCt": delta_delta_ct,
-            "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
-            "Regülasyon Durumu": regulation_status,
-            "ΔCt (Kontrol)": average_control_delta_ct,
-            "ΔCt (Hasta)": average_sample_delta_ct
+            "Grup": f"Hasta Grubu {j+1}",
+            "Hedef Gen Ct Değeri": np.mean([sample_target_ct_values[idx] for idx in range(len(sample_target_ct_values))]),
+            "Referans Ct": np.mean([sample_reference_ct_values[idx] for idx in range(len(sample_reference_ct_values))]),
+            "ΔCt (Hasta)": np.mean(values)  # Aynı örnek numarasındaki ΔCt değerlerinin ortalaması
         })
 
 # Giriş Verileri Tablosunu Göster
