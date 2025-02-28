@@ -53,162 +53,282 @@ data = []
 stats_data = []
 
  
-def parse_input_data(input_data):
-    values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
-    return np.array([float(x) for x in values if x])
-    lines = input_data.splitlines()  # Girdiyi satır satır ayır
-    result = []
-    for line in lines:
-        if line.strip():  # Boş satırları atla
-            # Virgül ve boşluklara göre parçala, nokta ayracı için düzeltme yap
-            parts = [x.strip() for x in line.replace(",", ".").split() if x.strip()]
-            try:
-                numbers = [float(x) for x in parts]
-            except Exception as e:
-                st.error(f"Geçersiz veri: {line}")
-                continue
-            # Birden fazla sayı varsa ortalama, yoksa tek sayı
-            result.append(np.mean(numbers) if len(numbers) > 1 else numbers[0])
-    return np.array(result)
 
-def calculate_average_for_line(input_values):
-    """ Aynı satırda birden fazla veri varsa, ortalama hesaplar """
-    if len(input_values) > 1:
-        return np.mean(input_values)
-    return input_values[0]
+def parse_input_data(input_data):
+    # Verileri boşlukla ayır ve her değeri float'a çevir
+    values = [x.replace(",", ".").strip() for x in input_data.split() if x.strip()]
+    
+    # Eğer veri varsa, ortalama hesapla
+    if values:
+        numeric_values = [float(x) for x in values]
+        return np.mean(numeric_values)  # Ortalama değeri döndür
+    else:
+        return np.nan  # Eğer veri yoksa, NaN döndür 
 
 # Grafik için son işlenen Hedef Genın kontrol verilerini saklamak amacıyla değişkenler
+
 last_control_delta_ct = None
+
 last_gene_index = None
 
+ 
+
 for i in range(num_target_genes):
+
     st.subheader(f"🧬 Hedef Gen {i+1}")
 
+   
+
     # Kontrol Grubu Verileri
+
     control_target_ct = st.text_area(f"🟦 Kontrol Grubu Hedef Gen {i+1} Ct Değerleri", key=f"control_target_ct_{i}")
+
     control_reference_ct = st.text_area(f"🟦 Kontrol Grubu Referans Gen {i+1} Ct Değerleri", key=f"control_reference_ct_{i}")
 
+   
+
     control_target_ct_values = parse_input_data(control_target_ct)
+
     control_reference_ct_values = parse_input_data(control_reference_ct)
 
-    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-        continue
-
-    # Her iki veri seti için ortak uzunluğu kullanıyoruz
+   # Eğer verilerde birden fazla ölçüm varsa, ortalama alınır
+if isinstance(control_target_ct_values, np.ndarray):
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
+    control_delta_ct = control_target_ct_values - control_reference_ct_values
+else:
+    control_delta_ct = control_target_ct_values - control_reference_ct_values
 
-    # Aynı satırda birden fazla veri varsa ortalama al
-    control_target_avg = calculate_average_for_line(control_target_ct_values)
-    control_reference_avg = calculate_average_for_line(control_reference_ct_values)
-    control_delta_ct = control_target_avg - control_reference_avg
 
-    # Artık ΔCt tek bir değer olduğundan, uzunluk kontrolüne gerek yok:
-    average_control_delta_ct = control_delta_ct
-    last_control_delta_ct = control_delta_ct 
-    last_gene_index = i
+    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
 
-    # Kontrol verilerini tabloya ekle
-    input_values_table.append({
-        "Örnek Numarası": 1,
-        "Hedef Gen": f"Hedef Gen {i+1}",
-        "Grup": "Kontrol",
-        "Hedef Gen Ct Değeri": control_target_avg,
-        "Referans Ct": control_reference_avg,
-        "ΔCt (Kontrol)": control_delta_ct
-    })
-    for idx in range(len(control_target_ct_values)):
-        delta = control_target_ct_values[idx] - control_reference_ct_values[idx]
-        sample_number = idx + 1  # Örnek numarası, satır sırasına göre
-        input_values_table.append({
-        "Örnek Numarası": sample_number,
-        "Hedef Gen": f"Hedef Gen {i+1}",
-        "Grup": "Kontrol",
-        "Hedef Gen Ct Değeri": control_target_ct_values[idx],
-        "Referans Ct": control_reference_ct_values[idx],
-        "ΔCt (Kontrol)": delta
-    })
+        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
 
-    # Hasta Grubu Verileri
-    for j in range(num_patient_groups):
-        st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
+        continue
 
-        sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
-        sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
+   
 
-        sample_target_ct_values = parse_input_data(sample_target_ct)
-        sample_reference_ct_values = parse_input_data(sample_reference_ct)
+    min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
 
-        if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-            continue
+    control_target_ct_values = control_target_ct_values[:min_control_len]
 
-        min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
-        sample_target_ct_values = sample_target_ct_values[:min_sample_len]
-        sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
+    control_reference_ct_values = control_reference_ct_values[:min_control_len]
 
-        sample_target_avg = calculate_average_for_line(sample_target_ct_values)
-        sample_reference_avg = calculate_average_for_line(sample_reference_ct_values)
-        sample_delta_ct = sample_target_avg - sample_reference_avg
+    control_delta_ct = control_target_ct_values - control_reference_ct_values
 
-        average_sample_delta_ct = sample_delta_ct
+   
+
+    if len(control_delta_ct) > 0:
+
+        average_control_delta_ct = np.mean(control_delta_ct)
+
+        # Grafik kısmında kullanabilmek için bu genin kontrol verilerini saklıyoruz.
+
+        last_control_delta_ct = control_delta_ct 
+
+        last_gene_index = i
+
+    else:
+
+        st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
+
+        continue
+
+   
+
+    sample_counter = 1  # Kontrol grubu örnek sayacı
+
+    for idx in range(min_control_len):
 
         input_values_table.append({
-            "Örnek Numarası": 1,
+
+            "Örnek Numarası": sample_counter,
+
             "Hedef Gen": f"Hedef Gen {i+1}",
-            "Grup": f"Hasta Grubu {j+1}",
-            "Hedef Gen Ct Değeri": sample_target_avg,
-            "Referans Ct": sample_reference_avg,
-            "ΔCt (Hasta)": sample_delta_ct
+
+            "Grup": "Kontrol",
+
+            "Hedef Gen Ct Değeri": control_target_ct_values[idx],
+
+            "Referans Ct": control_reference_ct_values[idx], 
+
+            "ΔCt (Kontrol)": control_delta_ct[idx]
+
         })
 
+        sample_counter += 1
+
+   
+
+    # Hasta Grubu Verileri
+
+    for j in range(num_patient_groups):
+
+        st.subheader(f"🩸 Hasta Grubu {j+1} - Hedef Gen {i+1}")
+
+       
+
+        sample_target_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Hedef Gen {i+1} Ct Değerleri", key=f"sample_target_ct_{i}_{j}")
+
+        sample_reference_ct = st.text_area(f"🟥 Hasta Grubu {j+1} Referans Gen {i+1} Ct Değerleri", key=f"sample_reference_ct_{i}_{j}")
+
+       
+
+        sample_target_ct_values = parse_input_data(sample_target_ct)
+
+        sample_reference_ct_values = parse_input_data(sample_reference_ct)
+
+       
+
+        if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
+
+            st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+
+            continue
+
+       
+
+        min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
+
+        sample_target_ct_values = sample_target_ct_values[:min_sample_len]
+
+        sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
+
+        sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
+
+       
+
+        if len(sample_delta_ct) > 0:
+
+            average_sample_delta_ct = np.mean(sample_delta_ct)
+
+        else:
+
+            st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+
+            continue
+
+       
+
+        sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
+
+        for idx in range(min_sample_len):
+
+            input_values_table.append({
+
+                "Örnek Numarası": sample_counter,
+
+                "Hedef Gen": f"Hedef Gen {i+1}",
+
+                "Grup": f"Hasta Grubu {j+1}",
+
+                "Hedef Gen Ct Değeri": sample_target_ct_values[idx],
+
+                "Referans Ct": sample_reference_ct_values[idx],
+
+                "ΔCt (Hasta)": sample_delta_ct[idx]
+
+            })
+
+            sample_counter += 1
+
+       
+
         # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
+
         delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
+
         expression_change = 2 ** (-delta_delta_ct)
+
+       
+
         regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
 
-        # İstatistiksel Testler (orijinal veriler üzerinden)
-        shapiro_control = stats.shapiro(control_target_ct_values - control_reference_ct_values)
-        shapiro_sample = stats.shapiro(sample_target_ct_values - sample_reference_ct_values)
-        levene_test = stats.levene(control_target_ct_values - control_reference_ct_values, sample_target_ct_values - sample_reference_ct_values)
+       
+
+        # İstatistiksel Testler
+
+        shapiro_control = stats.shapiro(control_delta_ct)
+
+        shapiro_sample = stats.shapiro(sample_delta_ct)
+
+        levene_test = stats.levene(control_delta_ct, sample_delta_ct)
+
+       
 
         control_normal = shapiro_control.pvalue > 0.05
+
         sample_normal = shapiro_sample.pvalue > 0.05
+
         equal_variance = levene_test.pvalue > 0.05
+
+       
 
         test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
 
+       
+
         if test_type == "Parametrik":
-            test_pvalue = stats.ttest_ind(control_target_ct_values - control_reference_ct_values,
-                                          sample_target_ct_values - sample_reference_ct_values).pvalue
+
+            test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
+
             test_method = "t-test"
+
         else:
-            test_pvalue = stats.mannwhitneyu(control_target_ct_values - control_reference_ct_values,
-                                             sample_target_ct_values - sample_reference_ct_values).pvalue
+
+            test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
+
             test_method = "Mann-Whitney U testi"
+
+       
 
         significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
 
+        
+
         stats_data.append({
+
             "Hedef Gen": f"Hedef Gen {i+1}",
+
             "Hasta Grubu": f"Hasta Grubu {j+1}",
+
             "Test Türü": test_type,
-            "Kullanılan Test": test_method,
+
+            "Kullanılan Test": test_method, 
+
             "Test P-değeri": test_pvalue,
+
             "Anlamlılık": significance
+
         })
 
+       
+
         data.append({
+
             "Hedef Gen": f"Hedef Gen {i+1}",
+
             "Hasta Grubu": f"Hasta Grubu {j+1}",
+
             "ΔΔCt": delta_delta_ct,
+
             "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
+
             "Regülasyon Durumu": regulation_status,
-            "ΔCt (Kontrol)": average_control_delta_ct,
+
+         
+
+ 
+
+ 
+
+  "ΔCt (Kontrol)": average_control_delta_ct,
+
             "ΔCt (Hasta)": average_sample_delta_ct
+
         })
+
  
 
 # Giriş Verileri Tablosunu Göster
@@ -632,3 +752,4 @@ if st.button("📥 PDF Raporu Hazırla"):
     else:
 
         st.error("Veri bulunamadı, PDF oluşturulamadı.")
+
