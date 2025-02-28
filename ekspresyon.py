@@ -34,7 +34,7 @@ translations = {
         "num_target_genes": "🔹 Hedef Gen Sayısını Girin",
         "num_patient_groups": "🔹 Hasta Grubu Sayısını Girin",
         "sample_number": "Örnek Numarası",
-        "group": "Grup",
+        "xyz": "Grup",
         "gene_ct_value": "Hedef Gen Ct Değeri",
         "reference_ct": "Referans Ct",
         "delta_ct": "ΔCt (Kontrol)",
@@ -66,7 +66,7 @@ translations = {
         "num_target_genes": "🔹 Enter the Number of Target Genes",
         "num_patient_groups": "🔹 Enter the Number of Patient Groups",
         "sample_number": "Sample Number",
-        "group": "Group",
+        "xyz": "Group",
         "gene_ct_value": "Target Gene Ct Value",
         "reference_ct": "Reference Ct",
         "delta_ct": "ΔCt (Control)",
@@ -98,7 +98,7 @@ translations = {
         "num_target_genes": "🔹 Geben Sie die Anzahl der Zielgene ein",
         "num_patient_groups": "🔹 Geben Sie die Anzahl der Patientengruppen ein",
         "sample_number": "Beispielnummer",
-        "group": "Gruppe",
+        "xyz": "Gruppe",
         "gene_ct_value": "Zielgen Ct-Wert",
         "reference_ct": "Referenz Ct",
         "delta_ct": "ΔCt (Kontrolle)",
@@ -147,40 +147,34 @@ stats_data = []
 last_control_delta_ct = None
 last_gene_index = None
 
-for i in range(num_target_genes):
     salha = translations[language_code]["salha"]
     hfg = translations[language_code]["hfg"]
     rfg = translations[language_code]["rfg"]
     ctd = translations[language_code]["ctd"]
-    st.subheader(f"{salha} {i+1} - {hfg} {i+1}")
- 
+    hast = translations[language_code]["hast"]
+
     # Kontrol Grubu Verileri
+for i in range(num_target_genes):
+    st.subheader(f"{salha} {i+1} - {hfg} {i+1}")
     control_target_ct = st.text_area(f"{salha} {i+1} - {hfg} {i+1} - {ctd}", key=f"control_target_ct_{i}")
     control_reference_ct = st.text_area(f"{salha} {i+1} - {rfg} {i+1} - {ctd}", key=f"control_reference_ct_{i}")
    
-    control_target_ct_values = parse_input_data(control_target_ct)
-    control_reference_ct_values = parse_input_data(control_reference_ct)
+    control_target_ct_values = np.array(parse_input_data(control_target_ct))
+    control_reference_ct_values = np.array(parse_input_data(control_reference_ct))
 
     # Uzunluk kontrolü ve dil kontrolü
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Dikkat: Kontrol Grubu {i+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+        st.error(translations[language_code]["warning_control_ct"].format(i=i+1))
         continue
-        
+    
     min_control_len = min(len(control_target_ct_values), len(control_reference_ct_values))
     control_target_ct_values = control_target_ct_values[:min_control_len]
     control_reference_ct_values = control_reference_ct_values[:min_control_len]
     control_delta_ct = control_target_ct_values - control_reference_ct_values
-    
-    if len(control_delta_ct) > 0:
-        average_control_delta_ct = np.mean(control_delta_ct)
-        # Grafik kısmında kullanabilmek için bu genin kontrol verilerini saklıyoruz.
-        last_control_delta_ct = control_delta_ct  
-        last_gene_index = i
-    else:
-        st.warning("⚠️ Dikkat: Kontrol grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın")
-        continue
-    
+
+    average_control_delta_ct = np.mean(control_delta_ct) if len(control_delta_ct) > 0 else None
     sample_counter = 1  # Kontrol grubu örnek sayacı
+    
     for idx in range(min_control_len):
         input_values_table.append({
             "Örnek Numarası": sample_counter,
@@ -194,20 +188,16 @@ for i in range(num_target_genes):
     
     # Hasta Grubu Verileri
     for j in range(num_patient_groups):
-        hast = translations[language_code]["hast"]
-        hfg = translations[language_code]["hfg"]
-        rfg = translations[language_code]["rfg"]
-        ctd = translations[language_code]["ctd"]
-        st.subheader(f"{hast} {j+1} - {hfg} {i+1}")
+        st.subheader(f"{hast} {j+1} - {hfg} {i+1}")        
         
         sample_target_ct = st.text_area(f"{hast} {j+1} - {hfg} {i+1} - {ctd}", key=f"sample_target_ct_{i}_{j}")
-        sample_reference_ct = st.text_area(f"{hast} {i+1} - {rfg} {i+1} - {ctd}", key=f"sample_reference_ct_{i}_{j}")
-
-        sample_target_ct_values = parse_input_data(sample_target_ct)
-        sample_reference_ct_values = parse_input_data(sample_reference_ct)
+        sample_reference_ct = st.text_area(f"{hast} {j+1} - {rfg} {i+1} - {ctd}", key=f"sample_reference_ct_{i}_{j}")
         
+        sample_target_ct_values = np.array(parse_input_data(sample_target_ct))
+        sample_reference_ct_values = np.array(parse_input_data(sample_reference_ct))
+         
         if len(sample_target_ct_values) == 0 or len(sample_reference_ct_values) == 0:
-            st.error(f"⚠️ Dikkat: Hasta Grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
+            st.error(translations[language_code]["warning_patient_ct"].format(j=j+1))
             continue
         
         min_sample_len = min(len(sample_target_ct_values), len(sample_reference_ct_values))
@@ -215,11 +205,7 @@ for i in range(num_target_genes):
         sample_reference_ct_values = sample_reference_ct_values[:min_sample_len]
         sample_delta_ct = sample_target_ct_values - sample_reference_ct_values
         
-        if len(sample_delta_ct) > 0:
-            average_sample_delta_ct = np.mean(sample_delta_ct)
-        else:
-            st.warning(f"⚠️ Dikkat: Hasta grubu {j+1} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.")
-            continue
+        average_sample_delta_ct = np.mean(sample_delta_ct) if len(sample_delta_ct) > 0 else None
         
         sample_counter = 1  # Her Hasta Grubu için örnek sayacı sıfırlanıyor
         for idx in range(min_sample_len):
@@ -234,52 +220,50 @@ for i in range(num_target_genes):
             sample_counter += 1
         
         # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
-        delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
-        expression_change = 2 ** (-delta_delta_ct)
-        
-        regulation_status = "Değişim Yok" if expression_change == 1 else ("Upregulated" if expression_change > 1 else "Downregulated")
-        
+        if average_control_delta_ct is not None and average_sample_delta_ct is not None:
+            delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
+            expression_change = 2 ** (-delta_delta_ct)
+            regulation_status = ("Değişim Yok" if expression_change == 1 else
+                                 "Upregulated" if expression_change > 1 else "Downregulated")
+       
         # İstatistiksel Testler
-        shapiro_control = stats.shapiro(control_delta_ct)
-        shapiro_sample = stats.shapiro(sample_delta_ct)
-        levene_test = stats.levene(control_delta_ct, sample_delta_ct)
-        
-        control_normal = shapiro_control.pvalue > 0.05
-        sample_normal = shapiro_sample.pvalue > 0.05
-        equal_variance = levene_test.pvalue > 0.05
-        
-        test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
-        
-        if test_type == "Parametrik":
-            test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
-            test_method = "t-test"
-        else:
-            test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
-            test_method = "Mann-Whitney U testi"
-        
-        significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
-        
-        stats_data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta Grubu": f"Hasta Grubu {j+1}",
-            "Test Türü": test_type,
-            "Kullanılan Test": test_method,  
-            "Test P-değeri": test_pvalue,
-            "Anlamlılık": significance
-        })
-        
-        data.append({
-            "Hedef Gen": f"Hedef Gen {i+1}",
-            "Hasta Grubu": f"Hasta Grubu {j+1}",
-            "ΔΔCt": delta_delta_ct,
-            "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
-            "Regülasyon Durumu": regulation_status,
-          
-
-
-  "ΔCt (Kontrol)": average_control_delta_ct,
-            "ΔCt (Hasta)": average_sample_delta_ct
-        })
+            shapiro_control = stats.shapiro(control_delta_ct)
+            shapiro_sample = stats.shapiro(sample_delta_ct)
+            levene_test = stats.levene(control_delta_ct, sample_delta_ct)
+            
+            control_normal = shapiro_control.pvalue > 0.05
+            sample_normal = shapiro_sample.pvalue > 0.05
+            equal_variance = levene_test.pvalue > 0.05
+            
+            test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
+            
+            if test_type == "Parametrik":
+                test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
+                test_method = "t-test"
+            else:
+                test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
+                test_method = "Mann-Whitney U testi"
+            
+            significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
+            
+            stats_data.append({
+                "Hedef Gen": f"Hedef Gen {i+1}",
+                "Hasta Grubu": f"Hasta Grubu {j+1}",
+                "Test Türü": test_type,
+                "Kullanılan Test": test_method,
+                "Test P-değeri": test_pvalue,
+                "Anlamlılık": significance
+            })
+            
+            data.append({
+                "Hedef Gen": f"Hedef Gen {i+1}",
+                "Hasta Grubu": f"Hasta Grubu {j+1}",
+                "ΔΔCt": delta_delta_ct,
+                "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
+                "Regülasyon Durumu": regulation_status,
+                "ΔCt (Kontrol)": average_control_delta_ct,
+                "ΔCt (Hasta)": average_sample_delta_ct
+            })
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table: 
