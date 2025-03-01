@@ -856,7 +856,11 @@ def create_pdf(results, stats, input_df, language_code):
     normal_style = styles['Normal']
     if language_code == 'ar':
           normal_style.fontName = 'FreeSerif'
-        
+
+    # Yazı tipi
+    arabic_font = 'FreeSerif'  # Arapça fontu
+    font_name = arabic_font if language_code == 'ar' else 'Times-Roman'
+
     # Başlık
     elements.append(Paragraph(translations[language_code]["report_title"], styles['Title']))
     elements.append(Spacer(1, 12))
