@@ -35,7 +35,7 @@ translations = {
         "num_patient_groups": "🔹 Hasta Grubu Sayısını Girin",
         "sample_number": "Örnek Numarası",
         "xyz": "Grup",
-        "gene_ct_value": "Hedef Gen Ct Değeri",
+        "ct_value": "Ct Değeri",
         "reference_ct": "Referans Ct",
         "delta_ct": "ΔCt (Kontrol)",
         "warning_empty_input": "⚠️ Dikkat: Verileri alt alta yazın veya boşluk içeren hücre olmayacak şekilde excelden kopyalayıp yapıştırın.",
@@ -57,7 +57,6 @@ translations = {
         "statistical_results": "📈 İstatistik Sonuçları",
         "target_gene": "Hedef Gen",
         "rfg": "Referans Gen",
-        "ctd": "Ct Değerleri",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -67,7 +66,7 @@ translations = {
         "num_patient_groups": "🔹 Enter the Number of Patient Groups",
         "sample_number": "Sample Number",
         "xyz": "Group",
-        "gene_ct_value": "Target Gene Ct Value",
+        "ct_value": "Ct Value",
         "reference_ct": "Reference Ct",
         "delta_ct": "ΔCt (Control)",
         "warning_empty_input": "⚠️ Warning: Write data one below the other or copy-paste without empty cells from Excel.",
@@ -89,7 +88,6 @@ translations = {
         "statistical_results": "📈 Statistical Results",
         "target_gene": "Target Gene",
         "rfg": "Reference Gen",
-        "ctd": "Ct values",
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -99,7 +97,7 @@ translations = {
         "num_patient_groups": "🔹 Geben Sie die Anzahl der Patientengruppen ein",
         "sample_number": "Beispielnummer",
         "xyz": "Gruppe",
-        "gene_ct_value": "Zielgen Ct-Wert",
+        "ct_value": "Ct-Wert",
         "reference_ct": "Referenz Ct",
         "delta_ct": "ΔCt (Kontrolle)",
         "warning_empty_input": "⚠️ Warnung: Geben Sie die Daten untereinander ein oder kopieren Sie sie ohne leere Zellen aus Excel.",
@@ -121,7 +119,7 @@ translations = {
         "statistical_results": "📈 Statistische Ergebnisse",
         "target_gene": "Zielgen",
         "rfg": "Referenzgen",
-        "ctd": "Ct Werte",
+
     }
 }
 
@@ -150,7 +148,7 @@ last_gene_index = None
 control_group = translations[language_code]["control_group"]
 target_gene = translations[language_code]["target_gene"]
 rfg = translations[language_code]["rfg"]
-ctd = translations[language_code]["ctd"]
+ct_value = translations[language_code]["ct_value"]
 hast = translations[language_code]["hast"]
 
     # Kontrol Grubu Verileri
