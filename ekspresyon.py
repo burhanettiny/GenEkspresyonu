@@ -191,17 +191,6 @@ for i in range(num_target_genes):
         })
         sample_counter += 1
     
-    # Hasta Grubu Verileri
-    for j in range(num_patient_groups):
-        input_values_table.append({
-            translations[language_code]["sample_number"]: sample_counter,
-            translations[language_code]["target_gene"]: f"{translations[language_code]['target_gene']} {i+1}",
-            "xyz": translations[language_code]["patient_group"],
-            translations[language_code]["target_ct"]: sample_target_ct_values[idx],
-            translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],  
-            translations[language_code]["delta_ct_control"]: sample_delta_ct[idx]
-        })
-        sample_counter += 1
     
     for j in range(num_patient_groups):
         st.subheader(f"{translations[language_code]['patient_group']} {j+1} - {translations[language_code]['target_gene']} {i+1}")        
@@ -234,7 +223,6 @@ for i in range(num_target_genes):
                 translations[language_code]["delta_ct_patient"]: sample_delta_ct[idx]
             })
             sample_counter += 1
-
         
         # ΔΔCt ve Gen Ekspresyon Değişimi Hesaplama
         if average_control_delta_ct is not None and average_sample_delta_ct is not None:
