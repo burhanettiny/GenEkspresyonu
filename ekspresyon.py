@@ -423,7 +423,7 @@ for i in range(num_target_genes):
         yaxis=dict(title=translations[language_code]['delta_ct_value']),
         showlegend=True
     )
-
+    st.plotly_chart(fig)
 # PDF rapor oluşturma kısmı
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
