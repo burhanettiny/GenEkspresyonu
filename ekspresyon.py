@@ -568,7 +568,7 @@ def create_pdf(results, stats, input_df, language_code):
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'DejaVu'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Palatino'),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
