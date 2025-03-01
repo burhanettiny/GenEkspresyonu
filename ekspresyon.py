@@ -838,28 +838,13 @@ for i in range(num_target_genes):
     )
     st.plotly_chart(fig)
 # PDF rapor oluşturma kısmı
-def register_fonts():
-    try:
-        pdfbase.registerFont(TTFont('FreeSerif', 'FreeSerif.ttf'))  # 'FreeSerif.ttf' dosyasının doğru yolda olduğundan emin olun
-        print("Yazı tipi başarıyla kaydedildi.")
-    except Exception as e:
-        print(f"Yazı tipi yüklenirken bir hata oluştu: {e}")
-
-# Bu fonksiyonu kaydetmeye çağırın
-register_fonts()
 def create_pdf(results, stats, input_df, language_code):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
     
     styles = getSampleStyleSheet()
-    normal_style = styles['Normal']
-    if language_code == 'ar':
-          normal_style.fontName = 'FreeSerif'
-
-    # Yazı tipi
-    arabic_font = 'FreeSerif'  # Arapça fontu
-    font_name = arabic_font if language_code == 'ar' else 'Times-Roman'
+    font_name = 'Times-Roman'
 
     # Başlık
     elements.append(Paragraph(translations[language_code]["report_title"], styles['Title']))
