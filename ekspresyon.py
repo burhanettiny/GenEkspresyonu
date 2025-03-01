@@ -201,8 +201,8 @@ translations = {
         "regulation_status": "Regulierungsstatus",
         "no_change": "Keine Veränderung",
         "upregulated": "Hochreguliert",
-        "downregulated": "Herunterreguliert
-    }
+        "downregulated": "Herunterreguliert"
+    },
 }
 
 # Translate text using the selected language
