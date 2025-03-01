@@ -46,7 +46,7 @@ translations = {
         "statistics": "istatistiksel Sonuçlar",
         "nil_mine": "📊 Sonuçlar",
         "gr_tbl": "📋 Giriş Verileri Tablosu",
-        "salha": "🧬 Kontrol Grubu",
+        "control_group": "🧬 Kontrol Grubu",
         "hast": "🩸 Hasta Grubu",
         "ctrl_trgt_ct": "🟦 Kontrol Grubu Hedef Gen {i} Ct Değerleri",
         "ctrl_ref_ct": "🟦 Kontrol Grubu Referans Gen {i} Ct Değerleri",
@@ -55,7 +55,7 @@ translations = {
         "warning_control_ct": "⚠️ Dikkat: Kontrol Grubu {i} verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "warning_patient_ct": "⚠️ Dikkat: Hasta grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "statistical_results": "📈 İstatistik Sonuçları",
-        "hfg": "Hedef Gen",
+        "target_gene": "Hedef Gen",
         "rfg": "Referans Gen",
         "ctd": "Ct Değerleri",
     },
@@ -78,7 +78,7 @@ translations = {
         "statistics": "Statistical Results",
         "nil_mine": "📊 Results",
         "gr_tbl": "📋 Input Data Table",
-        "salha": "🧬 Control Group",
+        "control_group": "🧬 Control Group",
         "hast": "🩸 Patient Group",
         "ctrl_trgt_ct": "🟦 Control Group Target Gene {i} Ct Values",
         "ctrl_ref_ct": "🟦 Control Group Reference Gene {i} Ct Values",
@@ -87,7 +87,7 @@ translations = {
         "warning_control_ct": "⚠️ Warning: Control Group {i} data should be entered line by line or copied from Excel without empty cells.",
         "warning_patient_ct": "⚠️ Warning: Enter patient group Ct values line by line or copy-paste from Excel without empty cells.",
         "statistical_results": "📈 Statistical Results",
-        "hfg": "Target Gene",
+        "target_gene": "Target Gene",
         "rfg": "Reference Gen",
         "ctd": "Ct values",
     },
@@ -110,7 +110,7 @@ translations = {
         "statistics": "Statistische Ergebnisse",
         "nil_mine": "📊 Ergebnisse",
         "gr_tbl": "📋 Eingabedaten Tabelle",
-        "salha": "🧬 Kontroll gruppe",
+        "control_group": "🧬 Kontroll gruppe",
         "hast": "🩸 Patientendaten Gruppe",
         "ctrl_trgt_ct": "🟦 Kontrollgruppe Zielgen {i} Ct-Werte",
         "ctrl_ref_ct": "🟦 Kontrollgruppe Referenz {i} Ct-Werte",
@@ -119,7 +119,7 @@ translations = {
         "warning_control_ct": "⚠️ Achtung: Kontrollgruppe {i} Daten sollten untereinander eingegeben oder aus Excel ohne leere Zellen eingefügt werden.",
         "warning_patient_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Patientendaten gruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
         "statistical_results": "📈 Statistische Ergebnisse",
-        "hfg": "Zielgen",
+        "target_gene": "Zielgen",
         "rfg": "Referenzgen",
         "ctd": "Ct Werte",
     }
@@ -147,8 +147,8 @@ stats_data = []
 last_control_delta_ct = None
 last_gene_index = None
 
-salha = translations[language_code]["salha"]
-hfg = translations[language_code]["hfg"]
+control_group = translations[language_code]["control_group"]
+target_gene = translations[language_code]["target_gene"]
 rfg = translations[language_code]["rfg"]
 ctd = translations[language_code]["ctd"]
 hast = translations[language_code]["hast"]
@@ -177,7 +177,7 @@ for i in range(num_target_genes):
     for idx in range(min_control_len):
         input_values_table.append({
             translations[language_code]["sample_number"]: sample_counter,
-            translations[language_code]["target_gene"]: f"{hfg} {i+1}",
+            translations[language_code]["target_gene"]: f"{target_gene} {i+1}",
             "xyz": translations[language_code]["control_group"],
             translations[language_code]["target_ct"]: control_target_ct_values[idx],
             translations[language_code]["reference_ct"]: control_reference_ct_values[idx],  
