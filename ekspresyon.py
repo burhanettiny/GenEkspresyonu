@@ -700,7 +700,7 @@ for i in range(num_target_genes):
 
 # Giriş Verileri Tablosunu Göster
 if input_values_table: 
-    st.subheader(f"📋 {translations[language_code]['gr_tbl']}")
+    st.subheader(f" {translations[language_code]['gr_tbl']}")
     input_df = pd.DataFrame(input_values_table) 
     st.write(input_df) 
 
