@@ -12,10 +12,9 @@ from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, 
 from reportlab.lib.units import inch
 
 # Dil seçim kutusu
-# Dil seçim kutusu
 if 'language' not in st.session_state:
-    st.session_state.language = "Türkçe"  # Varsayılan dil Türkçe olarak ayarlanıyor.
-
+    st.session_state.language = "Türkçe"  # Varsayılan dil 
+    
 # Bayrak simgelerini içeren bir harita
 flags = {
     "Türkçe": "🇹🇷",
@@ -42,10 +41,9 @@ selected_language = st.selectbox(
 # Seçilen dilin adını al ve doğru dil kodunu seçmek için bayraksız dil adını kullan
 try:
     # Bayrağı ayırarak dil ismini elde et
-    selected_language_name = selected_language.split(' ', 1)[1]  # Bayrak simgesini çıkar
-except IndexError:
     # Eğer bayrağı ayıramazsa, sadece dil ismini kullan
     selected_language_name = selected_language
+    selected_flag = flags[selected_language]
 
 # Dil kodlarını belirleyin
 language_map = {
