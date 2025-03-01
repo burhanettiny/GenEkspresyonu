@@ -10,6 +10,9 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab import pdfbase
 
 # Dil seçim kutusu
 if 'language' not in st.session_state:
@@ -835,6 +838,16 @@ for i in range(num_target_genes):
     )
     st.plotly_chart(fig)
 # PDF rapor oluşturma kısmı
+def register_fonts():
+    try:
+        from reportlab.pdfbase.ttfonts import TTFont
+        from reportlab import pdfbase
+        
+        pdfbase.registerFont(TTFont('FreeSerif', 'FreeSerif.ttf'))  # FreeSerif.ttf'yi doğru yol ile yükleyin
+    except Exception as e:
+        print(f"Error loading font: {e}")
+
+register_fonts()
 def create_pdf(results, stats, input_df, language_code):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
@@ -843,7 +856,7 @@ def create_pdf(results, stats, input_df, language_code):
     styles = getSampleStyleSheet()
     normal_style = styles['Normal']
     if language_code == 'ar':
-        normal_style.fontName = arabic_font
+          normal_style.fontName = 'FreeSerif'
         
     # Başlık
     elements.append(Paragraph(translations[language_code]["report_title"], styles['Title']))
