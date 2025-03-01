@@ -40,10 +40,11 @@ selected_language = st.selectbox(
 
 # Seçilen dilin adını al ve doğru dil kodunu seçmek için bayraksız dil adını kullan
 try:
-    # Bayrağı ayırarak dil ismini elde et
-    # Eğer bayrağı ayıramazsa, sadece dil ismini kullan
-    selected_language_name = selected_language
-    selected_flag = flags[selected_language]
+    selected_language_name = selected_language.split(' ', 1)[1]  # Bayrağı ayır
+    selected_flag = flags[selected_language_name]
+except KeyError:
+    selected_language_name = selected_language  # Hata durumunda yalnızca dil ismini kullan
+    selected_flag = None  # Bayrak simgesini boş bırak
 
 # Dil kodlarını belirleyin
 language_map = {
