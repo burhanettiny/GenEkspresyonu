@@ -36,6 +36,7 @@ translations = {
         "num_patient_groups": "🔹 Hasta Grubu Sayısını Girin",
         "sample_number": "Örnek Numarası",
         "xyz": "Grup",
+        "x_axis_title": "Grup Adı",
         "ct_value": "Ct Değeri",
         "reference_ct": "Referans Ct",
         "delta_ct_control": "ΔCt (Kontrol)",
@@ -115,6 +116,7 @@ translations = {
         "num_patient_groups": "🔹 Enter the Number of Patient Groups",
         "sample_number": "Sample Number",
         "xyz": "Group",
+        "x_axis_title": "Grup Name",
         "ct_value": "Ct Value",
         "reference_ct": "Reference Ct",
         "delta_ct_control": "ΔCt (Control)",
@@ -194,6 +196,7 @@ translations = {
         "num_patient_groups": "🔹 Geben Sie die Anzahl der Patientengruppen ein",
         "sample_number": "Beispielnummer",
         "xyz": "Gruppe",
+        "x_axis_title": "Gruppenname",
         "ct_value": "Ct-Wert",
         "reference_ct": "Referenz Ct",
         "delta_ct_control": "ΔCt (Kontrolle)",
@@ -538,7 +541,7 @@ for i in range(num_target_genes):
         xaxis=dict(
             tickvals=[1] + [j + 2 for j in range(num_patient_groups)],
             ticktext=[translations[language_code]['control_group']] + [f"{translations[language_code]['patient_group']} {j+1}" for j in range(num_patient_groups)],
-            title="denemeeeeeee"
+            title=translations[language_code]['x_axis_title']
         ),
         yaxis=dict(title=translations[language_code]['delta_ct_value']),
         showlegend=True
