@@ -584,7 +584,7 @@ def create_pdf(results, stats, input_df, language_code):
     
     for result in results:
         text = (f"{result[translations[language_code]['target_gene']]} - {result[translations[language_code]['patient_group']]} | "
-                f"ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result[translations[language_code]['expression_change']]:.2f} | "
+                f"ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result[translations[language_code]['gene_expression_change']]:.2f} |
                 f"{result[translations[language_code]['regulation_status']]}")
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
