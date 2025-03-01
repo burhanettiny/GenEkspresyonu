@@ -12,6 +12,7 @@ from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, 
 from reportlab.lib.units import inch
 
 # Dil seçim kutusu
+# Dil seçim kutusu
 if 'language' not in st.session_state:
     st.session_state.language = "Türkçe"  # Varsayılan dil Türkçe olarak ayarlanıyor.
 
@@ -23,8 +24,10 @@ flags = {
     "Français": "🇫🇷",
     "Español": "🇪🇸",
     "العربية": "🇸🇦"
-} 
-st.session_state.language = st.selectbox(
+}
+
+# Dil seçim kutusu oluşturuluyor ve bayraklar ile birlikte görüntüleniyor
+selected_language = st.selectbox(
     "Dil / Language / Sprache",
     options=[
         f"{flags['Türkçe']} Türkçe",
@@ -35,9 +38,16 @@ st.session_state.language = st.selectbox(
         f"{flags['العربية']} العربية"
     ]
 )
-# Seçilen dilin kodu
-selected_language_name = selected_language.split(' ', 1)[1]  # Bayrak simgesini çıkar
 
+# Seçilen dilin adını al ve doğru dil kodunu seçmek için bayraksız dil adını kullan
+try:
+    # Bayrağı ayırarak dil ismini elde et
+    selected_language_name = selected_language.split(' ', 1)[1]  # Bayrak simgesini çıkar
+except IndexError:
+    # Eğer bayrağı ayıramazsa, sadece dil ismini kullan
+    selected_language_name = selected_language
+
+# Dil kodlarını belirleyin
 language_map = {
     "Türkçe": "tr",
     "Español": "es",
@@ -46,7 +56,9 @@ language_map = {
     "Deutsch": "de",
     "العربية": "ar"
 }
-language_code = language_map[selected_language_name]
+
+# Seçilen dilin kodunu al
+language_code = language_map.get(selected_language_name, "tr")  # Varsayılan olarak Türkçe (tr) kullan
 
 translations = {
     "tr": {
