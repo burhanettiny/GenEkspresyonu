@@ -387,7 +387,7 @@ for i in range(num_target_genes):
                else:
                    test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct, equal_var=False).pvalue
                    test_method = translations[language_code]["welch_t_test"]
-                test_type = translations[language_code]["parametric"]
+               test_type = translations[language_code]["parametric"]
             else:
                 test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
                 test_method = translations[language_code]["mann_whitney_u_test"]
