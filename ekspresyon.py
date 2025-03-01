@@ -380,7 +380,7 @@ for i in range(num_target_genes):
             sample_normal = shapiro_sample.pvalue > 0.05
             equal_variance = levene_test.pvalue > 0.05
             
-           if control_normal and sample_normal:
+            if control_normal and sample_normal:
                if equal_variance:
                    test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
                    test_method = translations[language_code]["t_test"]
