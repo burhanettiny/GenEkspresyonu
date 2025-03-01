@@ -106,6 +106,7 @@ translations = {
             "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
             "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
             "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir."
+        )
     },
 
     "en": {
@@ -186,7 +187,7 @@ translations = {
             "If variance was equal, an independent sample t-test was applied; otherwise, a Welch t-test was used. "
             "If normal distribution was not achieved, the non-parametric Mann-Whitney U test was applied. "
             "Significance was determined using the p < 0.05 criterion."
-
+        )
     },
 
     "de": {
@@ -267,8 +268,8 @@ translations = {
             "War die Varianz gleich, wurde ein unabhängiger Stichprobent-Test angewendet; andernfalls wurde ein Welch-T-Test verwendet. "
             "Wenn keine normale Verteilung vorlag, wurde der nicht-parametrische Mann-Whitney-U-Test angewendet. "
             "Die Signifikanz wurde anhand des Kriteriums p < 0,05 bestimmt."
-
-    },
+        )
+    }
 }
 
 # Translate text using the selected language
