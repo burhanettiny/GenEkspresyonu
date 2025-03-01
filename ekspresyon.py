@@ -538,7 +538,7 @@ for i in range(num_target_genes):
         xaxis=dict(
             tickvals=[1] + [j + 2 for j in range(num_patient_groups)],
             ticktext=[translations[language_code]['control_group']] + [f"{translations[language_code]['patient_group']} {j+1}" for j in range(num_patient_groups)],
-            title="xyz"
+            title="denemeeeeeee"
         ),
         yaxis=dict(title=translations[language_code]['delta_ct_value']),
         showlegend=True
