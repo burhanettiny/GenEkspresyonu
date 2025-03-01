@@ -81,6 +81,9 @@ translations = {
         "delta_delta_ct": "ΔΔCt",
         "gene_expression_change": "Gen Ekspresyon Değişimi (2^(-ΔΔCt))",
         "regulation_status": "Regülasyon Durumu",
+        "no_change": "Değişim Yok",
+        "upregulated": "Yukarı Regüle",
+        "downregulated": "Aşağı Regüle"
     },
 
     "en": {
@@ -137,6 +140,9 @@ translations = {
         "delta_delta_ct": "ΔΔCt",
         "gene_expression_change": "Gene Expression Change (2^(-ΔΔCt))",
         "regulation_status": "Regulation Status",
+        "no_change": "No Change",
+        "upregulated": "Upregulated",
+        "downregulated": "Downregulated"
     },
 
     "de": {
@@ -193,6 +199,9 @@ translations = {
         "delta_delta_ct": "ΔΔCt",
         "gene_expression_change": "Genexpression Veränderung (2^(-ΔΔCt))",
         "regulation_status": "Regulierungsstatus",
+        "no_change": "Keine Veränderung",
+        "upregulated": "Hochreguliert",
+        "downregulated": "Herunterreguliert
     }
 }
 
