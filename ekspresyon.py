@@ -249,7 +249,7 @@ for i in range(num_target_genes):
         input_values_table.append({
             translations[language_code]["sample_number"]: sample_counter,
             translations[language_code]["target_gene"]: f"{target_gene} {i+1}",
-            "xyz": f"{translations[language_code]["control_group"]} {i+1}",
+            "xyz": translations[language_code]["control_group"],
             translations[language_code]["target_ct"]: control_target_ct_values[idx],
             translations[language_code]["reference_ct"]: control_reference_ct_values[idx],  
             translations[language_code]["delta_ct_control"]: control_delta_ct[idx]
