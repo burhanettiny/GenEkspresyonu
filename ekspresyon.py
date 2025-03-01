@@ -841,7 +841,10 @@ def create_pdf(results, stats, input_df, language_code):
     elements = []
     
     styles = getSampleStyleSheet()
-    
+    normal_style = styles['Normal']
+    if language_code == 'ar':
+        normal_style.fontName = arabic_font
+        
     # Başlık
     elements.append(Paragraph(translations[language_code]["report_title"], styles['Title']))
     elements.append(Spacer(1, 12))
@@ -858,7 +861,7 @@ def create_pdf(results, stats, input_df, language_code):
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Times-Roman'),
+        ('FONTNAME', (0, 0), (-1, -1), arabic_font if language_code == 'ar' else 'Times-Roman'),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
