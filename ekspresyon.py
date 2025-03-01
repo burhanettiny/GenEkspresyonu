@@ -36,7 +36,17 @@ st.session_state.language = st.selectbox(
     ]
 )
 # Seçilen dilin kodu
-language_code = language_map[st.session_state.language]
+selected_language_name = selected_language.split(' ', 1)[1]  # Bayrak simgesini çıkar
+
+language_map = {
+    "Türkçe": "tr",
+    "Español": "es",
+    "English": "en",
+    "Français": "fr",
+    "Deutsch": "de",
+    "العربية": "ar"
+}
+language_code = language_map[selected_language_name]
 
 translations = {
     "tr": {
