@@ -35,7 +35,7 @@ translations = {
         "num_target_genes": "🔹 Hedef Gen Sayısını Girin",
         "num_patient_groups": "🔹 Hasta Grubu Sayısını Girin",
         "sample_number": "Örnek Numarası",
-        "xyz": "Grup",
+        "Grup": "Grup",
         "x_axis_title": "Grup Adı",
         "ct_value": "Ct Değeri",
         "reference_ct": "Referans Ct",
@@ -115,7 +115,7 @@ translations = {
         "num_target_genes": "🔹 Enter the Number of Target Genes",
         "num_patient_groups": "🔹 Enter the Number of Patient Groups",
         "sample_number": "Sample Number",
-        "xyz": "Group",
+        "Grup": "Group",
         "x_axis_title": "Grup Name",
         "ct_value": "Ct Value",
         "reference_ct": "Reference Ct",
@@ -195,7 +195,7 @@ translations = {
         "num_target_genes": "🔹 Geben Sie die Anzahl der Zielgene ein",
         "num_patient_groups": "🔹 Geben Sie die Anzahl der Patientengruppen ein",
         "sample_number": "Beispielnummer",
-        "xyz": "Gruppe",
+        "Grup": "Gruppe",
         "x_axis_title": "Gruppenname",
         "ct_value": "Ct-Wert",
         "reference_ct": "Referenz Ct",
@@ -322,7 +322,7 @@ for i in range(num_target_genes):
         input_values_table.append({
             translations[language_code]["sample_number"]: sample_counter,
             translations[language_code]["target_gene"]: f"{target_gene} {i+1}",
-            "xyz": translations[language_code]["control_group"],
+            "Grup": translations[language_code]["control_group"],
             translations[language_code]["target_ct"]: control_target_ct_values[idx],
             translations[language_code]["reference_ct"]: control_reference_ct_values[idx],  
             translations[language_code]["delta_ct_control"]: control_delta_ct[idx]
@@ -355,7 +355,7 @@ for i in range(num_target_genes):
             input_values_table.append({
                 translations[language_code]["sample_number"]: sample_counter,
                 translations[language_code]["target_gene"]: f"{translations[language_code]['target_gene']} {i+1}",
-                "xyz": f"{translations[language_code]['patient_group']} {j+1}",
+                "Grup": f"{translations[language_code]['patient_group']} {j+1}",
                 translations[language_code]["target_ct"]: sample_target_ct_values[idx],
                 translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
                 translations[language_code]["delta_ct_patient"]: sample_delta_ct[idx]
@@ -451,14 +451,14 @@ for i in range(num_target_genes):
     control_target_ct_values = [
         d[translations[language_code]["target_ct"]] 
         for d in input_values_table
-        if d["xyz"] == translations[language_code]["control_group"] and
+        if d["Grup"] == translations[language_code]["control_group"] and
            d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
     ]
 
     control_reference_ct_values = [
         d[translations[language_code]["reference_ct"]] 
         for d in input_values_table
-        if d["xyz"] == translations[language_code]["control_group"] and
+        if d["Grup"] == translations[language_code]["control_group"] and
            d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
     ]
 
@@ -486,7 +486,7 @@ for i in range(num_target_genes):
         sample_delta_ct_values = [
             d[translations[language_code]["delta_ct_patient"]] 
             for d in input_values_table 
-            if d["xyz"] == f"{translations[language_code]['patient_group']} {j+1}" and 
+            if d["Grup"] == f"{translations[language_code]['patient_group']} {j+1}" and 
                d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
         ]
 
@@ -518,7 +518,7 @@ for i in range(num_target_genes):
         sample_delta_ct_values = [
             d[translations[language_code]["delta_ct_patient"]] 
             for d in input_values_table 
-            if d["xyz"] == f"{translations[language_code]['patient_group']} {j+1}" and 
+            if d["Grup"] == f"{translations[language_code]['patient_group']} {j+1}" and 
                d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
         ]
 
