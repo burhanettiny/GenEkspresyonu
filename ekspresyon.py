@@ -100,12 +100,12 @@ translations = {
         "pdf_report": "Gen Ekspresyon Raporu",
         "error_no_data": "Veri bulunamadı, PDF oluşturulamadı.",
         "statistical_explanation": (
-            "İstatistiksel değerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmiştir. "
+            "Istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmiştir. "
             "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
-            "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmiştir. "
-            "Normal daglim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmiştir. "
+            "Varyans eşitliği varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmiştir. "
+            "Normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmiştir. "
             "Sonuçlarin anlamliligi p < 0.05 kriterine göre belirlenmiştir."
-            "Für Vorschläge und Unterstützung, Burhanettin Yalçınkaya - E-Mail: mailtoburhanettin@gmail.com"
+            "Öneri ve destekleriniz için Burhanettin Yalçinkaya - mail: mailtoburhanettin@gmail.com "
         )
     },
 
@@ -186,6 +186,7 @@ translations = {
             "If variance was equal, an independent sample t-test was applied; otherwise, a Welch t-test was used. "
             "If normal distribution was not achieved, the non-parametric Mann-Whitney U test was applied. "
             "Significance was determined using the p < 0.05 criterion."
+            "For suggestions and support, Burhanettin Yalçinkaya - email: mailtoburhanettin@gmail.com"
         )
     },
 
@@ -265,7 +266,8 @@ translations = {
             "Wenn die Normalität erfüllt war, wurde die Varianzhomogenität zwischen den Gruppen mit dem Levene-Test überprüft. "
             "War die Varianz gleich, wurde ein unabhängiger Stichprobent-Test angewendet; andernfalls wurde ein Welch-T-Test verwendet. "
             "Wenn keine normale Verteilung vorlag, wurde der nicht-parametrische Mann-Whitney-U-Test angewendet. "
-            "Die Signifikanz wurde anhand des Kriteriums p < 0,05 bestimmt."
+            "Die Signifikanz wurde anhand des Kriteriums p < 0,05 bestimmt.",
+            "Für Vorschläge und Unterstützung, Burhanettin Yalçinkaya - E-Mail: mailtoburhanettin@gmail.com"
         )
     }
 }
