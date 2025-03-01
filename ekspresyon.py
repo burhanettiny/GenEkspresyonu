@@ -14,16 +14,27 @@ from reportlab.lib.units import inch
 # Dil seçim kutusu
 if 'language' not in st.session_state:
     st.session_state.language = "Türkçe"  # Varsayılan dil Türkçe olarak ayarlanıyor.
- 
-st.session_state.language = st.selectbox("Dil / Language / Sprache", ["Türkçe", "English", "Deutsch"])
 
-# Dil kodlarını belirleyin
-language_map = {
-    "Türkçe": "tr",
-    "English": "en",
-    "Deutsch": "de"
-}
-
+# Bayrak simgelerini içeren bir harita
+flags = {
+    "Türkçe": "🇹🇷",
+    "English": "🇬🇧",
+    "Deutsch": "🇩🇪",
+    "Français": "🇫🇷",
+    "Español": "🇪🇸",
+    "العربية": "🇸🇦"
+} 
+st.session_state.language = st.selectbox(
+    "Dil / Language / Sprache",
+    options=[
+        f"{flags['Türkçe']} Türkçe",
+        f"{flags['Español']} Español",
+        f"{flags['English']} English",
+        f"{flags['Français']} Français",
+        f"{flags['Deutsch']} Deutsch",
+        f"{flags['العربية']} العربية"
+    ]
+)
 # Seçilen dilin kodu
 language_code = language_map[st.session_state.language]
 
@@ -268,6 +279,249 @@ translations = {
             "Wenn keine normale Verteilung vorlag, wurde der nicht-parametrische Mann-Whitney-U-Test angewendet. "
             "Die Signifikanz wurde anhand des Kriteriums p < 0,05 bestimmt.",
             "Für Vorschläge und Unterstützung, Burhanettin Yalçinkaya - E-Mail: mailtoburhanettin@gmail.com"
+        )
+    },
+    
+    "fr": {
+        "title": "🧬 Application d'Analyse de l'Expression Génétique",
+        "subtitle": "Développé par B. Yalçınkaya",
+        "patient_data_header": "📊 Entrez les données des groupes patients et témoins",
+        "num_target_genes": "🔹 Entrez le nombre de gènes cibles",
+        "num_patient_groups": "🔹 Entrez le nombre de groupes de patients",
+        "sample_number": "Numéro de l'échantillon",
+        "Grup": "Groupe",
+        "x_axis_title": "Nom du Groupe",
+        "ct_value": "Valeur Ct",
+        "reference_ct": "Ct de Référence",
+        "delta_ct_control": "ΔCt (Contrôle)",
+        "delta_ct_patient": "ΔCt (Patient)",
+        "warning_empty_input": "⚠️ Avertissement : Entrez les données sous forme de liste ou copiez-collez sans cellules vides depuis Excel.",
+        "statistical_results": "📈 Résultats Statistiques",
+        "download_csv": "📥 Télécharger CSV",
+        "generate_pdf": "📥 Préparer le Rapport PDF",
+        "pdf_report": "Rapport d'Analyse de l'Expression Génétique",
+        "statistics": "Résultats Statistiques",
+        "nil_mine": "📊 Résultats",
+        "gr_tbl": "📋 Tableau des Données d'Entrée",
+        "control_group": "🧬 Groupe Contrôle",
+        "patient_group": "🩸 Groupe Patient",
+        "ctrl_trgt_ct": "🟦 Valeurs Ct du Gène Cible {i} pour le Groupe Contrôle",
+        "ctrl_ref_ct": "🟦 Valeurs Ct du Gène Référence {i} pour le Groupe Contrôle",
+        "hst_trgt_ct": "🩸 Valeurs Ct du Gène Cible {j} pour le Groupe Patient",
+        "hst_ref_ct": "🩸 Valeurs Ct du Gène Référence {j} pour le Groupe Patient",
+        "warning_control_ct": "⚠️ Avertissement : Les données du groupe témoin {i} doivent être saisies ligne par ligne ou copiées depuis Excel sans cellules vides.",
+        "warning_patient_ct": "⚠️ Avertissement : Entrez les valeurs Ct du groupe patient ligne par ligne ou copiez-les depuis Excel sans cellules vides.",
+        "statistical_results": "📈 Résultats Statistiques",
+        "target_gene": "Gène Cible",
+        "reference_gene": "Gène Référence",
+        "target_ct": "Ct du Gène Cible", 
+        "distribution_graph": "Graphique de Distribution",
+        "error_missing_control_data": "⚠️ Erreur : Données manquantes pour le Gène Cible {i} dans le Groupe Contrôle!",
+        "control_group_avg": "Moyenne du Groupe Contrôle",
+        "avg": "Moyenne",
+        "control": "Contrôle",
+        "sample": "Échantillon",
+        "patient": "Patient",
+        "delta_ct_distribution": "Distribution ΔCt",
+        "delta_ct_value": "Valeur ΔCt",
+        "parametric": "Paramétrique",
+        "non_parametric": "Non paramétrique",
+        "t_test": "Test t",
+        "mann_whitney_u_test": "Test Mann-Whitney U",
+        "significant": "Significatif",
+        "insignificant": "Non Significatif",
+        "test_type": "Type de Test",
+        "test_method": "Méthode de Test",
+        "test_pvalue": "P-valeur du Test",
+        "significance": "Signification",
+        "delta_delta_ct": "ΔΔCt",
+        "gene_expression_change": "Changement de l'Expression Génétique (2^(-ΔΔCt))",
+        "regulation_status": "Statut de Régulation",
+        "no_change": "Aucun Changement",
+        "upregulated": "Upregulé",
+        "downregulated": "Downregulé",
+        "report_title": "Rapport d'Analyse de l'Expression Génétique",
+        "input_data_table": "Tableau des Données d'Entrée",
+        "results": "Résultats",
+        "statistical_results": "Résultats Statistiques",
+        "statistical_evaluation": "Évaluation Statistique",
+        "significance": "Signification",
+        "target_gene": "Gène Cible",
+        "patient_group": "Groupe Patient",
+        "expression_change": "Changement de l'Expression Génétique",
+        "regulation_status": "Statut de Régulation",
+        "generate_pdf": "Générer le PDF",
+        "pdf_report": "Rapport sur l'Expression Génétique",
+        "error_no_data": "Aucune donnée trouvée, le PDF n'a pas pu être généré.",
+        "statistical_explanation": (
+            "Au cours du processus d'évaluation statistique, la répartition des données a été analysée à l'aide du test de Shapiro-Wilk. "
+            "Si la normalité était remplie, l'homogénéité de la variance entre les groupes a été vérifiée à l'aide du test de Levene. "
+            "Si la variance était égale, un test t pour échantillons indépendants a été appliqué, sinon, un test t de Welch a été utilisé. "
+            "Si aucune distribution normale n'était atteinte, le test non paramétrique de Mann-Whitney U a été appliqué. "
+            "La signification a été déterminée en utilisant le critère p < 0,05."
+            "Pour des suggestions et un soutien, Burhanettin Yalçınkaya - e-mail : mailtoburhanettin@gmail.com"
+        )
+    },
+
+    "es": {
+        "title": "🧬 Aplicación de Análisis de Expresión Génica",
+        "subtitle": "Desarrollado por B. Yalçınkaya",
+        "patient_data_header": "📊 Ingrese Datos de Grupos de Pacientes y de Control",
+        "num_target_genes": "🔹 Ingrese el número de Genes Objetivo",
+        "num_patient_groups": "🔹 Ingrese el número de Grupos de Pacientes",
+        "sample_number": "Número de muestra",
+        "Grup": "Grupo",
+        "x_axis_title": "Nombre del Grupo",
+        "ct_value": "Valor de Ct",
+        "reference_ct": "Ct de Referencia",
+        "delta_ct_control": "ΔCt (Control)",
+        "delta_ct_patient": "ΔCt (Paciente)",
+        "warning_empty_input": "⚠️ Advertencia: Ingrese los datos uno debajo del otro o cópielos sin celdas vacías desde Excel.",
+        "statistical_results": "📈 Resultados Estadísticos",
+        "download_csv": "📥 Descargar CSV",
+        "generate_pdf": "📥 Preparar Informe en PDF",
+        "pdf_report": "Informe de Análisis de Expresión Génica",
+        "statistics": "Resultados Estadísticos",
+        "nil_mine": "📊 Resultados",
+        "gr_tbl": "📋 Tabla de Datos de Entrada",
+        "control_group": "🧬 Grupo Control",
+        "patient_group": "🩸 Grupo Paciente",
+        "ctrl_trgt_ct": "🟦 Valores Ct del Gen Objetivo {i} para el Grupo Control",
+        "ctrl_ref_ct": "🟦 Valores Ct del Gen de Referencia {i} para el Grupo Control",
+        "hst_trgt_ct": "🩸 Valores Ct del Gen Objetivo {j} para el Grupo Paciente",
+        "hst_ref_ct": "🩸 Valores Ct del Gen de Referencia {j} para el Grupo Paciente",
+        "warning_control_ct": "⚠️ Advertencia: Los datos del grupo control {i} deben ingresarse fila por fila o copiarse desde Excel sin celdas vacías.",
+        "warning_patient_ct": "⚠️ Advertencia: Ingrese los valores de Ct del grupo paciente fila por fila o cópielos desde Excel sin celdas vacías.",
+        "statistical_results": "📈 Resultados Estadísticos",
+        "target_gene": "Gen Objetivo",
+        "reference_gene": "Gen de Referencia",
+        "target_ct": "Ct del Gen Objetivo", 
+        "distribution_graph": "Gráfico de Distribución",
+        "error_missing_control_data": "⚠️ Error: ¡Datos faltantes para el Gen Objetivo {i} en el Grupo Control!",
+        "control_group_avg": "Promedio del Grupo Control",
+        "avg": "Promedio",
+        "control": "Control",
+        "sample": "Muestra",
+        "patient": "Paciente",
+        "delta_ct_distribution": "Distribución ΔCt",
+        "delta_ct_value": "Valor ΔCt",
+        "parametric": "Paramétrico",
+        "non_parametric": "No paramétrico",
+        "t_test": "Test t",
+        "mann_whitney_u_test": "Test Mann-Whitney U",
+        "significant": "Significativo",
+        "insignificant": "No Significativo",
+        "test_type": "Tipo de Test",
+        "test_method": "Método de Test",
+        "test_pvalue": "P-valor del Test",
+        "significance": "Significación",
+        "delta_delta_ct": "ΔΔCt",
+        "gene_expression_change": "Cambio de Expresión Génica (2^(-ΔΔCt))",
+        "regulation_status": "Estado de Regulación",
+        "no_change": "Sin Cambio",
+        "upregulated": "Upregulado",
+        "downregulated": "Downregulado",
+        "report_title": "Informe de Análisis de Expresión Génica",
+        "input_data_table": "Tabla de Datos de Entrada",
+        "results": "Resultados",
+        "statistical_results": "Resultados Estadísticos",
+        "statistical_evaluation": "Evaluación Estadística",
+        "significance": "Significación",
+        "target_gene": "Gen Objetivo",
+        "patient_group": "Grupo Paciente",
+        "expression_change": "Cambio de Expresión Génica",
+        "regulation_status": "Estado de Regulación",
+        "generate_pdf": "Generar PDF",
+        "pdf_report": "Informe de Expresión Génica",
+        "error_no_data": "No se encontraron datos, no se pudo generar el PDF.",
+        "statistical_explanation": (
+            "Durante el proceso de evaluación estadística, se analizó la distribución de los datos mediante la prueba de Shapiro-Wilk. "
+            "Si se cumplió la normalidad, se verificó la homogeneidad de varianza entre los grupos mediante la prueba de Levene. "
+            "Si la varianza era igual, se aplicó la prueba t de muestras independientes; de lo contrario, se utilizó la prueba t de Welch. "
+            "Si no se alcanzó una distribución normal, se aplicó la prueba no paramétrica Mann-Whitney U. "
+            "La significancia se determinó utilizando el criterio p < 0.05."
+            "Para sugerencias y soporte, Burhanettin Yalçınkaya - correo electrónico: mailtoburhanettin@gmail.com"
+        )
+    },
+
+    "ar": {
+        "title": "🧬 تطبيق تحليل التعبير الجيني",
+        "subtitle": "تم تطويره بواسطة ب. يالجنكايا",
+        "patient_data_header": "📊 إدخال بيانات مجموعة المرضى ومجموعة التحكم",
+        "num_target_genes": "🔹 إدخال عدد الجينات المستهدفة",
+        "num_patient_groups": "🔹 إدخال عدد مجموعات المرضى",
+        "sample_number": "رقم العينة",
+        "Grup": "مجموعة",
+        "x_axis_title": "اسم المجموعة",
+        "ct_value": "قيمة Ct",
+        "reference_ct": "قيمة Ct المرجعية",
+        "delta_ct_control": "ΔCt (التحكم)",
+        "delta_ct_patient": "ΔCt (المريض)",
+        "warning_empty_input": "⚠️ تحذير: أدخل البيانات واحدًا تلو الآخر أو انسخها دون خلايا فارغة من Excel.",
+        "statistical_results": "📈 النتائج الإحصائية",
+        "download_csv": "📥 تحميل CSV",
+        "generate_pdf": "📥 إعداد تقرير PDF",
+        "pdf_report": "تقرير تحليل التعبير الجيني",
+        "statistics": "النتائج الإحصائية",
+        "nil_mine": "📊 النتائج",
+        "gr_tbl": "📋 جدول بيانات الإدخال",
+        "control_group": "🧬 مجموعة التحكم",
+        "patient_group": "🩸 مجموعة المرضى",
+        "ctrl_trgt_ct": "🟦 قيم Ct الجين المستهدف {i} لمجموعة التحكم",
+        "ctrl_ref_ct": "🟦 قيم Ct الجين المرجعي {i} لمجموعة التحكم",
+        "hst_trgt_ct": "🩸 قيم Ct الجين المستهدف {j} لمجموعة المرضى",
+        "hst_ref_ct": "🩸 قيم Ct الجين المرجعي {j} لمجموعة المرضى",
+        "warning_control_ct": "⚠️ تحذير: يجب إدخال بيانات مجموعة التحكم {i} سطرًا بسطر أو نسخها من Excel دون خلايا فارغة.",
+        "warning_patient_ct": "⚠️ تحذير: أدخل قيم Ct لمجموعة المرضى سطرًا بسطر أو انسخها من Excel دون خلايا فارغة.",
+        "statistical_results": "📈 النتائج الإحصائية",
+        "target_gene": "الجين المستهدف",
+        "reference_gene": "الجين المرجعي",
+        "target_ct": "قيمة Ct الجين المستهدف", 
+        "distribution_graph": "رسم بياني للتوزيع",
+        "error_missing_control_data": "⚠️ خطأ: بيانات مفقودة للجين المستهدف {i} في مجموعة التحكم!",
+        "control_group_avg": "متوسط مجموعة التحكم",
+        "avg": "متوسط",
+        "control": "التحكم",
+        "sample": "عينة",
+        "patient": "مريض",
+        "delta_ct_distribution": "توزيع ΔCt",
+        "delta_ct_value": "قيمة ΔCt",
+        "parametric": "معلمي",
+        "non_parametric": "غير معلمي",
+        "t_test": "اختبار t",
+        "mann_whitney_u_test": "اختبار مان-ويتني U",
+        "significant": "مهم",
+        "insignificant": "غير مهم",
+        "test_type": "نوع الاختبار",
+        "test_method": "طريقة الاختبار",
+        "test_pvalue": "قيمة P للاختبار",
+        "significance": "الدلالة",
+        "delta_delta_ct": "ΔΔCt",
+        "gene_expression_change": "تغيير التعبير الجيني (2^(-ΔΔCt))",
+        "regulation_status": "حالة التنظيم",
+        "no_change": "لا تغيير",
+        "upregulated": "مرتفع التنظيم",
+        "downregulated": "منخفض التنظيم",
+        "report_title": "تقرير تحليل التعبير الجيني",
+        "input_data_table": "جدول بيانات الإدخال",
+        "results": "النتائج",
+        "statistical_results": "النتائج الإحصائية",
+        "statistical_evaluation": "التقييم الإحصائي",
+        "significance": "الدلالة",
+        "target_gene": "الجين المستهدف",
+        "patient_group": "مجموعة المرضى",
+        "expression_change": "تغيير التعبير الجيني",
+        "regulation_status": "حالة التنظيم",
+        "generate_pdf": "توليد تقرير PDF",
+        "pdf_report": "تقرير التعبير الجيني",
+        "error_no_data": "لم يتم العثور على بيانات، لم يتم إنشاء التقرير PDF.",
+        "statistical_explanation": (
+            "أثناء عملية التقييم الإحصائي، تم تحليل توزيع البيانات باستخدام اختبار شابيرو-ويلك. "
+            "إذا تم تحقيق التوزيع الطبيعي، تم التحقق من تجانس التباين بين المجموعات باستخدام اختبار ليفين. "
+            "إذا كانت التباين متساويًا، تم تطبيق اختبار t للعينة المستقلة، وإذا لم يكن كذلك، تم استخدام اختبار t ويلش. "
+            "إذا لم يتم تحقيق التوزيع الطبيعي، تم تطبيق اختبار مان-ويتني U غير المعلمي. "
+            "تم تحديد الدلالة باستخدام المعيار p < 0.05."
+            "للاقتراحات والدعم، بورهانيتين يالجنكايا - البريد الإلكتروني: mailtoburhanettin@gmail.com"
         )
     }
 }
