@@ -57,6 +57,8 @@ translations = {
         "statistical_results": "📈 İstatistik Sonuçları",
         "target_gene": "Hedef Gen",
         "reference_gene": "Referans Gen",
+        "target_ct": "Hedef Gen Ct",  
+
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -88,6 +90,8 @@ translations = {
         "statistical_results": "📈 Statistical Results",
         "target_gene": "Target Gene",
         "reference_gene": "Reference Gen",
+        "target_ct": "Target Gene Ct", 
+
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -119,6 +123,7 @@ translations = {
         "statistical_results": "📈 Statistische Ergebnisse",
         "target_gene": "Zielgen",
         "reference_gene": "Referenzgen",
+        "target_ct": "Zielgen Ct", 
 
     }
 }
