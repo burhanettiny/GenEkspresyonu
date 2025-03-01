@@ -249,7 +249,7 @@ for i in range(num_target_genes):
         input_values_table.append({
             translations[language_code]["sample_number"]: sample_counter,
             translations[language_code]["target_gene"]: f"{target_gene} {i+1}",
-            translations[language_code]["xyz"]: f"{translations[language_code]['control_group']} {i+1}",
+            "xyz": translations[language_code]["control_group"],
             translations[language_code]["target_ct"]: control_target_ct_values[idx],
             translations[language_code]["reference_ct"]: control_reference_ct_values[idx],  
             translations[language_code]["delta_ct_control"]: control_delta_ct[idx]
@@ -282,7 +282,7 @@ for i in range(num_target_genes):
             input_values_table.append({
                 translations[language_code]["sample_number"]: sample_counter,
                 translations[language_code]["target_gene"]: f"{translations[language_code]['target_gene']} {i+1}",
-                translations[language_code]["xyz"]: f"{translations[language_code]['patient_group']} {j+1}",
+                "xyz": f"{translations[language_code]['patient_group']} {j+1}",
                 translations[language_code]["target_ct"]: sample_target_ct_values[idx],
                 translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
                 translations[language_code]["delta_ct_patient"]: sample_delta_ct[idx]
@@ -369,14 +369,14 @@ for i in range(num_target_genes):
     control_target_ct_values = [
         d[translations[language_code]["target_ct"]] 
         for d in input_values_table
-        if d[translations[language_code]["xyz"]] == translations[language_code]["control_group"] and
+        if d["xyz"] == translations[language_code]["control_group"] and
            d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
     ]
 
     control_reference_ct_values = [
         d[translations[language_code]["reference_ct"]] 
         for d in input_values_table
-        if d[translations[language_code]["xyz"]] == translations[language_code]["control_group"] and
+        if d["xyz"] == translations[language_code]["control_group"] and
            d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
     ]
 
@@ -404,7 +404,7 @@ for i in range(num_target_genes):
         sample_delta_ct_values = [
             d[translations[language_code]["delta_ct_patient"]] 
             for d in input_values_table 
-            if d[translations[language_code]["xyz"]] == f"{translations[language_code]['patient_group']} {j+1}" and 
+            if d["xyz"] == f"{translations[language_code]['patient_group']} {j+1}" and 
                d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
         ]
 
@@ -436,7 +436,7 @@ for i in range(num_target_genes):
         sample_delta_ct_values = [
             d[translations[language_code]["delta_ct_patient"]] 
             for d in input_values_table 
-            if d[translations[language_code]["xyz"]] == f"{translations[language_code]['patient_group']} {j+1}" and 
+            if d["xyz"] == f"{translations[language_code]['patient_group']} {j+1}" and 
                d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
         ]
 
@@ -459,7 +459,7 @@ for i in range(num_target_genes):
         xaxis=dict(
             tickvals=[1] + [j + 2 for j in range(num_patient_groups)],
             ticktext=[translations[language_code]['control_group']] + [f"{translations[language_code]['patient_group']} {j+1}" for j in range(num_patient_groups)],
-            title=translations[language_code]["xyz"]
+            title="xyz"
         ),
         yaxis=dict(title=translations[language_code]['delta_ct_value']),
         showlegend=True
