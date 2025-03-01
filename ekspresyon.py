@@ -90,7 +90,6 @@ translations = {
         "results": "Sonuçlar",
         "statistical_results": "İstatistiksel Sonuçlar",
         "statistical_evaluation": "İstatistiksel Değerlendirme",
-        "p_value": "Test P-değeri",
         "significance": "Anlamlılık",
         "target_gene": "Hedef Gen",
         "patient_group": "Hasta Grubu",
@@ -170,7 +169,6 @@ translations = {
         "results": "Results",
         "statistical_results": "Statistical Results",
         "statistical_evaluation": "Statistical Evaluation",
-        "p_value": "P-value",
         "significance": "Significance",
         "target_gene": "Target Gene",
         "patient_group": "Patient Group",
@@ -237,7 +235,7 @@ translations = {
         "insignificant": "Nicht signifikant",
         "test_type": "Testtyp",
         "test_method": "Verwendeter Test",
-        "test_pvalue": "Test P-Wert",
+        "test_pvalue": "P-Wert",
         "significance": "Bedeutung",
         "delta_delta_ct": "ΔΔCt",
         "gene_expression_change": "Genexpression Veränderung (2^(-ΔΔCt))",
@@ -250,7 +248,6 @@ translations = {
         "results": "Ergebnisse",
         "statistical_results": "Statistische Ergebnisse",
         "statistical_evaluation": "Statistische Auswertung",
-        "p_value": "P-Wert",
         "significance": "Signifikanz",
         "target_gene": "Zielgen",
         "patient_group": "Patientengruppe",
@@ -595,7 +592,7 @@ def create_pdf(results, stats, input_df, language_code):
     for stat in stats:
         text = (f"{stat[translations[language_code]['target_gene']]} - {stat[translations[language_code]['patient_group']]} | "
                 f"{translations[language_code]['test_method']}: {stat[translations[language_code]['test_method']]} | "
-                f"p: {stat[translations[language_code]['p_value']]:.4f} | {stat[translations[language_code]['significance']]}")
+                f"p: {stat[translations[language_code]['test_pvalue']]:.4f} | {stat[translations[language_code]['significance']]}")
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
     
