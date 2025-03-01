@@ -293,8 +293,13 @@ for i in range(num_target_genes):
         if average_control_delta_ct is not None and average_sample_delta_ct is not None:
             delta_delta_ct = average_sample_delta_ct - average_control_delta_ct
             expression_change = 2 ** (-delta_delta_ct)
-            regulation_status = ("Değişim Yok" if expression_change == 1 else
-                                 "Upregulated" if expression_change > 1 else "Downregulated")
+            
+            if expression_change == 1:
+                regulation_status = translations[language_code]["no_change"]
+            elif expression_change > 1:
+                regulation_status = translations[language_code]["upregulated"]
+            else:
+                regulation_status = translations[language_code]["downregulated"]
        
         # İstatistiksel Testler
             shapiro_control = stats.shapiro(control_delta_ct)
