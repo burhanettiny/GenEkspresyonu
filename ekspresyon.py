@@ -449,7 +449,7 @@ if stats_data:
         label=translations[language_code]['download_csv'],  # Dil koduna göre etiket
         data=csv_stats,
         file_name="istatistik_sonuclari.csv",
-        mime="text/csv"
+        mime="text/csv")
 
 
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
