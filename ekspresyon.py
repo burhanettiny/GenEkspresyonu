@@ -27,7 +27,7 @@ flags = {
 
 # Dil seçim kutusu oluşturuluyor ve bayraklar ile birlikte görüntüleniyor
 selected_language = st.selectbox(
-    "Dil / Language / Sprache",
+    "Dil / Español / Language / Français/ Sprache / العربية",
     options=[
         f"{flags['Türkçe']} Türkçe",
         f"{flags['Español']} Español",
