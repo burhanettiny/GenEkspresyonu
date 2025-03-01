@@ -423,8 +423,12 @@ if input_values_table:
     input_df = pd.DataFrame(input_values_table) 
     st.write(input_df) 
 
-    csv = input_df.to_csv(index=False).encode("utf-8") 
-    st.download_button(label="📥 CSV İndir", data=csv, file_name="giris_verileri.csv", mime="text/csv") 
+    csv = input_df.to_csv(index=False).encode("utf-8")  
+    st.download_button(
+        label=translations[language_code]['download_csv'],  # Dil koduna göre etiket
+        data=csv, file_name="giris_verileri.csv", mime="text/csv") 
+
+
 
 # Sonuçlar Tablosunu Göster
 if data:
@@ -441,7 +445,12 @@ if stats_data:
     st.write(stats_df)
     
     csv_stats = stats_df.to_csv(index=False).encode("utf-8")
-    st.download_button(label="📥 İstatistik Sonuçlarını CSV Olarak İndir", data=csv_stats, file_name="istatistik_sonuclari.csv", mime="text/csv")
+    st.download_button(
+        label=translations[language_code]['download_csv'],  # Dil koduna göre etiket
+        data=csv_stats,
+        file_name="istatistik_sonuclari.csv",
+        mime="text/csv"
+
 
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
