@@ -56,7 +56,7 @@ translations = {
         "warning_patient_ct": "⚠️ Dikkat: Hasta grubu Ct verilerini alt alta yazın veya boşluk içeren hücre olmayacak şekilde Excel'den kopyalayıp yapıştırın.",
         "statistical_results": "📈 İstatistik Sonuçları",
         "target_gene": "Hedef Gen",
-        "rfg": "Referans Gen",
+        "reference_gene": "Referans Gen",
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -87,7 +87,7 @@ translations = {
         "warning_patient_ct": "⚠️ Warning: Enter patient group Ct values line by line or copy-paste from Excel without empty cells.",
         "statistical_results": "📈 Statistical Results",
         "target_gene": "Target Gene",
-        "rfg": "Reference Gen",
+        "reference_gene": "Reference Gen",
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -118,7 +118,7 @@ translations = {
         "warning_patient_ct": "⚠️ Achtung: Geben Sie die Ct-Werte der Patientendaten gruppe untereinander ein oder kopieren Sie sie aus Excel ohne leere Zellen.",
         "statistical_results": "📈 Statistische Ergebnisse",
         "target_gene": "Zielgen",
-        "rfg": "Referenzgen",
+        "reference_gene": "Referenzgen",
 
     }
 }
@@ -147,7 +147,7 @@ last_gene_index = None
 
 control_group = translations[language_code]["control_group"]
 target_gene = translations[language_code]["target_gene"]
-rfg = translations[language_code]["rfg"]
+reference_gene = translations[language_code]["reference_gene"]
 ct_value = translations[language_code]["ct_value"]
 hast = translations[language_code]["hast"]
 
