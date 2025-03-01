@@ -67,8 +67,22 @@ translations = {
         "sample": "Örnek",
         "patient": "Hasta",
         "delta_ct_distribution": "ΔCt Dağılımı",
-        "delta_ct_value": "ΔCt Değeri"
+        "delta_ct_value": "ΔCt Değeri",
+        "parametric": "Parametrik",
+        "non_parametric": "Nonparametrik",
+        "t_test": "t-test",
+        "mann_whitney_u_test": "Mann-Whitney U testi",
+        "significant": "Anlamlı",
+        "insignificant": "Anlamsız",
+        "test_type": "Test Türü",
+        "test_method": "Kullanılan Test",
+        "test_pvalue": "Test P-değeri",
+        "significance": "Anlamlılık",
+        "delta_delta_ct": "ΔΔCt",
+        "gene_expression_change": "Gen Ekspresyon Değişimi (2^(-ΔΔCt))",
+        "regulation_status": "Regülasyon Durumu",
     },
+
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
         "subtitle": "Developed by B. Yalçınkaya",
@@ -109,8 +123,22 @@ translations = {
         "sample": "Sample",
         "patient": "Patient",
         "delta_ct_distribution": "ΔCt Distribution",
-        "delta_ct_value": "ΔCt Value"
+        "delta_ct_value": "ΔCt Value",
+        "parametric": "Parametric",
+        "non_parametric": "Nonparametric",
+        "t_test": "t-test",
+        "mann_whitney_u_test": "Mann-Whitney U test",
+        "significant": "Significant",
+        "insignificant": "Insignificant",
+        "test_type": "Test Type",
+        "test_method": "Test Method",
+        "test_pvalue": "Test P-value",
+        "significance": "Significance",
+        "delta_delta_ct": "ΔΔCt",
+        "gene_expression_change": "Gene Expression Change (2^(-ΔΔCt))",
+        "regulation_status": "Regulation Status",
     },
+
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
         "subtitle": "Entwickelt von B. Yalçınkaya",
@@ -151,7 +179,20 @@ translations = {
         "sample": "Probe",
         "patient": "Patient",
         "delta_ct_distribution": "ΔCt-Verteilung",
-        "delta_ct_value": "ΔCt-Wert"
+        "delta_ct_value": "ΔCt-Wert",
+        "parametric": "Parametrisch",
+        "non_parametric": "Nicht parametrisch",
+        "t_test": "t-Test",
+        "mann_whitney_u_test": "Mann-Whitney U-Test",
+        "significant": "Signifikant",
+        "insignificant": "Nicht signifikant",
+        "test_type": "Testtyp",
+        "test_method": "Verwendeter Test",
+        "test_pvalue": "Test P-Wert",
+        "significance": "Bedeutung",
+        "delta_delta_ct": "ΔΔCt",
+        "gene_expression_change": "Genexpression Veränderung (2^(-ΔΔCt))",
+        "regulation_status": "Regulierungsstatus",
     }
 }
 
@@ -264,34 +305,34 @@ for i in range(num_target_genes):
             sample_normal = shapiro_sample.pvalue > 0.05
             equal_variance = levene_test.pvalue > 0.05
             
-            test_type = "Parametrik" if control_normal and sample_normal and equal_variance else "Nonparametrik"
-            
-            if test_type == "Parametrik":
+            test_type = translations[language_code]["parametric"] if control_normal and sample_normal and equal_variance else translations[language_code]["non_parametric"]
+
+            if test_type == "parametric":
                 test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
                 test_method = "t-test"
             else:
                 test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
-                test_method = "Mann-Whitney U testi"
+                test_method = "mann_whitney_u_test"
             
-            significance = "Anlamlı" if test_pvalue < 0.05 else "Anlamsız"
+            significance = "significant" if test_pvalue < 0.05 else "insignificant"
             
             stats_data.append({
-                "Hedef Gen": f"Hedef Gen {i+1}",
-                "Hasta Grubu": f"Hasta Grubu {j+1}",
-                "Test Türü": test_type,
-                "Kullanılan Test": test_method,
-                "Test P-değeri": test_pvalue,
-                "Anlamlılık": significance
+                translations[language_code]["target_gene"]: f"{translations[language_code]['target_gene']} {i+1}",
+                translations[language_code]["patient_group"]: f"{translations[language_code]['patient_group']} {j+1}",
+                translations[language_code]["test_type"]: test_type,
+                translations[language_code]["test_method"]: test_method,
+                translations[language_code]["test_pvalue"]: test_pvalue,
+                translations[language_code]["significance"]: significance
             })
             
             data.append({
-                "Hedef Gen": f"Hedef Gen {i+1}",
-                "Hasta Grubu": f"Hasta Grubu {j+1}",
-                "ΔΔCt": delta_delta_ct,
-                "Gen Ekspresyon Değişimi (2^(-ΔΔCt))": expression_change,
-                "Regülasyon Durumu": regulation_status,
-                "ΔCt (Kontrol)": average_control_delta_ct,
-                "ΔCt (Hasta)": average_sample_delta_ct
+                translations[language_code]["target_gene"]: f"{translations[language_code]['target_gene']} {i+1}",
+                translations[language_code]["patient_group"]: f"{translations[language_code]['patient_group']} {j+1}",
+                translations[language_code]["delta_delta_ct"]: delta_delta_ct,
+                translations[language_code]["gene_expression_change"]: expression_change,
+                translations[language_code]["regulation_status"]: regulation_status,
+                translations[language_code]["delta_ct_control"]: average_control_delta_ct,
+                translations[language_code]["delta_ct_patient"]: average_sample_delta_ct
             })
 
 # Giriş Verileri Tablosunu Göster
