@@ -299,17 +299,22 @@ if stats_data:
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
     st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
-    
+
     # Kontrol Grubu Verileri
     control_target_ct_values = [
-        d["Hedef Gen Ct Değeri"] for d in input_values_table
-        if d["xyz"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+        d[translations[language_code]["target_ct"]] 
+        for d in input_values_table
+        if d["xyz"] == translations[language_code]["control_group"] and
+           d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
     ]
-    
+
     control_reference_ct_values = [
-        d["Referans Ct"] for d in input_values_table
-        if d["xyz"] == "Kontrol" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+        d[translations[language_code]["reference_ct"]] 
+        for d in input_values_table
+        if d["xyz"] == translations[language_code]["control_group"] and
+           d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
     ]
+
     
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
         st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
