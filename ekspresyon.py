@@ -14,7 +14,7 @@ from reportlab.platypus import Table, TableStyle
 if 'language' not in st.session_state:
     st.session_state.language = "Türkçe"  # Varsayılan dil Türkçe olarak ayarlanıyor.
  
-st.session_state.language = st.selectbox("Dil / Language / Deutsch", ["Türkçe", "English", "Deutsch"])
+st.session_state.language = st.selectbox("Dil / Language / Sprache", ["Türkçe", "English", "Deutsch"])
 
 # Dil kodlarını belirleyin
 language_map = {
@@ -249,7 +249,7 @@ for i in range(num_target_genes):
         input_values_table.append({
             translations[language_code]["sample_number"]: sample_counter,
             translations[language_code]["target_gene"]: f"{target_gene} {i+1}",
-            "xyz": f"{translations[language_code]['control_group']} {i+1}",
+            "xyz": translations[language_code]["control_group"],
             translations[language_code]["target_ct"]: control_target_ct_values[idx],
             translations[language_code]["reference_ct"]: control_reference_ct_values[idx],  
             translations[language_code]["delta_ct_control"]: control_delta_ct[idx]
@@ -282,7 +282,7 @@ for i in range(num_target_genes):
             input_values_table.append({
                 translations[language_code]["sample_number"]: sample_counter,
                 translations[language_code]["target_gene"]: f"{translations[language_code]['target_gene']} {i+1}",
-                "xyz": f"🧬 {translations[language_code]['patient_group']} {j+1}" if translations[language_code]['patient_group'] else "",
+                "xyz": f"{translations[language_code]['patient_group']} {j+1}",
                 translations[language_code]["target_ct"]: sample_target_ct_values[idx],
                 translations[language_code]["reference_ct"]: sample_reference_ct_values[idx],
                 translations[language_code]["delta_ct_patient"]: sample_delta_ct[idx]
@@ -307,14 +307,14 @@ for i in range(num_target_genes):
             
             test_type = translations[language_code]["parametric"] if control_normal and sample_normal and equal_variance else translations[language_code]["non_parametric"]
 
-            if test_type == translations[language_code]["parametric"]:
+            if test_type == "parametric":
                 test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
-                test_method = translations[language_code]["t_test"]
+                test_method = "t-test"
             else:
                 test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
-                test_method = translations[language_code]["mann_whitney_u_test"]
+                test_method = "mann_whitney_u_test"
             
-            significance = translations[language_code]["significant"] if test_pvalue < 0.05 else translations[language_code]["insignificant"]
+            significance = "significant" if test_pvalue < 0.05 else "insignificant"
             
             stats_data.append({
                 translations[language_code]["target_gene"]: f"{translations[language_code]['target_gene']} {i+1}",
