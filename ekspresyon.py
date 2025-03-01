@@ -58,8 +58,16 @@ translations = {
         "statistical_results": "📈 İstatistik Sonuçları",
         "target_gene": "Hedef Gen",
         "reference_gene": "Referans Gen",
-        "target_ct": "Hedef Gen Ct",  
-
+        "target_ct": "Hedef Gen Ct",
+        "distribution_graph": "Dağılım Grafiği",
+        "error_missing_control_data": "⚠️ Hata: Kontrol Grubu için Hedef Gen {i} verileri eksik!",
+        "control_group_avg": "Kontrol Grubu Ortalama",
+        "avg": "Ortalama",
+        "control": "Kontrol",
+        "sample": "Örnek",
+        "patient": "Hasta",
+        "delta_ct_distribution": "ΔCt Dağılımı",
+        "delta_ct_value": "ΔCt Değeri"
     },
     "en": {
         "title": "🧬 Gene Expression Analysis Application",
@@ -93,7 +101,15 @@ translations = {
         "target_gene": "Target Gene",
         "reference_gene": "Reference Gen",
         "target_ct": "Target Gene Ct", 
-
+        "distribution_graph": "Distribution Graph",
+        "error_missing_control_data": "⚠️ Error: Missing data for Target Gene {i} in the Control Group!",
+        "control_group_avg": "Control Group Average",
+        "avg": "Average",
+        "control": "Control",
+        "sample": "Sample",
+        "patient": "Patient",
+        "delta_ct_distribution": "ΔCt Distribution",
+        "delta_ct_value": "ΔCt Value"
     },
     "de": {
         "title": "🧬 Genexpression-Analyseanwendung",
@@ -126,8 +142,16 @@ translations = {
         "statistical_results": "📈 Statistische Ergebnisse",
         "target_gene": "Zielgen",
         "reference_gene": "Referenzgen",
-        "target_ct": "Zielgen Ct", 
-
+        "target_ct": "Zielgen Ct",
+        "distribution_graph": "Verteilungsdiagramm",
+        "error_missing_control_data": "⚠️ Fehler: Fehlende Daten für Zielgen {i} in der Kontrollgruppe!",
+        "control_group_avg": "Durchschnitt der Kontrollgruppe",
+        "avg": "Durchschnitt",
+        "control": "Kontrolle",
+        "sample": "Probe",
+        "patient": "Patient",
+        "delta_ct_distribution": "ΔCt-Verteilung",
+        "delta_ct_value": "ΔCt-Wert"
     }
 }
 
@@ -298,7 +322,7 @@ if stats_data:
 
 # Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
-    st.subheader(f"Hedef Gen {i+1} - Hasta ve Kontrol Grubu Dağılım Grafiği")
+    st.subheader(f"{translations[language_code]['target_gene']} {i+1} - {translations[language_code]['distribution_graph']}")
 
     # Kontrol Grubu Verileri
     control_target_ct_values = [
@@ -315,15 +339,14 @@ for i in range(num_target_genes):
            d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
     ]
 
-    
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ Hata: Kontrol Grubu için Hedef Gen {i+1} verileri eksik!")
+        st.error(f"⚠️ {translations[language_code]['error_missing_control_data'].format(i=i+1)}")
         continue
-    
+
     control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
     average_control_delta_ct = np.mean(control_delta_ct)
-    
-    # Hasta Grubu Verileri
+
+    # Grafik başlatma
     fig = go.Figure()
 
     # Kontrol Grubu Ortalama Çizgisi
@@ -332,26 +355,28 @@ for i in range(num_target_genes):
         y=[average_control_delta_ct, average_control_delta_ct],  
         mode='lines',
         line=dict(color='black', width=4),
-        name='Kontrol Grubu Ortalama'
+        name=translations[language_code]["control_group_avg"]
     ))
 
     # Hasta Gruplarının Ortalama Çizgileri
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
-            d["ΔCt (Hasta)"] for d in input_values_table 
-            if d["xyz"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+            d[translations[language_code]["delta_ct_patient"]] 
+            for d in input_values_table 
+            if d["xyz"] == f"{translations[language_code]['patient_group']} {j+1}" and 
+               d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
         ]
-    
+
         if not sample_delta_ct_values:
-            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
-        
+            continue  
+
         average_sample_delta_ct = np.mean(sample_delta_ct_values)
         fig.add_trace(go.Scatter(
             x=[(j + 1.8), (j + 2.2)],  
             y=[average_sample_delta_ct, average_sample_delta_ct],  
             mode='lines',
             line=dict(color='black', width=4),
-            name=f'Hasta Grubu {j+1} Ortalama'
+            name=f"{translations[language_code]['patient_group']} {j+1} {translations[language_code]['avg']}"
         ))
 
     # Veri Noktaları (Kontrol Grubu)
@@ -359,48 +384,45 @@ for i in range(num_target_genes):
         x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
         y=control_delta_ct,
         mode='markers',  
-        name='Kontrol Grubu',
+        name=translations[language_code]["control_group"],
         marker=dict(color='blue'),
-        text=[f'Kontrol {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(control_delta_ct)],
+        text=[f"{translations[language_code]['control']} {value:.2f}, {translations[language_code]['sample']} {idx+1}" for idx, value in enumerate(control_delta_ct)],
         hoverinfo='text'
     ))
 
     # Veri Noktaları (Hasta Grupları)
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
-            d["ΔCt (Hasta)"] for d in input_values_table 
-            if d["xyz"] == f"Hasta Grubu {j+1}" and d["Hedef Gen"] == f"Hedef Gen {i+1}"
+            d[translations[language_code]["delta_ct_patient"]] 
+            for d in input_values_table 
+            if d["xyz"] == f"{translations[language_code]['patient_group']} {j+1}" and 
+               d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
         ]
-    
+
         if not sample_delta_ct_values:
-            continue  # Eğer hasta grubuna ait veri yoksa, bu hasta grubunu atla
-        
+            continue  
+
         fig.add_trace(go.Scatter(
             x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
             y=sample_delta_ct_values,
             mode='markers',  
-            name=f'Hasta Grubu {j+1}',
+            name=f"{translations[language_code]['patient_group']} {j+1}",
             marker=dict(color='red'),
-            text=[f'Hasta {value:.2f}, Örnek {idx+1}' for idx, value in enumerate(sample_delta_ct_values)],
+            text=[f"{translations[language_code]['patient']} {value:.2f}, {translations[language_code]['sample']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
             hoverinfo='text'
         ))
 
     # Grafik ayarları
     fig.update_layout(
-        title=f"Hedef Gen {i+1} - ΔCt Dağılımı",
+        title=f"{translations[language_code]['target_gene']} {i+1} - {translations[language_code]['delta_ct_distribution']}",
         xaxis=dict(
-            tickvals=[1] + [i + 2 for i in range(num_patient_groups)],
-            ticktext=['Kontrol Grubu'] + [f'Hasta Grubu {i+1}' for i in range(num_patient_groups)],
-            title='xyz'
+            tickvals=[1] + [j + 2 for j in range(num_patient_groups)],
+            ticktext=[translations[language_code]['control_group']] + [f"{translations[language_code]['patient_group']} {j+1}" for j in range(num_patient_groups)],
+            title="xyz"
         ),
-        yaxis=dict(title='ΔCt Değeri'),
+        yaxis=dict(title=translations[language_code]['delta_ct_value']),
         showlegend=True
     )
-
-    st.plotly_chart(fig)
-
-else:
-    st.info("Grafik oluşturulabilmesi için en az bir geçerli veri seti gereklidir.")
 
 # PDF rapor oluşturma kısmı
 from reportlab.lib.units import inch
