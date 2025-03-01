@@ -915,3 +915,5 @@ if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
 
 
 st.markdown(f"### {translations[language_code]['subtitle']}")
+st.markdown(f"<h4 style='font-size: 12px; font-family: Arial, sans-serif; color: #555;'>{translations[language_code]['subtitle']}</h4>", unsafe_allow_html=True)
+
