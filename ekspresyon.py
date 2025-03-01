@@ -90,7 +90,6 @@ translations = {
         "results": "Sonuçlar",
         "statistical_results": "İstatistiksel Sonuçlar",
         "statistical_evaluation": "İstatistiksel Değerlendirme",
-        "test_used": "Kullanılan Test",
         "p_value": "Test P-değeri",
         "significance": "Anlamlılık",
         "target_gene": "Hedef Gen",
@@ -171,7 +170,6 @@ translations = {
         "results": "Results",
         "statistical_results": "Statistical Results",
         "statistical_evaluation": "Statistical Evaluation",
-        "test_used": "Test Used",
         "p_value": "P-value",
         "significance": "Significance",
         "target_gene": "Target Gene",
@@ -252,7 +250,6 @@ translations = {
         "results": "Ergebnisse",
         "statistical_results": "Statistische Ergebnisse",
         "statistical_evaluation": "Statistische Auswertung",
-        "test_used": "Verwendeter Test",
         "p_value": "P-Wert",
         "significance": "Signifikanz",
         "target_gene": "Zielgen",
@@ -597,7 +594,7 @@ def create_pdf(results, stats, input_df, language_code):
     
     for stat in stats:
         text = (f"{stat[translations[language_code]['target_gene']]} - {stat[translations[language_code]['patient_group']]} | "
-                f"{translations[language_code]['test_used']}: {stat[translations[language_code]['test_used']]} | "
+                f"{translations[language_code]['test_method']}: {stat[translations[language_code]['test_method']]} | "
                 f"p: {stat[translations[language_code]['p_value']]:.4f} | {stat[translations[language_code]['significance']]}")
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
