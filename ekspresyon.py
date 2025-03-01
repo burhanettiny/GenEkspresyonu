@@ -8,7 +8,8 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Table, TableStyle
+from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.units import inch
 
 # Dil seçim kutusu
 if 'language' not in st.session_state:
@@ -83,7 +84,28 @@ translations = {
         "regulation_status": "Regülasyon Durumu",
         "no_change": "Değişim Yok",
         "upregulated": "Yukarı Regüle",
-        "downregulated": "Aşağı Regüle"
+        "downregulated": "Aşağı Regüle",
+        "report_title": "Gen Ekspresyon Analizi Raporu",
+        "input_data_table": "Giriş Verileri Tablosu",
+        "results": "Sonuçlar",
+        "statistical_results": "İstatistiksel Sonuçlar",
+        "statistical_evaluation": "İstatistiksel Değerlendirme",
+        "test_used": "Kullanılan Test",
+        "p_value": "Test P-değeri",
+        "significance": "Anlamlılık",
+        "target_gene": "Hedef Gen",
+        "patient_group": "Hasta Grubu",
+        "expression_change": "Gen Ekspresyon Değişimi",
+        "regulation_status": "Regülasyon Durumu",
+        "generate_pdf": "PDF Oluştur",
+        "pdf_report": "Gen Ekspresyon Raporu",
+        "error_no_data": "Veri bulunamadı, PDF oluşturulamadı.",
+        "statistical_explanation": (
+            "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
+            "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
+            "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
+            "Eğer normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+            "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir."
     },
 
     "en": {
@@ -142,7 +164,29 @@ translations = {
         "regulation_status": "Regulation Status",
         "no_change": "No Change",
         "upregulated": "Upregulated",
-        "downregulated": "Downregulated"
+        "downregulated": "Downregulated",
+        "report_title": "Gene Expression Analysis Report",
+        "input_data_table": "Input Data Table",
+        "results": "Results",
+        "statistical_results": "Statistical Results",
+        "statistical_evaluation": "Statistical Evaluation",
+        "test_used": "Test Used",
+        "p_value": "P-value",
+        "significance": "Significance",
+        "target_gene": "Target Gene",
+        "patient_group": "Patient Group",
+        "expression_change": "Gene Expression Change",
+        "regulation_status": "Regulation Status",
+        "generate_pdf": "Generate PDF",
+        "pdf_report": "Gene Expression Report",
+        "error_no_data": "No data found, PDF could not be generated.",
+        "statistical_explanation": (
+            "During the statistical evaluation process, data distribution was analyzed using the Shapiro-Wilk test. "
+            "If normality was met, variance homogeneity between groups was checked with Levene’s test. "
+            "If variance was equal, an independent sample t-test was applied; otherwise, a Welch t-test was used. "
+            "If normal distribution was not achieved, the non-parametric Mann-Whitney U test was applied. "
+            "Significance was determined using the p < 0.05 criterion."
+
     },
 
     "de": {
@@ -201,7 +245,29 @@ translations = {
         "regulation_status": "Regulierungsstatus",
         "no_change": "Keine Veränderung",
         "upregulated": "Hochreguliert",
-        "downregulated": "Herunterreguliert"
+        "downregulated": "Herunterreguliert",
+        "report_title": "Genexpressionsanalysebericht",
+        "input_data_table": "Eingabedatentabelle",
+        "results": "Ergebnisse",
+        "statistical_results": "Statistische Ergebnisse",
+        "statistical_evaluation": "Statistische Auswertung",
+        "test_used": "Verwendeter Test",
+        "p_value": "P-Wert",
+        "significance": "Signifikanz",
+        "target_gene": "Zielgen",
+        "patient_group": "Patientengruppe",
+        "expression_change": "Genexpressionsänderung",
+        "regulation_status": "Regulierungsstatus",
+        "generate_pdf": "PDF Erstellen",
+        "pdf_report": "Genexpressionsbericht",
+        "error_no_data": "Keine Daten gefunden, PDF konnte nicht erstellt werden.",
+        "statistical_explanation": (
+            "Während des statistischen Bewertungsprozesses wurde die Datenverteilung mit dem Shapiro-Wilk-Test analysiert. "
+            "Wenn die Normalität erfüllt war, wurde die Varianzhomogenität zwischen den Gruppen mit dem Levene-Test überprüft. "
+            "War die Varianz gleich, wurde ein unabhängiger Stichprobent-Test angewendet; andernfalls wurde ein Welch-T-Test verwendet. "
+            "Wenn keine normale Verteilung vorlag, wurde der nicht-parametrische Mann-Whitney-U-Test angewendet. "
+            "Die Signifikanz wurde anhand des Kriteriums p < 0,05 bestimmt."
+
     },
 }
 
@@ -480,11 +546,7 @@ for i in range(num_target_genes):
     )
     st.plotly_chart(fig)
 # PDF rapor oluşturma kısmı
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from reportlab.lib.styles import getSampleStyleSheet
-
-def create_pdf(results, stats, input_df):
+def create_pdf(results, stats, input_df, language_code):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
@@ -492,11 +554,11 @@ def create_pdf(results, stats, input_df):
     styles = getSampleStyleSheet()
     
     # Başlık
-    elements.append(Paragraph("Gen Ekspresyon Analizi Raporu", styles['Title']))
+    elements.append(Paragraph(translations[language_code]["report_title"], styles['Title']))
     elements.append(Spacer(1, 12))
 
     # Giriş Verileri Tablosu Başlığı
-    elements.append(Paragraph("Giris Verileri Tablosu:", styles['Heading2']))
+    elements.append(Paragraph(translations[language_code]["input_data_table"], styles['Heading2']))
     
     # Tablo Verisi
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
@@ -516,40 +578,36 @@ def create_pdf(results, stats, input_df):
     elements.append(Spacer(1, 12))
     
     # Sonuçlar Başlığı
-    elements.append(Paragraph("Sonuçlar:", styles['Heading2']))
+    elements.append(Paragraph(translations[language_code]["results"], styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for result in results:
-        text = f"{result['Hedef Gen']} - {result['Hasta Grubu']} | ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result['Gen Ekspresyon Değişimi (2^(-ΔΔCt))']:.2f} | {result['Regülasyon Durumu']}"
+        text = (f"{result[translations[language_code]['target_gene']]} - {result[translations[language_code]['patient_group']]} | "
+                f"ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result[translations[language_code]['expression_change']]:.2f} | "
+                f"{result[translations[language_code]['regulation_status']]}")
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
     
     elements.append(PageBreak())
     
     # İstatistiksel Sonuçlar
-    elements.append(Paragraph("istatistiksel Sonuçlar:", styles['Heading2']))
+    elements.append(Paragraph(translations[language_code]["statistical_results"], styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for stat in stats:
-        text = f"{stat['Hedef Gen']} - {stat['Hasta Grubu']} | Test: {stat['Kullanılan Test']} | p-değeri: {stat['Test P-değeri']:.4f} | {stat['Anlamlılık']}"
+        text = (f"{stat[translations[language_code]['target_gene']]} - {stat[translations[language_code]['patient_group']]} | "
+                f"{translations[language_code]['test_used']}: {stat[translations[language_code]['test_used']]} | "
+                f"p: {stat[translations[language_code]['p_value']]:.4f} | {stat[translations[language_code]['significance']]}")
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
     
     elements.append(PageBreak())
     
     # İstatistiksel Değerlendirme
-    elements.append(Paragraph("istatistiksel Degerlendirme:", styles['Heading2']))
+    elements.append(Paragraph(translations[language_code]["statistical_evaluation"], styles['Heading2']))
     elements.append(Spacer(1, 12))
     
-    explanation = (
-        "istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmistir. "
-        "Normallik saglanirsa, gruplar arasindaki varyans esitligi Levene testi ile kontrol edilmistir. "
-        "Varyans esitligi varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmistir. "
-        "Eger normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmistir. "
-        "Sonuclarin anlamliligi p < 0.05 kriterine göre belirlenmistir. "
-        "<b>Görüs ve önerileriniz icin; <a href='mailto:mailtoburhanettin@gmail.com'>mailtoburhanettin@gmail.com</a></b>"
-        
-    )
+    explanation = translations[language_code]["statistical_explanation"]
     
     for line in explanation.split(". "):
         elements.append(Paragraph(line.strip() + '.', styles['Normal']))
@@ -561,9 +619,10 @@ def create_pdf(results, stats, input_df):
 
 if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
     if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table))
-        st.download_button(label=f"{translations[language_code]['pdf_report']} {language}", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table), language_code)
+        st.download_button(label=f"{translations[language_code]['pdf_report']}", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
-        st.error("Veri bulunamadı, PDF oluşturulamadı.")
+        st.error(translations[language_code]["error_no_data"])
+
 
 st.markdown(f"### {translations[language_code]['subtitle']}")
