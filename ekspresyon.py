@@ -103,7 +103,7 @@ translations = {
         "xyz": "Gruppe",
         "ct_value": "Ct-Wert",
         "reference_ct": "Referenz Ct",
-        "delta_ct": "ΔCt (Kontrolle)",
+        "delta_ct_control": "ΔCt (Kontrolle)",
         "warning_empty_input": "⚠️ Warnung: Geben Sie die Daten untereinander ein oder kopieren Sie sie ohne leere Zellen aus Excel.",
         "statistical_results": "📈 Statistische Ergebnisse",
         "download_csv": "📥 CSV herunterladen",
