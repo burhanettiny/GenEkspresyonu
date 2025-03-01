@@ -14,7 +14,7 @@ from reportlab.platypus import Table, TableStyle
 if 'language' not in st.session_state:
     st.session_state.language = "Türkçe"  # Varsayılan dil Türkçe olarak ayarlanıyor.
  
-st.session_state.language = st.selectbox("Dil / Language / Sprache", ["Türkçe", "English", "Deutsch"])
+st.session_state.language = st.selectbox("Dil / Language / Deutsch", ["Türkçe", "English", "Deutsch"])
 
 # Dil kodlarını belirleyin
 language_map = {
@@ -250,7 +250,7 @@ for i in range(num_target_genes):
             translations[language_code]["sample_number"]: sample_counter,
             translations[language_code]["target_gene"]: f"{target_gene} {i+1}",
             "xyz": {
-                "control_group": f"🧬 {translations[language_code]['control_group']} {i+1}",
+                "control_group": f" {translations[language_code]['control_group']} {i+1}",
                 "patient_group": "" 
             },
             translations[language_code]["target_ct"]: control_target_ct_values[idx],
