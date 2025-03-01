@@ -713,14 +713,14 @@ if input_values_table:
 
 # Sonuçlar Tablosunu Göster
 if data:
-    st.subheader(f"📊 {translations[language_code]['nil_mine']}")
+    st.subheader(f" {translations[language_code]['nil_mine']}")
 
     df = pd.DataFrame(data)
     st.write(df)
 
 # İstatistik Sonuçları
 if stats_data:
-    st.subheader(f"📈 {translations[language_code]['statistical_results']}")
+    st.subheader(f" {translations[language_code]['statistical_results']}")
     
     stats_df = pd.DataFrame(stats_data)
     st.write(stats_df)
