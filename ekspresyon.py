@@ -123,7 +123,7 @@ translations = {
         "report_title": "Gen Ekspresyon Analizi Raporu",
         "input_data_table": "Giriş Verileri Tablosu",
         "results": "Sonuçlar",
-        "statistical_results":📈 "İstatistiksel Sonuçlar",
+        "statistical_results": "📈 İstatistiksel Sonuçlar",
         "statistical_evaluation": "İstatistiksel Değerlendirme",
         "significance": "Anlamlılık",
         "target_gene": "Hedef Gen",
