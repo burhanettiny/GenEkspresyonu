@@ -47,7 +47,7 @@ translations = {
         "nil_mine": "📊 Sonuçlar",
         "gr_tbl": "📋 Giriş Verileri Tablosu",
         "control_group": "🧬 Kontrol Grubu",
-        "hast": "🩸 Hasta Grubu",
+        "patient_group": "🩸 Hasta Grubu",
         "ctrl_trgt_ct": "🟦 Kontrol Grubu Hedef Gen {i} Ct Değerleri",
         "ctrl_ref_ct": "🟦 Kontrol Grubu Referans Gen {i} Ct Değerleri",
         "hst_trgt_ct": "🩸 Hasta Grubu Hedef Gen {j} Ct Değerleri",
@@ -80,7 +80,7 @@ translations = {
         "nil_mine": "📊 Results",
         "gr_tbl": "📋 Input Data Table",
         "control_group": "🧬 Control Group",
-        "hast": "🩸 Patient Group",
+        "patient_group": "🩸 Patient Group",
         "ctrl_trgt_ct": "🟦 Control Group Target Gene {i} Ct Values",
         "ctrl_ref_ct": "🟦 Control Group Reference Gene {i} Ct Values",
         "hst_trgt_ct": "🩸 Patient Group Target Gene {j} Ct Values",
@@ -113,7 +113,7 @@ translations = {
         "nil_mine": "📊 Ergebnisse",
         "gr_tbl": "📋 Eingabedaten Tabelle",
         "control_group": "🧬 Kontroll gruppe",
-        "hast": "🩸 Patientendaten Gruppe",
+        "patient_group": "🩸 Patientendaten Gruppe",
         "ctrl_trgt_ct": "🟦 Kontrollgruppe Zielgen {i} Ct-Werte",
         "ctrl_ref_ct": "🟦 Kontrollgruppe Referenz {i} Ct-Werte",
         "hst_trgt_ct": "🩸 Patientendaten gruppe Zielgen {j} Ct-Werte",
@@ -154,7 +154,7 @@ control_group = translations[language_code]["control_group"]
 target_gene = translations[language_code]["target_gene"]
 reference_gene = translations[language_code]["reference_gene"]
 ct_value = translations[language_code]["ct_value"]
-hast = translations[language_code]["hast"]
+patient_group = translations[language_code]["patient_group"]
 
     # Kontrol Grubu Verileri
 for i in range(num_target_genes):
