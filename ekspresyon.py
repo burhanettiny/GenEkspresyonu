@@ -840,13 +840,12 @@ for i in range(num_target_genes):
 # PDF rapor oluşturma kısmı
 def register_fonts():
     try:
-        from reportlab.pdfbase.ttfonts import TTFont
-        from reportlab import pdfbase
-        
-        pdfbase.registerFont(TTFont('FreeSerif', 'FreeSerif.ttf'))  # FreeSerif.ttf'yi doğru yol ile yükleyin
+        pdfbase.registerFont(TTFont('FreeSerif', 'FreeSerif.ttf'))  # 'FreeSerif.ttf' dosyasının doğru yolda olduğundan emin olun
+        print("Yazı tipi başarıyla kaydedildi.")
     except Exception as e:
-        print(f"Error loading font: {e}")
+        print(f"Yazı tipi yüklenirken bir hata oluştu: {e}")
 
+# Bu fonksiyonu kaydetmeye çağırın
 register_fonts()
 def create_pdf(results, stats, input_df, language_code):
     buffer = BytesIO()
