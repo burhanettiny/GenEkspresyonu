@@ -380,16 +380,20 @@ for i in range(num_target_genes):
             sample_normal = shapiro_sample.pvalue > 0.05
             equal_variance = levene_test.pvalue > 0.05
             
-            test_type = translations[language_code]["parametric"] if control_normal and sample_normal and equal_variance else translations[language_code]["non_parametric"]
-
-            if test_type == translations[language_code]["parametric"]:
-                test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
-                test_method = translations[language_code]["t_test"]
-            else:
-                test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
-                test_method = translations[language_code]["mann_whitney_u_test"]
-            
-            significance = translations[language_code]["significant"] if test_pvalue < 0.05 else translations[language_code]["insignificant"]
+           if control_normal and sample_normal:
+               if equal_variance:
+                   test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct).pvalue
+                   test_method = translations[language_code]["t_test"]
+               else:
+                   test_pvalue = stats.ttest_ind(control_delta_ct, sample_delta_ct, equal_var=False).pvalue
+                   test_method = translations[language_code]["welch_t_test"]
+               test_type = translations[language_code]["parametric"]
+           else:
+               test_pvalue = stats.mannwhitneyu(control_delta_ct, sample_delta_ct).pvalue
+               test_method = translations[language_code]["mann_whitney_u_test"]
+               test_type = translations[language_code]["non_parametric"]
+               
+           significance = translations[language_code]["significant"] if test_pvalue < 0.05 else translations[language_code]["insignificant"]
             
             stats_data.append({
                 translations[language_code]["target_gene"]: f"{translations[language_code]['target_gene']} {i+1}",
