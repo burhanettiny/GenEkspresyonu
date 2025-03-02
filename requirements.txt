@@ -10,3 +10,5 @@ kaleido
 fpdf
 Pillow
 seaborn
+python-bidi
+arabic-reshaper
