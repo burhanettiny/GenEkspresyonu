@@ -900,7 +900,7 @@ def create_pdf(results, stats, input_df, language_code):
     elements.append(PageBreak())
     
     # İstatistiksel Değerlendirme
-    elements.append(Paragraph(format_text(translations[language_code]["statistical_evaluation"], styles['Heading2']))
+    elements.append(Paragraph(format_text(translations[language_code]["statistical_evaluation"], styles['Heading2']), styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     explanation = translations[language_code]["statistical_explanation"]
