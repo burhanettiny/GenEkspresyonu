@@ -850,7 +850,7 @@ def create_pdf(results, stats, input_df, language_code):
     styles['Heading2'].alignment = 2 if language_code == 'ar' else 0
 
     # Başlık
-    elements.append(Paragraph(format_text(translations[language_code]["report_title"], styles['Title']))
+    elements.append(Paragraph(format_text(translations[language_code]["report_title"], styles['Title']), styles['Title']))
     elements.append(Spacer(1, 12))
 
     # Giriş Verileri Tablosu Başlığı
