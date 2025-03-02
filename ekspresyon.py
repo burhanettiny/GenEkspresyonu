@@ -887,7 +887,7 @@ def create_pdf(results, stats, input_df, language_code):
     elements.append(PageBreak())
     
     # İstatistiksel Sonuçlar
-    elements.append(Paragraph(format_text(translations[language_code]["statistical_results"], styles['Heading2'],  styles['Heading2']))
+    elements.append(Paragraph(format_text(translations[language_code]["statistical_results"], styles['Heading2'], styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for stat in stats:
