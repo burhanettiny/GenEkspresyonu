@@ -13,7 +13,6 @@ from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
-from reportlab.pdfbase import pdfmetrics
 
 # Dil seçim kutusu
 if 'language' not in st.session_state:
@@ -826,20 +825,14 @@ for i in range(num_target_genes):
     )
     st.plotly_chart(fig)
 # PDF rapor oluşturma kısmı
-pdfmetrics.registerFont(TTFont('DejaVu', 'path_to_dejavu_font/DejaVuSans.ttf'))
-
 def create_pdf(results, stats, input_df, language_code):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
     
     styles = getSampleStyleSheet()
-    font_name = 'DejaVu'
-    styles['Title'].fontName = font_name
-    styles['Heading1'].fontName = font_name
-    styles['Heading2'].fontName = font_name
-    styles['Normal'].fontName = font_name
-    
+    font_name = 'Times-Roman'
+
     # Başlık
     elements.append(Paragraph(translations[language_code]["report_title"], styles['Title']))
     elements.append(Spacer(1, 12))
@@ -856,7 +849,7 @@ def create_pdf(results, stats, input_df, language_code):
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'font_name'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Times-Roman'),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
