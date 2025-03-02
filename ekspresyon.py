@@ -835,8 +835,8 @@ for i in range(num_target_genes):
 # PDF rapor oluşturma kısmı
 
 # Fontları kaydediyoruz
-pdfbase.registerFont(TTFont('Times-Roman', 'fonts/times-roman.ttf'))  #
-pdfbase.registerFont(TTFont('ArabicFont', '/fonts/to/arabic-font.ttf'))  # Arapça fontu
+pdfbase.registerFont(TTFont('Times-Roman', 'fonts/times-roman.ttf'))  # Times-Roman fontu
+pdfbase.registerFont(TTFont('ArabicFont', 'fonts/arabic-font.ttf'))  # Arapça fontu
 
 def create_pdf(results, stats, input_df, language_code):
     buffer = BytesIO()
