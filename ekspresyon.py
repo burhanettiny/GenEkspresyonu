@@ -834,9 +834,6 @@ for i in range(num_target_genes):
     st.plotly_chart(fig)
 # PDF rapor oluşturma kısmı
 
-# Fontları kaydediyoruz
-pdfbase.registerFont(TTFont('Times-Roman', 'fonts/times-roman.ttf'))  # Times-Roman fontu
-pdfbase.registerFont(TTFont('ArabicFont', 'fonts/arabic-font.ttf'))  # Arapça fontu
 
 def create_pdf(results, stats, input_df, language_code):
     buffer = BytesIO()
