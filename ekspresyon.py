@@ -740,7 +740,7 @@ for i in range(num_target_genes):
     ]
 
     if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
-        st.error(f"⚠️ {translations[language_code]['error_missing_control_data'].format(i=i+1)}")
+        st.error(f" {translations[language_code]['error_missing_control_data'].format(i=i+1)}")
         continue
 
     control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
