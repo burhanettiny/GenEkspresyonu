@@ -854,7 +854,7 @@ def create_pdf(results, stats, input_df, language_code):
     elements.append(Spacer(1, 12))
 
     # Giriş Verileri Tablosu Başlığı
-    elements.append(Paragraph(format_text(translations[language_code]["input_data_table"], styles['Heading2']))
+    elements.append(Paragraph(format_text(translations[language_code]["input_data_table"], styles['Heading2']), styles['Heading2']))
 
     # Tablo Verisi
     table_data = [[format_text(str(cell), language_code) for cell in row] for row in [input_df.columns.tolist()] + input_df.values.tolist()]
