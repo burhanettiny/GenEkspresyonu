@@ -833,8 +833,6 @@ for i in range(num_target_genes):
     )
     st.plotly_chart(fig)
 # PDF rapor oluşturma kısmı
-
-
 def create_pdf(results, stats, input_df, language_code):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
