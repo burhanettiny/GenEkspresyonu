@@ -13,6 +13,8 @@ from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
+from bidi.algorithm import get_display
+import arabic_reshaper
 
 # Dil seçim kutusu
 if 'language' not in st.session_state:
@@ -62,6 +64,13 @@ language_map = {
 # Seçilen dilin kodunu al
 language_code = language_map.get(selected_language_name, "tr")  # Varsayılan olarak Türkçe (tr) kullan
 
+def format_text(text, lang):
+    # Arapça metinleri sağdan sola ve doğru harf birleşimiyle göstermek için fonksiyon
+    if lang == "ar":
+        reshaped_text = arabic_reshaper.reshape(text)  # Harfleri birleştir
+        return get_display(reshaped_text)  # Sağdan sola çevir
+    return text
+    
 translations = {
     "tr": {
         "title": "🧬 Gen Ekspresyon Analizi Uygulaması",
@@ -831,25 +840,32 @@ def create_pdf(results, stats, input_df, language_code):
     elements = []
     
     styles = getSampleStyleSheet()
-    font_name = 'Times-Roman'
+    sstyles = getSampleStyleSheet()
+    styles['Normal'].fontName = font_name
+    styles['Heading2'].fontName = font_name
+    styles['Title'].fontName = font_name
+   
+    # Arapça ise sağa hizala, diğer dillerde sola hizala
+    styles['Normal'].alignment = 2 if language_code == 'ar' else 0  # 2: RIGHT, 0: LEFT
+    styles['Heading2'].alignment = 2 if language_code == 'ar' else 0
 
     # Başlık
-    elements.append(Paragraph(translations[language_code]["report_title"], styles['Title']))
+    elements.append(Paragraph(format_text(translations[language_code]["report_title"], styles['Title']))
     elements.append(Spacer(1, 12))
 
     # Giriş Verileri Tablosu Başlığı
-    elements.append(Paragraph(translations[language_code]["input_data_table"], styles['Heading2']))
-    
+    elements.append(Paragraph(format_text(translations[language_code]["input_data_table"], styles['Heading2']))
+
     # Tablo Verisi
-    table_data = [input_df.columns.tolist()] + input_df.values.tolist()
+    table_data = [[format_text(str(cell), language_code) for cell in row] for row in [input_df.columns.tolist()] + input_df.values.tolist()]
     col_width = (letter[0] - 80) / len(input_df.columns)
     table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
     
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Times-Roman'),
+        ('ALIGN', (0, 0), (-1, -1), 'RIGHT' if language_code == 'ar' else 'CENTER'),  # Arapça için sağa hizalama
+        ('FONTNAME', (0, 0), (-1, -1), 'ArabicFont' if language_code == 'ar' else 'Times-Roman'),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
@@ -858,7 +874,7 @@ def create_pdf(results, stats, input_df, language_code):
     elements.append(Spacer(1, 12))
     
     # Sonuçlar Başlığı
-    elements.append(Paragraph(translations[language_code]["results"], styles['Heading2']))
+    elements.append(Paragraph(format_text(translations[language_code]["results"], styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for result in results:
@@ -871,7 +887,7 @@ def create_pdf(results, stats, input_df, language_code):
     elements.append(PageBreak())
     
     # İstatistiksel Sonuçlar
-    elements.append(Paragraph(translations[language_code]["statistical_results"], styles['Heading2']))
+    elements.append(Paragraph(format_text(translations[language_code]["statistical_results"], styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     for stat in stats:
@@ -884,7 +900,7 @@ def create_pdf(results, stats, input_df, language_code):
     elements.append(PageBreak())
     
     # İstatistiksel Değerlendirme
-    elements.append(Paragraph(translations[language_code]["statistical_evaluation"], styles['Heading2']))
+    elements.append(Paragraph(format_text(translations[language_code]["statistical_evaluation"], styles['Heading2']))
     elements.append(Spacer(1, 12))
     
     explanation = translations[language_code]["statistical_explanation"]
