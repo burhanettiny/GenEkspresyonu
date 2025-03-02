@@ -15,6 +15,9 @@ from reportlab import pdfbase
 from bidi.algorithm import get_display
 import arabic_reshaper
 
+from reportlab.pdfbase.pdfmetrics import getRegisteredFontNames
+print(getRegisteredFontNames())
+
 # Dil seçim kutusu
 if 'language' not in st.session_state:
     st.session_state.language = "Türkçe"  # Varsayılan dil 
@@ -41,8 +44,7 @@ selected_language = st.selectbox(
         f"{flags['العربية']} العربية"
     ]
 )
-from reportlab.pdfbase.pdfmetrics import getRegisteredFontNames
-print(getRegisteredFontNames())
+
 # Seçilen dilin adını al ve doğru dil kodunu seçmek için bayraksız dil adını kullan
 try:
     selected_language_name = selected_language.split(' ', 1)[1]  # Bayrağı ayır
