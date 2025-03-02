@@ -15,7 +15,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 from reportlab.pdfbase import pdfmetrics
 
-pdfmetrics.registerFont(TTFont('DejaVu', 'path_to_dejavu_font/DejaVuSans.ttf'))
+pdfmetrics.registerFont(TTFont('ArialUnicode', 'path_to_ArialUnicode_font/ArialUnicodeSans.ttf'))
 
 # Dil seçim kutusu
 if 'language' not in st.session_state:
@@ -834,7 +834,7 @@ def create_pdf(results, stats, input_df, language_code):
     elements = []
     
     styles = getSampleStyleSheet()
-    font_name = 'DejaVu'
+    font_name = 'ArialUnicode'
     styles['Title'].fontName = font_name
     styles['Heading1'].fontName = font_name
     styles['Heading2'].fontName = font_name
