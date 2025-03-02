@@ -14,7 +14,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 from reportlab.pdfbase import pdfmetrics
-
 pdfmetrics.registerFont(TTFont('DejaVu', 'path_to_dejavu_font/DejaVuSans.ttf'))
 
 # Dil seçim kutusu
