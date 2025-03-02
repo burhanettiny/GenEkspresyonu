@@ -3,3 +3,6 @@ from reportlab.pdfbase import pdfmetrics
 
 pdfmetrics.registerFont(TTFont('LiberationSans', 'fonts/LiberationSans-Regular.ttf'))
 c.setFont("LiberationSans", 12)
+
+# Arapça desteği için özel font kaydı
+pdfmetrics.registerFont(TTFont('ArabicFont', 'Amiri-Regular.ttf'))
