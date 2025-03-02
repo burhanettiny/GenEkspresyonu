@@ -10,11 +10,14 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.lib.units import inch
-from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 from bidi.algorithm import get_display
 import arabic_reshaper
+
+# Fontları kaydediyoruz
+pdfbase.registerFont(TTFont('Times-Roman', '/path/to/times-roman.ttf'))  # Times-Roman fontu
+pdfbase.registerFont(TTFont('ArabicFont', '/path/to/arabic-font.ttf'))  # Arapça fontu
 
 # Dil seçim kutusu
 if 'language' not in st.session_state:
