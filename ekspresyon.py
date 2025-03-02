@@ -14,7 +14,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 from reportlab.pdfbase import pdfmetrics
-pdfmetrics.registerFont(TTFont('DejaVu', 'path_to_dejavu_font/DejaVuSans.ttf'))
 
 # Dil seçim kutusu
 if 'language' not in st.session_state:
@@ -827,6 +826,8 @@ for i in range(num_target_genes):
     )
     st.plotly_chart(fig)
 # PDF rapor oluşturma kısmı
+pdfmetrics.registerFont(TTFont('DejaVu', 'path_to_dejavu_font/DejaVuSans.ttf'))
+
 def create_pdf(results, stats, input_df, language_code):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
