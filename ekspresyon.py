@@ -41,7 +41,8 @@ selected_language = st.selectbox(
         f"{flags['العربية']} العربية"
     ]
 )
-
+from reportlab.pdfbase.pdfmetrics import getRegisteredFontNames
+print(getRegisteredFontNames())
 # Seçilen dilin adını al ve doğru dil kodunu seçmek için bayraksız dil adını kullan
 try:
     selected_language_name = selected_language.split(' ', 1)[1]  # Bayrağı ayır
