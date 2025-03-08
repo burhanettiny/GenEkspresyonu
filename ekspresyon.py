@@ -18,8 +18,12 @@ from reportlab import pdfbase
 hide_streamlit_style = """
     <style>
         #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header {visibility: hidden;}
+        footer {visibility: hidden !important;} /* Footer kısmını tamamen kaldırır */
+        header {visibility: hidden;} /* Üst header çubuğunu kaldırır */
+        .stDeployButton {display:none !important;} /* "Made with Streamlit" butonunu gizler */
+        div[data-testid="stDecoration"] {display:none !important;} /* Yeni Streamlit sürümlerinde gereksiz süslemeleri gizler */
+        div[data-testid="stStatusWidget"] {display:none !important;} /* Sol alt köşedeki Streamlit butonunu gizler */
+
     </style>
 """
 
