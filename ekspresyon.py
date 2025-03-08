@@ -17,13 +17,13 @@ from reportlab import pdfbase
 # Özel CSS ekleyerek Streamlit ve GitHub logolarını kaldırma
 hide_streamlit_style = """
     <style>
-        #MainMenu {visibility: hidden;}
+        #MainMenu {visibility: hidden;} /* Sağ üst köşedeki menüyü gizler */
         footer {visibility: hidden !important;} /* Footer kısmını tamamen kaldırır */
         header {visibility: hidden;} /* Üst header çubuğunu kaldırır */
         .stDeployButton {display:none !important;} /* "Made with Streamlit" butonunu gizler */
-        div[data-testid="stDecoration"] {display:none !important;} /* Yeni Streamlit sürümlerinde gereksiz süslemeleri gizler */
-        div[data-testid="stStatusWidget"] {display:none !important;} /* Sol alt köşedeki Streamlit butonunu gizler */
-
+        div[data-testid="stDecoration"] {display:none !important;} /* Yeni Streamlit süslemelerini kaldırır */
+        div[data-testid="stStatusWidget"] {display:none !important;} /* Sol alt köşedeki Streamlit butonunu kaldırır */
+        div[data-testid="stToolbar"] {display:none !important;} /* Sağ alttaki "Hosted with Streamlit" yazısını kaldırır */
     </style>
 """
 
