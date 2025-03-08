@@ -1,0 +1,10 @@
+[server]
+headless = true
+enableCORS = false
+
+[theme]
+primaryColor = "blue"
+
+[branding]
+showStreamlitLogo = false
+showGitHubLogo = false
