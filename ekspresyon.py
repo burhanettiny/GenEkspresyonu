@@ -15,6 +15,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 st.write("Streamlit Sürümü:", st.__version__)
 # Özel CSS ekleyerek Streamlit ve GitHub logolarını kaldırma
+# Özel CSS ile tüm logoları ve footer'ı gizleme
 hide_streamlit_style = """
     <style>
         #MainMenu {visibility: hidden;} /* Sağ üst köşedeki menüyü gizler */
@@ -23,7 +24,8 @@ hide_streamlit_style = """
         .stDeployButton {display:none !important;} /* "Made with Streamlit" butonunu gizler */
         div[data-testid="stDecoration"] {display:none !important;} /* Yeni Streamlit süslemelerini kaldırır */
         div[data-testid="stStatusWidget"] {display:none !important;} /* Sol alt köşedeki Streamlit butonunu kaldırır */
-        div[data-testid="stToolbar"] {display:none !important;} /* Sağ alttaki "Hosted with Streamlit" yazısını kaldırır */
+        div[data-testid="stToolbar"] {display:none !important;} /* Eski "Hosted with Streamlit" yazısını kaldırır */
+        div[class^="st-emotion-cache"] {display:none !important;} /* Streamlit 1.43.1 ile gelen yeni "Hosted with Streamlit" banner'ını kaldırır */
     </style>
 """
 
