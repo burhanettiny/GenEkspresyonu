@@ -13,6 +13,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
+
 st.write("Streamlit Sürümü:", st.__version__)
 # Özel CSS ekleyerek Streamlit ve GitHub logolarını kaldırma
 # Özel CSS ile tüm logoları ve footer'ı gizleme
