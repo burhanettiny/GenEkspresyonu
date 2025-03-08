@@ -14,6 +14,17 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 
+# Özel CSS ekleyerek Streamlit ve GitHub logolarını kaldırma
+hide_streamlit_style = """
+    <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+    </style>
+"""
+
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 # Dil seçim kutusu
 if 'language' not in st.session_state:
     st.session_state.language = "Türkçe"  # Varsayılan dil 
