@@ -14,7 +14,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 
-
 hide_streamlit_style = """
     <style>
         #MainMenu {visibility: hidden;} /* Sağ üst köşedeki menüyü gizler */
@@ -24,7 +23,7 @@ hide_streamlit_style = """
         div[data-testid="stDecoration"] {display:none !important;} /* Yeni Streamlit süslemelerini kaldırır */
         div[data-testid="stStatusWidget"] {display:none !important;} /* Sol alt köşedeki Streamlit butonunu kaldırır */
         div[data-testid="stToolbar"] {display:none !important;} /* Eski "Hosted with Streamlit" yazısını kaldırır */
-        div[class^="st-emotion-cache"] {display:none !important;} /* Streamlit 1.43.1 ile gelen yeni "Hosted with Streamlit" banner'ını kaldırır */
+        div[class*="st-emotion-cache"] {display:none !important;} /* Streamlit 1.43.1 için "Hosted with Streamlit" yazısını kaldırır */
     </style>
 """
 
