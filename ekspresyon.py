@@ -14,6 +14,16 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 
+hide_streamlit_style = """
+    <style>
+        #MainMenu {visibility: hidden;} /* Sağ üst köşedeki menüyü gizler */
+        footer {visibility: hidden !important;} /* Footer kısmını tamamen kaldırır */
+        header {visibility: hidden;} /* Üst header çubuğunu kaldırır */
+    </style>
+"""
+
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 # Dil seçim kutusu
 if 'language' not in st.session_state:
     st.session_state.language = "Türkçe"  # Varsayılan dil 
