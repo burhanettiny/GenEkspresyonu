@@ -14,23 +14,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 
-
-hide_streamlit_style = """
-    <style>
-        #MainMenu {visibility: hidden;} /* Sağ üst köşedeki menüyü gizler */
-        footer {visibility: hidden !important;} /* Footer kısmını tamamen kaldırır */
-        header {visibility: hidden;} /* Üst header çubuğunu kaldırır */
-        .stDeployButton {display:none !important;} /* "Made with Streamlit" butonunu gizler */
-        div[data-testid="stDecoration"] {display:none !important;} /* Yeni Streamlit süslemelerini kaldırır */
-        div[data-testid="stStatusWidget"] {display:none !important;} /* Sol alt köşedeki Streamlit butonunu kaldırır */
-        div[data-testid="stToolbar"] {display:none !important;} /* Eski "Hosted with Streamlit" yazısını kaldırır */
-        div[class^="st-emotion-cache"] {display:none !important;} /* Streamlit 1.43.1 ile gelen yeni "Hosted with Streamlit" banner'ını kaldırır */
-    </style>
-"""
-
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
-
 # Dil seçim kutusu
 if 'language' not in st.session_state:
     st.session_state.language = "Türkçe"  # Varsayılan dil 
