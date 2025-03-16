@@ -149,8 +149,7 @@ translations = {
             "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
             "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
             "Normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
-            "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir.\n\n"
-            "**Öneri ve destekleriniz için:** Burhanettin Yalçınkaya - mail: mailtoburhanettin@gmail.com "
+            "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir. "
             "<b>Öneri ve destekleriniz için:</b> Burhanettin Yalçinkaya - mail: mailtoburhanettin@gmail.com"
         )
     },
