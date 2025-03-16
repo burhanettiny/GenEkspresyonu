@@ -145,12 +145,12 @@ translations = {
         "pdf_report": "Gen Ekspresyon Raporu",
         "error_no_data": "Veri bulunamadı, PDF oluşturulamadı.",
         "statistical_explanation": (
-            "Istatistiksel degerlendirme sürecinde veri dagilimi Shapiro-Wilk testi ile analiz edilmiştir. "
+            "İstatistiksel değerlendirme sürecinde veri dağılımı Shapiro-Wilk testi ile analiz edilmiştir. "
             "Normallik sağlanırsa, gruplar arasındaki varyans eşitliği Levene testi ile kontrol edilmiştir. "
-            "Varyans eşitliği varsa bagimsiz örneklem t-testi, yoksa Welch t-testi uygulanmiştir. "
-            "Normal dagilim saglanmazsa, parametrik olmayan Mann-Whitney U testi kullanilmiştir. "
-            "Sonuçlarin anlamliligi p < 0.05 kriterine göre belirlenmiştir."
-            "Öneri ve destekleriniz için Burhanettin Yalçinkaya - mail: mailtoburhanettin@gmail.com "
+            "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
+            "Normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
+            "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir.\n\n"
+            "**Öneri ve destekleriniz için:** Burhanettin Yalçınkaya - mail: mailtoburhanettin@gmail.com "
         )
     },
 
