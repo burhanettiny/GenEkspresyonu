@@ -150,7 +150,7 @@ translations = {
             "Varyans eşitliği varsa bağımsız örneklem t-testi, yoksa Welch t-testi uygulanmıştır. "
             "Normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
             "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir. "
-            "<b>Öneri ve destekleriniz için:</b> Burhanettin Yalçinkaya - mail: mailtoburhanettin@gmail.com"
+            "<b>Öneri ve destekleriniz için:</b> Burhanettin Yalçınkaya - mail: mailtoburhanettin@gmail.com"
         )
     },
 
