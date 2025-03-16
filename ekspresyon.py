@@ -10,9 +10,12 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.lib.units import inch
-from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
+from reportlab.pdfbase import pdfmetrics
+
+# Unicode destekli fontu kaydet
+pdfmetrics.registerFont(TTFont('DejaVu', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
 
 hide_streamlit_style = """
     <style>
@@ -841,7 +844,10 @@ def create_pdf(results, stats, input_df, language_code):
     elements = []
     
     styles = getSampleStyleSheet()
-    font_name = 'Times-Roman'
+    font_name = 'DejaVu'
+    styles['Normal'].fontName = font_name
+    styles['Title'].fontName = font_name
+    styles['Heading2'].fontName = font_name
 
     # Başlık
     elements.append(Paragraph(translations[language_code]["report_title"], styles['Title']))
@@ -859,7 +865,7 @@ def create_pdf(results, stats, input_df, language_code):
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Times-Roman'),
+        ('FONTNAME', (0, 0), (-1, -1), font_name),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
