@@ -151,6 +151,7 @@ translations = {
             "Normal dağılım sağlanmazsa, parametrik olmayan Mann-Whitney U testi kullanılmıştır. "
             "Sonuçların anlamlılığı p < 0.05 kriterine göre belirlenmiştir.\n\n"
             "**Öneri ve destekleriniz için:** Burhanettin Yalçınkaya - mail: mailtoburhanettin@gmail.com "
+            "<b>Öneri ve destekleriniz için:</b> Burhanettin Yalçinkaya - mail: mailtoburhanettin@gmail.com",
         )
     },
 
