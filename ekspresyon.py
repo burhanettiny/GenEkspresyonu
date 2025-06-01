@@ -304,7 +304,7 @@ translations = {
             "Wenn die Normalität erfüllt war, wurde die Varianzhomogenität zwischen den Gruppen mit dem Levene-Test überprüft. "
             "War die Varianz gleich, wurde ein unabhängiger Stichprobent-Test angewendet; andernfalls wurde ein Welch-T-Test verwendet. "
             "Wenn keine normale Verteilung vorlag, wurde der nicht-parametrische Mann-Whitney-U-Test angewendet. "
-            "Die Signifikanz wurde anhand des Kriteriums p < 0,05 bestimmt.",
+            "Die Signifikanz wurde anhand des Kriteriums p < 0,05 bestimmt."
             "Für Vorschläge und Unterstützung, Burhanettin Yalçinkaya - E-Mail: mailtoburhanettin@gmail.com"
         )
     },
