@@ -747,15 +747,39 @@ from io import BytesIO
 
 # --- Grafik oluşturma ---
 
-figures = []  # PDF'ye eklenecek grafiklerin listesi
-
+# Grafik oluşturma (her hedef gen için bir grafik oluşturulacak)
 for i in range(num_target_genes):
+    st.subheader(f"{translations[language_code]['target_gene']} {i+1} - {translations[language_code]['distribution_graph']}")
+
+    # Kontrol Grubu Verileri
+    control_target_ct_values = [
+        d[translations[language_code]["target_ct"]] 
+        for d in input_values_table
+        if d["Grup"] == translations[language_code]["control_group"] and
+           d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
+    ]
+
+    control_reference_ct_values = [
+        d[translations[language_code]["reference_ct"]] 
+        for d in input_values_table
+        if d["Grup"] == translations[language_code]["control_group"] and
+           d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
+    ]
+
+    if len(control_target_ct_values) == 0 or len(control_reference_ct_values) == 0:
+        st.error(f" {translations[language_code]['error_missing_control_data'].format(i=i+1)}")
+        continue
+
+    control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
+    average_control_delta_ct = np.mean(control_delta_ct)
+
+    # Grafik başlatma
     fig = go.Figure()
 
     # Kontrol Grubu Ortalama Çizgisi
     fig.add_trace(go.Scatter(
-        x=[0.8, 1.2],
-        y=[average_control_delta_ct, average_control_delta_ct],
+        x=[0.8, 1.2],  
+        y=[average_control_delta_ct, average_control_delta_ct],  
         mode='lines',
         line=dict(color='black', width=4),
         name=translations[language_code]["control_group_avg"]
@@ -764,19 +788,19 @@ for i in range(num_target_genes):
     # Hasta Gruplarının Ortalama Çizgileri
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
-            d[translations[language_code]["delta_ct_patient"]]
-            for d in input_values_table
-            if d["Grup"] == f"{translations[language_code]['patient_group']} {j+1}" and
+            d[translations[language_code]["delta_ct_patient"]] 
+            for d in input_values_table 
+            if d["Grup"] == f"{translations[language_code]['patient_group']} {j+1}" and 
                d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
         ]
 
         if not sample_delta_ct_values:
-            continue
+            continue  
 
         average_sample_delta_ct = np.mean(sample_delta_ct_values)
         fig.add_trace(go.Scatter(
-            x=[(j + 1.8), (j + 2.2)],
-            y=[average_sample_delta_ct, average_sample_delta_ct],
+            x=[(j + 1.8), (j + 2.2)],  
+            y=[average_sample_delta_ct, average_sample_delta_ct],  
             mode='lines',
             line=dict(color='black', width=4),
             name=f"{translations[language_code]['patient_group']} {j+1} {translations[language_code]['avg']}"
@@ -786,7 +810,7 @@ for i in range(num_target_genes):
     fig.add_trace(go.Scatter(
         x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
         y=control_delta_ct,
-        mode='markers',
+        mode='markers',  
         name=translations[language_code]["control_group"],
         marker=dict(color='blue'),
         text=[f"{translations[language_code]['control']} {value:.2f}, {translations[language_code]['sample']} {idx+1}" for idx, value in enumerate(control_delta_ct)],
@@ -796,19 +820,19 @@ for i in range(num_target_genes):
     # Veri Noktaları (Hasta Grupları)
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
-            d[translations[language_code]["delta_ct_patient"]]
-            for d in input_values_table
-            if d["Grup"] == f"{translations[language_code]['patient_group']} {j+1}" and
+            d[translations[language_code]["delta_ct_patient"]] 
+            for d in input_values_table 
+            if d["Grup"] == f"{translations[language_code]['patient_group']} {j+1}" and 
                d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
         ]
 
         if not sample_delta_ct_values:
-            continue
+            continue  
 
         fig.add_trace(go.Scatter(
             x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
             y=sample_delta_ct_values,
-            mode='markers',
+            mode='markers',  
             name=f"{translations[language_code]['patient_group']} {j+1}",
             marker=dict(color='red'),
             text=[f"{translations[language_code]['patient']} {value:.2f}, {translations[language_code]['sample']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
@@ -826,17 +850,13 @@ for i in range(num_target_genes):
         yaxis=dict(title=translations[language_code]['delta_ct_value']),
         showlegend=True
     )
-
     st.plotly_chart(fig)
-    figures.append(fig)  # Grafik PDF için listeye eklendi
-
-# --- PDF oluşturma fonksiyonu ---
-
-def create_pdf(results, stats, input_df, language_code, figures=None):
+# PDF rapor oluşturma kısmı
+def create_pdf(results, stats, input_df, language_code):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
-
+    
     styles = getSampleStyleSheet()
     font_name = 'DejaVu'
     styles['Normal'].fontName = font_name
@@ -849,12 +869,12 @@ def create_pdf(results, stats, input_df, language_code, figures=None):
 
     # Giriş Verileri Tablosu Başlığı
     elements.append(Paragraph(translations[language_code]["input_data_table"], styles['Heading2']))
-
+    
     # Tablo Verisi
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
     col_width = (letter[0] - 80) / len(input_df.columns)
     table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
-
+    
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -863,71 +883,55 @@ def create_pdf(results, stats, input_df, language_code, figures=None):
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
-
+    
     elements.append(table)
     elements.append(Spacer(1, 12))
-
+    
     # Sonuçlar Başlığı
     elements.append(Paragraph(translations[language_code]["results"], styles['Heading2']))
     elements.append(Spacer(1, 12))
-
+    
     for result in results:
         text = (f"{result[translations[language_code]['target_gene']]} - {result[translations[language_code]['patient_group']]} | "
                 f"ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result[translations[language_code]['gene_expression_change']]:.2f} | "
-                f"{result[translations[language_code]['regulation_status']}")
+                f"{result[translations[language_code]['regulation_status']]}")
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
-
+    
     elements.append(PageBreak())
-
+    
     # İstatistiksel Sonuçlar
     elements.append(Paragraph(translations[language_code]["statistical_results"], styles['Heading2']))
     elements.append(Spacer(1, 12))
-
+    
     for stat in stats:
         text = (f"{stat[translations[language_code]['target_gene']]} - {stat[translations[language_code]['patient_group']]} | "
                 f"{translations[language_code]['test_method']}: {stat[translations[language_code]['test_method']]} | "
                 f"p: {stat[translations[language_code]['test_pvalue']]:.4f} | {stat[translations[language_code]['significance']]}")
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
-
-    if figures:
-        elements.append(PageBreak())
-        elements.append(Paragraph(translations[language_code]["distribution_graph"], styles['Heading2']))
-        elements.append(Spacer(1, 12))
-
-        for fig in figures:
-            img_buffer = BytesIO()
-            fig.write_image(img_buffer, format='png')  # Kaleido kullanılır
-            img_buffer.seek(0)
-            rl_img = RLImage(img_buffer, width=450, height=300)
-            elements.append(rl_img)
-            elements.append(Spacer(1, 12))
-
+    
     elements.append(PageBreak())
-
+    
     # İstatistiksel Değerlendirme
     elements.append(Paragraph(translations[language_code]["statistical_evaluation"], styles['Heading2']))
     elements.append(Spacer(1, 12))
-
+    
     explanation = translations[language_code]["statistical_explanation"]
-
+    
     for line in explanation.split(". "):
         elements.append(Paragraph(line.strip() + '.', styles['Normal']))
         elements.append(Spacer(1, 6))
-
+    
     doc.build(elements)
     buffer.seek(0)
     return buffer
 
-# --- PDF oluşturma butonu ve çağrısı ---
-
 if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
     if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table), language_code, figures=figures)
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table), language_code)
         st.download_button(label=f"{translations[language_code]['pdf_report']}", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
     else:
         st.error(translations[language_code]["error_no_data"])
-
 
 st.markdown(f"<h4 style='font-size: 12px; font-family: Arial, sans-serif; color: #555;'><a href='mailto:mailtoburhanettin@gmail.com' style='color: #555; text-decoration: none;'>{translations[language_code]['subtitle']}</a></h4>", unsafe_allow_html=True)
