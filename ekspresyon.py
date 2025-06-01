@@ -14,6 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 from reportlab.pdfbase import pdfmetrics
 import plotly.io as pio
+import matplotlib.pyplot as plt
 
 # Unicode destekli fontu kaydet
 pdfmetrics.registerFont(TTFont('DejaVu', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
@@ -760,13 +761,17 @@ for i in range(num_target_genes):
     control_delta_ct = np.array(control_target_ct_values) - np.array(control_reference_ct_values)
     average_control_delta_ct = np.mean(control_delta_ct)
 
-    # Grafik başlatma
+pio.kaleido.scope.default_format = "png"  # Kaleido ayarı
+
+figures = []
+
+for i in range(num_target_genes):
     fig = go.Figure()
 
     # Kontrol Grubu Ortalama Çizgisi
     fig.add_trace(go.Scatter(
-        x=[0.8, 1.2],  
-        y=[average_control_delta_ct, average_control_delta_ct],  
+        x=[0.8, 1.2],
+        y=[average_control_delta_ct[i], average_control_delta_ct[i]],
         mode='lines',
         line=dict(color='black', width=4),
         name=translations[language_code]["control_group_avg"]
@@ -775,101 +780,97 @@ for i in range(num_target_genes):
     # Hasta Gruplarının Ortalama Çizgileri
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
-            d[translations[language_code]["delta_ct_patient"]] 
-            for d in input_values_table 
-            if d["Grup"] == f"{translations[language_code]['patient_group']} {j+1}" and 
+            d[translations[language_code]["delta_ct_patient"]]
+            for d in input_values_table
+            if d["Grup"] == f"{translations[language_code]['patient_group']} {j+1}" and
                d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
         ]
-
         if not sample_delta_ct_values:
-            continue  
+            continue
 
         average_sample_delta_ct = np.mean(sample_delta_ct_values)
         fig.add_trace(go.Scatter(
-            x=[(j + 1.8), (j + 2.2)],  
-            y=[average_sample_delta_ct, average_sample_delta_ct],  
+            x=[(j + 1.8), (j + 2.2)],
+            y=[average_sample_delta_ct, average_sample_delta_ct],
             mode='lines',
             line=dict(color='black', width=4),
             name=f"{translations[language_code]['patient_group']} {j+1} {translations[language_code]['avg']}"
         ))
 
-    # Veri Noktaları (Kontrol Grubu)
+    # Veri Noktaları - Kontrol Grubu
     fig.add_trace(go.Scatter(
-        x=np.ones(len(control_delta_ct)) + np.random.uniform(-0.05, 0.05, len(control_delta_ct)),
-        y=control_delta_ct,
-        mode='markers',  
+        x=np.ones(len(control_delta_ct[i])) + np.random.uniform(-0.05, 0.05, len(control_delta_ct[i])),
+        y=control_delta_ct[i],
+        mode='markers',
         name=translations[language_code]["control_group"],
         marker=dict(color='blue'),
-        text=[f"{translations[language_code]['control']} {value:.2f}, {translations[language_code]['sample']} {idx+1}" for idx, value in enumerate(control_delta_ct)],
+        text=[
+            f"{translations[language_code]['control']} {value:.2f}, {translations[language_code]['sample']} {idx+1}"
+            for idx, value in enumerate(control_delta_ct[i])
+        ],
         hoverinfo='text'
     ))
 
-    # Veri Noktaları (Hasta Grupları)
+    # Veri Noktaları - Hasta Grupları
     for j in range(num_patient_groups):
         sample_delta_ct_values = [
-            d[translations[language_code]["delta_ct_patient"]] 
-            for d in input_values_table 
-            if d["Grup"] == f"{translations[language_code]['patient_group']} {j+1}" and 
+            d[translations[language_code]["delta_ct_patient"]]
+            for d in input_values_table
+            if d["Grup"] == f"{translations[language_code]['patient_group']} {j+1}" and
                d[translations[language_code]["target_gene"]] == f"{translations[language_code]['target_gene']} {i+1}"
         ]
-
         if not sample_delta_ct_values:
-            continue  
+            continue
 
         fig.add_trace(go.Scatter(
             x=np.ones(len(sample_delta_ct_values)) * (j + 2) + np.random.uniform(-0.05, 0.05, len(sample_delta_ct_values)),
             y=sample_delta_ct_values,
-            mode='markers',  
+            mode='markers',
             name=f"{translations[language_code]['patient_group']} {j+1}",
             marker=dict(color='red'),
-            text=[f"{translations[language_code]['patient']} {value:.2f}, {translations[language_code]['sample']} {idx+1}" for idx, value in enumerate(sample_delta_ct_values)],
+            text=[
+                f"{translations[language_code]['patient']} {value:.2f}, {translations[language_code]['sample']} {idx+1}"
+                for idx, value in enumerate(sample_delta_ct_values)
+            ],
             hoverinfo='text'
         ))
 
-    # Grafik ayarları
     fig.update_layout(
         title=f"{translations[language_code]['target_gene']} {i+1} - {translations[language_code]['delta_ct_distribution']}",
         xaxis=dict(
             tickvals=[1] + [j + 2 for j in range(num_patient_groups)],
-            ticktext=[translations[language_code]['control_group']] + [f"{translations[language_code]['patient_group']} {j+1}" for j in range(num_patient_groups)],
+            ticktext=[translations[language_code]['control_group']] +
+                     [f"{translations[language_code]['patient_group']} {j+1}" for j in range(num_patient_groups)],
             title=translations[language_code]['x_axis_title']
         ),
         yaxis=dict(title=translations[language_code]['delta_ct_value']),
         showlegend=True
     )
-    st.plotly_chart(fig)
-    
-figures = []
 
-for i in range(num_target_genes):
-    fig = px.bar(...)  # ya da fig = your_custom_plot_function(...)
     st.plotly_chart(fig)
-    figures.append(fig)  # ⬅️ PDF için grafik listeye ekleniyor
+    figures.append(fig)  # PDF'e eklemek için
 
-# PDF rapor oluşturma kısmı
+# PDF OLUŞTURMA FONKSİYONU
 def create_pdf(results, stats, input_df, language_code, figures=None):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
-    
+
     styles = getSampleStyleSheet()
     font_name = 'DejaVu'
     styles['Normal'].fontName = font_name
     styles['Title'].fontName = font_name
     styles['Heading2'].fontName = font_name
 
-    # Başlık
     elements.append(Paragraph(translations[language_code]["report_title"], styles['Title']))
     elements.append(Spacer(1, 12))
 
-    # Giriş Verileri Tablosu Başlığı
     elements.append(Paragraph(translations[language_code]["input_data_table"], styles['Heading2']))
-    
-    # Tablo Verisi
+
     table_data = [input_df.columns.tolist()] + input_df.values.tolist()
     col_width = (letter[0] - 80) / len(input_df.columns)
     table = Table(table_data, colWidths=[col_width] * len(input_df.columns))
-    
+
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -878,27 +879,24 @@ def create_pdf(results, stats, input_df, language_code, figures=None):
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
-    
     elements.append(table)
     elements.append(Spacer(1, 12))
-    
-    # Sonuçlar Başlığı
+
     elements.append(Paragraph(translations[language_code]["results"], styles['Heading2']))
     elements.append(Spacer(1, 12))
-    
+
     for result in results:
         text = (f"{result[translations[language_code]['target_gene']]} - {result[translations[language_code]['patient_group']]} | "
                 f"ΔΔCt: {result['ΔΔCt']:.2f} | 2^(-ΔΔCt): {result[translations[language_code]['gene_expression_change']]:.2f} | "
                 f"{result[translations[language_code]['regulation_status']]}")
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
-    
+
     elements.append(PageBreak())
-    
-    # İstatistiksel Sonuçlar
+
     elements.append(Paragraph(translations[language_code]["statistical_results"], styles['Heading2']))
     elements.append(Spacer(1, 12))
-    
+
     for stat in stats:
         text = (f"{stat[translations[language_code]['target_gene']]} - {stat[translations[language_code]['patient_group']]} | "
                 f"{translations[language_code]['test_method']}: {stat[translations[language_code]['test_method']]} | "
@@ -913,32 +911,35 @@ def create_pdf(results, stats, input_df, language_code, figures=None):
 
         for fig in figures:
             img_buffer = BytesIO()
-            fig.write_image(img_buffer, format='png')  # Kaleido kullanır
+            fig.write_image(img_buffer, format='png')
             img_buffer.seek(0)
             rl_img = RLImage(img_buffer, width=450, height=300)
             elements.append(rl_img)
-            elements.append(Spacer(1, 12)) 
-            
+            elements.append(Spacer(1, 12))
+
     elements.append(PageBreak())
-    
-    # İstatistiksel Değerlendirme
     elements.append(Paragraph(translations[language_code]["statistical_evaluation"], styles['Heading2']))
     elements.append(Spacer(1, 12))
-    
+
     explanation = translations[language_code]["statistical_explanation"]
-    
     for line in explanation.split(". "):
         elements.append(Paragraph(line.strip() + '.', styles['Normal']))
         elements.append(Spacer(1, 6))
-    
+
     doc.build(elements)
     buffer.seek(0)
     return buffer
 
+# PDF OLUŞTUR DÜĞMESİ
 if st.button(f"📥 {translations[language_code]['generate_pdf']}"):
     if input_values_table:
-        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table), language_code)
-        st.download_button(label=f"{translations[language_code]['pdf_report']}", data=pdf_buffer, file_name="gen_ekspresyon_raporu.pdf", mime="application/pdf")
+        pdf_buffer = create_pdf(data, stats_data, pd.DataFrame(input_values_table), language_code, figures=figures)
+        st.download_button(
+            label=f"{translations[language_code]['pdf_report']}",
+            data=pdf_buffer,
+            file_name="gen_ekspresyon_raporu.pdf",
+            mime="application/pdf"
+        )
     else:
         st.error(translations[language_code]["error_no_data"])
 
