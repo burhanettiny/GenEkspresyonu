@@ -8,11 +8,12 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, Spacer, PageBreak, Image as RLImage
 from reportlab.lib.units import inch
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab import pdfbase
 from reportlab.pdfbase import pdfmetrics
+import plotly.io as pio
 
 # Unicode destekli fontu kaydet
 pdfmetrics.registerFont(TTFont('DejaVu', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
@@ -837,8 +838,16 @@ for i in range(num_target_genes):
         showlegend=True
     )
     st.plotly_chart(fig)
+    
+figures = []
+
+for i in range(num_target_genes):
+    fig = px.bar(...)  # ya da fig = your_custom_plot_function(...)
+    st.plotly_chart(fig)
+    figures.append(fig)  # ⬅️ PDF için grafik listeye ekleniyor
+
 # PDF rapor oluşturma kısmı
-def create_pdf(results, stats, input_df, language_code):
+def create_pdf(results, stats, input_df, language_code, figures=None):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
@@ -896,7 +905,20 @@ def create_pdf(results, stats, input_df, language_code):
                 f"p: {stat[translations[language_code]['test_pvalue']]:.4f} | {stat[translations[language_code]['significance']]}")
         elements.append(Paragraph(text, styles['Normal']))
         elements.append(Spacer(1, 6))
-    
+
+    if figures:
+        elements.append(PageBreak())
+        elements.append(Paragraph(translations[language_code]["distribution_graph"], styles['Heading2']))
+        elements.append(Spacer(1, 12))
+
+        for fig in figures:
+            img_buffer = BytesIO()
+            fig.write_image(img_buffer, format='png')  # Kaleido kullanır
+            img_buffer.seek(0)
+            rl_img = RLImage(img_buffer, width=450, height=300)
+            elements.append(rl_img)
+            elements.append(Spacer(1, 12)) 
+            
     elements.append(PageBreak())
     
     # İstatistiksel Değerlendirme
